@@ -1,6 +1,4 @@
-# docs
-Help.Docs,帮助系统,新功能解释
-
+DNS 故障临时解决方法
 
 打开路径
 ```
@@ -20,3 +18,5 @@ C:\Windows\System32\drivers\etc
 54.77.233.106 pos.916423330.com
 
 ```
+
+![image](https://user-images.githubusercontent.com/8428709/230596398-e6bc8746-ed41-46b0-bb54-72b75be657eb.png)
