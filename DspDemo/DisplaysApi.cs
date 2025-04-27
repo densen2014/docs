@@ -20,6 +20,9 @@ public class Product
     [DisplayName("序号")]
     public int ID { get; set; }
 
+    [DisplayName("条码")]
+    public string? BarCode { get; set; }
+
     [DisplayName("商品名称")]
     public string? Name { get; set; }
 
