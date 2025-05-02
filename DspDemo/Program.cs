@@ -9,7 +9,7 @@ var options = new JsonSerializerOptions
     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping // 禁用 Unicode 转义
 };
 
-var dspIP = "http://192.168.1.146:5000";
+var dspIP = "http://10.0.0.4:5000";
 var client = new HttpClient() { BaseAddress = new Uri(dspIP) };
 
 var productSample = new Product()
@@ -20,6 +20,7 @@ var productSample = new Product()
 };
 
 decimal total = 0;
+int index = 0;
 
 var productsSample = new Products()
 {
@@ -63,6 +64,8 @@ while (true)
                 break;
 
             case ApiType.puts:
+                index++;
+                productsSample.ID = index;
                 productsSample.Price = $"€ {Price:n2}";
                 productsSample.Quantity = DateTime.Now.Second > 1 && DateTime.Now.Second < 6 ? DateTime.Now.Second : null;
                 total += Price * productSample.Quantity ?? 1;

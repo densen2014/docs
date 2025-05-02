@@ -41,6 +41,9 @@ public class Product
     [DisplayName("数量")]
     public decimal? Quantity { get; set; }
 
+    [DisplayName("删除")]
+    public bool IsDelete { get; set; }
+
     public Product(string productName, string price)
     {
         Name = productName;
