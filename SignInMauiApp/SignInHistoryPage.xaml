@@ -7,11 +7,11 @@
         <CollectionView x:Name="HistoryCollectionView">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,5" Padding="10" BorderColor="#ccc">
+                    <Border Margin="0,5" Padding="10" >
                         <VerticalStackLayout>
                             <Label Text="{Binding SignInTime, StringFormat='签到时间：{0:yyyy-MM-dd HH:mm:ss}'}" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
