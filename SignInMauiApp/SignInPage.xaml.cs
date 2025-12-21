@@ -32,5 +32,33 @@ public partial class SignInPage : ContentPage
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
         SignInResultLabel.Text = $"签到成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
         SignInResultLabel.IsVisible = true;
+        // 跳转到签到历史页面
+        await Navigation.PushAsync(new SignInHistoryPage(_user, _tenant));
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        // 添加退出登录按钮
+        if (ToolbarItems.All(t => t.Text != "退出登录"))
+        {
+            ToolbarItems.Add(new ToolbarItem("退出登录", null, async () => {
+                await Navigation.PopToRootAsync();
+            }));
+        }
+        // 添加租户管理按钮
+        if (ToolbarItems.All(t => t.Text != "租户管理"))
+        {
+            ToolbarItems.Add(new ToolbarItem("租户管理", null, async () => {
+                await Navigation.PushAsync(new TenantManagementPage());
+            }));
+        }
+        // 添加签到报表按钮（仅管理员可见，这里假设用户名为admin为管理员）
+        if (_user.Username == "admin" && ToolbarItems.All(t => t.Text != "签到报表"))
+        {
+            ToolbarItems.Add(new ToolbarItem("签到报表", null, async () => {
+                await Navigation.PushAsync(new SignInReportPage());
+            }));
+        }
     }
 }
