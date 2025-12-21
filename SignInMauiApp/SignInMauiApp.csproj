@@ -45,7 +45,7 @@
         <WindowsPackageType>None</WindowsPackageType> 
 
         <!-- 不生成符号文件 -->
-        <DebugType>None</DebugType>
+        <!--<DebugType>None</DebugType>-->
         
         <!--关闭诊断 / 崩溃转储-->
         <EnableCrashDump>false</EnableCrashDump>

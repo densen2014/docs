@@ -27,7 +27,7 @@ public static class MauiProgram
             .UseAutoSyncStructure(true)
             .UseConnectionString(DataType.Sqlite, "Data Source=signindb.db")
             .Build();
-        builder.Services.AddSingleton<IFreeSql>(fsql);
+        builder.Services.AddSingleton(fsql);
 
 #if DEBUG
 		builder.Logging.AddDebug();

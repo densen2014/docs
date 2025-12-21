@@ -23,6 +23,9 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
         LoadTenants(); // 注册后刷新租户列表
+#if WINDOWS
+        CheckAndCreateDesktopShortcutAsync();
+#endif
     }
 
     private async void CheckAndShowOnboardingAsync()
@@ -86,4 +89,43 @@ public partial class LoginPage : ContentPage
     {
         await Navigation.PushAsync(new RegisterPage());
     }
+
+#if WINDOWS
+    private async void CheckAndCreateDesktopShortcutAsync()
+    {
+        string shortcutName = "SignIn.lnk";
+        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        string shortcutPath = Path.Combine(desktopPath, shortcutName);
+        if (!File.Exists(shortcutPath))
+        {
+            bool create = await DisplayAlertAsync("创建桌面快捷方式", "未检测到桌面快捷方式，是否创建？", "是", "否");
+            if (create)
+            {
+                try
+                {
+                    CreateShortcut(shortcutPath);
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlertAsync("错误", $"创建快捷方式失败: {ex.Message}", "确定");
+                }
+            }
+        }
+    }
+
+    private void CreateShortcut(string shortcutPath)
+    {
+        // 需要引用 Windows Script Host Object Model (wshom.ocx)
+        // 但.NET MAUI桌面项目可用COM
+        var shell = Activator.CreateInstance(Type.GetTypeFromProgID("WScript.Shell")!);
+        var shortcut = shell?.GetType().InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { shortcutPath });
+        // 获取当前可执行文件路径
+        string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName;
+        shortcut!.GetType().InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { exePath });
+        shortcut.GetType().InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object?[] { Path.GetDirectoryName(exePath) });
+        shortcut.GetType().InvokeMember("WindowStyle", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { 1 });
+        shortcut.GetType().InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "SignInMauiApp" });
+        shortcut.GetType().InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
+    }
+#endif
 }
