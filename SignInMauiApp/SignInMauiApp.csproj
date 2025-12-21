@@ -36,12 +36,27 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+        
+        <!-- 便携，不依赖系统 -->
+        <!--<SelfContained>true</SelfContained>
+        <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>-->
 
-    </PropertyGroup>
+        <!-- 不用 MSIX -->
+        <WindowsPackageType>None</WindowsPackageType> 
 
-    <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">
-        <RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>
-    </PropertyGroup>
+        <!-- 不生成符号文件 -->
+        <DebugType>None</DebugType>
+        
+        <!--关闭诊断 / 崩溃转储-->
+        <EnableCrashDump>false</EnableCrashDump>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+
+        <!-- 只生成这些语言的卫星资源 -->
+        <SatelliteResourceLanguages>zh-Hans;en;es</SatelliteResourceLanguages>
+        <EnableBuiltInComInterop>true</EnableBuiltInComInterop>
+
+    </PropertyGroup> 
 
     <ItemGroup>
         <!-- App Icon -->
@@ -62,31 +77,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Fody" Version="6.9.3">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.304" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
         <PackageReference Include="MiniExcel" Version="1.42.0" />
-        <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <MauiXaml Update="RegisterPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </MauiXaml>
-        <MauiXaml Update="SignInHistoryPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </MauiXaml>
-        <MauiXaml Update="SignInReportPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </MauiXaml>
-        <MauiXaml Update="TenantManagementPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </MauiXaml>
-    </ItemGroup>
+    </ItemGroup> 
 
 </Project>
