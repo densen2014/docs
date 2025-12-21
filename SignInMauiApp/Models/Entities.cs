@@ -18,6 +18,7 @@ public class User
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public int TenantId { get; set; }
+    public bool IsAdmin { get; internal set; }
 }
 
 public class SignInRecord

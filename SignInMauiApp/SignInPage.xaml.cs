@@ -18,7 +18,7 @@ public partial class SignInPage : ContentPage
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
         _user = user;
         _tenant = tenant;
-        WelcomeLabel.Text = $"欢迎 {_user.Username}，租户：{_tenant.Name}";
+        WelcomeLabel.Text = $"欢迎 {_user.Username}，公司：{_tenant.Name}";
     }
 
     private async void OnSignInClicked(object sender, EventArgs e)
@@ -47,9 +47,9 @@ public partial class SignInPage : ContentPage
             }));
         }
         // 添加租户管理按钮
-        if (ToolbarItems.All(t => t.Text != "租户管理"))
+        if (ToolbarItems.All(t => t.Text != "公司管理"))
         {
-            ToolbarItems.Add(new ToolbarItem("租户管理", null, async () => {
+            ToolbarItems.Add(new ToolbarItem("公司管理", null, async () => {
                 await Navigation.PushAsync(new TenantManagementPage());
             }));
         }

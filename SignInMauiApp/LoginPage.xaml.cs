@@ -14,6 +14,8 @@ public partial class LoginPage : ContentPage
     {
         InitializeComponent();
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
+        // 新增：检查是否需要显示引导页
+        CheckAndShowOnboardingAsync();
         LoadTenants();
     }
 
@@ -21,6 +23,16 @@ public partial class LoginPage : ContentPage
     {
         base.OnAppearing();
         LoadTenants(); // 注册后刷新租户列表
+    }
+
+    private async void CheckAndShowOnboardingAsync()
+    {
+        // 检查本地存储是否已完成引导
+        var onboardingDone = Preferences.Get("OnboardingDone", false);
+        if (!onboardingDone)
+        {
+            await Navigation.PushModalAsync(new OnboardingPage(_fsql));
+        }
     }
 
     private void LoadTenants()

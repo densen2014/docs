@@ -25,10 +25,14 @@ public partial class TenantManagementPage : ContentPage
     private async void OnAddTenantClicked(object sender, EventArgs e)
     {
         var name = NewTenantEntry.Text?.Trim();
-        if (string.IsNullOrEmpty(name)) return;
+        if (string.IsNullOrEmpty(name))
+        {
+            return;
+        }
+
         if (_fsql!.Select<Tenant>().Any(t => t.Name == name))
         {
-            await DisplayAlert("提示", "租户已存在", "确定");
+            await DisplayAlertAsync("提示", "公司已存在", "确定");
             return;
         }
         await _fsql!.Insert(new Tenant { Name = name }).ExecuteAffrowsAsync();
@@ -40,7 +44,7 @@ public partial class TenantManagementPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Tenant tenant)
         {
-            string result = await DisplayPromptAsync("编辑租户", "请输入新名称", initialValue: tenant.Name);
+            string result = await DisplayPromptAsync("编辑公司", "请输入新名称", initialValue: tenant.Name);
             if (!string.IsNullOrEmpty(result) && result != tenant.Name)
             {
                 tenant.Name = result;
@@ -54,7 +58,7 @@ public partial class TenantManagementPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Tenant tenant)
         {
-            if (await DisplayAlert("确认", $"确定删除租户：{tenant.Name}？", "删除", "取消"))
+            if (await DisplayAlertAsync("确认", $"确定删除公司：{tenant.Name}？", "删除", "取消"))
             {
                 await _fsql!.Delete<Tenant>().Where(t => t.Id == tenant.Id).ExecuteAffrowsAsync();
                 LoadTenants();
@@ -64,6 +68,6 @@ public partial class TenantManagementPage : ContentPage
 
     private void OnTenantSelected(object sender, SelectionChangedEventArgs e)
     {
-        // 可扩展：选中租户后显示详情或关联用户
+        // 可扩展：选中公司后显示详情或关联用户
     }
 }

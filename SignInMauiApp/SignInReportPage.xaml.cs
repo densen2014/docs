@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Maui.Storage;
-// 需要在项目中引入 MiniExcel 或 ClosedXML NuGet 包
 using MiniExcelLibs;
 
 namespace SignInMauiApp;
@@ -24,7 +23,7 @@ public partial class SignInReportPage : ContentPage
         StartDatePicker.Date = DateTime.Today.AddDays(-7);
         EndDatePicker.Date = DateTime.Today;
         LoadReport();
-    }
+    } 
 
     private void LoadReport()
     {
