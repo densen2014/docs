@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SignInMauiApp.SignInPage">
     <VerticalStackLayout Padding="30,60" Spacing="20">
+        <Image  HeightRequest="100" WidthRequest="100" Source="logo.jpg" HorizontalOptions="Center" />
         <Label x:Name="WelcomeLabel" FontSize="20" HorizontalOptions="Center" />
-        <Button Text="签到" Clicked="OnSignInClicked" />
+        <Button Text="签到" Clicked="OnSignInClicked"  MaximumWidthRequest="600" />
         <Label x:Name="SignInResultLabel" FontSize="16" TextColor="Green" IsVisible="False" />
     </VerticalStackLayout>
 </ContentPage>
