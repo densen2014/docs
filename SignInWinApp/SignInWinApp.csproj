@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <OutputType>WinExe</OutputType>
+        <TargetFrameworks>net10.0-windows;net48</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
+        <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+        <Copyright>Copyright © 2025 Densen Informatica</Copyright>
+        <Version>0.0.1</Version>
+        <Authors>AlexChow</Authors>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="logo.jpg" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="logo.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="AntdUI" Version="2.2.5" />
+        <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.304" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
+        <PackageReference Include="MiniExcel" Version="1.42.0" />
+        <PackageReference Include="Costura.Fody" Version="6.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="System.Text.Json" Version="10.0.1" />
+    </ItemGroup>
+
+    <ItemGroup> 
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+</Project>

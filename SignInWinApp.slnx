@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SignInMauiApp/SignInMauiApp.csproj" />
+  <Project Path="SignInWinApp/SignInWinApp.csproj" />
+</Solution>
