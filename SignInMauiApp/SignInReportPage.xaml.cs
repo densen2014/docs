@@ -149,52 +149,91 @@ public partial class SignInReportPage : ContentPage
         var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.pdf";
         var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
         var report = _report;
-        // 生成PDF
         var document = Document.Create(container =>
         {
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
                 page.Margin(30);
-                page.Header().Text("Informe del historial de registro de jornada laboral").FontSize(20).Bold().AlignCenter();
-                page.Content().Table(table =>
+                page.Content().Column(col =>
                 {
-                    table.ColumnsDefinition(columns =>
-                    {
-                        columns.ConstantColumn(40); // Día del mes
-                        columns.RelativeColumn(1);  // Mañana Entrada
-                        columns.RelativeColumn(1);  // Tarde Entrada
-                        columns.RelativeColumn(1);  // Mañana Salida
-                        columns.RelativeColumn(1);  // Tarde Salida
-                        columns.RelativeColumn(1.2f); // Total Horas Jornada
-                        columns.RelativeColumn(1.2f); // Horas Ordinarias
-                        columns.RelativeColumn(1.2f); // Horas Complementarias
-                    });
-                    // 多级表头
-                    table.Header(header =>
-                    {
-                        header.Cell().RowSpan(2).Element(CellStyle).Text("Día\ndel\nmes").AlignCenter().Bold();
-                        header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Entrada").AlignCenter().Bold();
-                        header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Salida").AlignCenter().Bold();
-                        header.Cell().RowSpan(2).Element(CellStyle).Text("Total\nHoras\nJornada").AlignCenter().Bold();
-                        header.Cell().RowSpan(2).Element(CellStyle).Text("Horas\nOrdinarias").AlignCenter().Bold();
-                        header.Cell().RowSpan(2).Element(CellStyle).Text("Horas\nComplementarias").AlignCenter().Bold();
+                    // 顶部大标题
+                    col.Item().Element(CellStyle).Text("REGISTRO DIARIO DE JORNADA EN TRABAJADORES A TIEMPO COMPLETO")
+                        .FontSize(12).Bold().AlignCenter();
 
-                        // 第二行
-                        header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
-                        header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
-                        header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
-                        header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
-                    });
-                    // 内容行
-                    for (int i = 1; i <= 31; i++)
+                    // EMPRESA / TRABAJADOR 行
+                    col.Item().Row(row =>
                     {
-                        table.Cell().Element(CellStyle).Text(i.ToString()).AlignCenter();
-                        for (int j = 0; j < 7; j++)
+                        row.RelativeItem().Element(CellStyle).Text("EMPRESA").Bold().AlignCenter();
+                        row.RelativeItem().Element(CellStyle).Text("TRABAJADOR").Bold().AlignCenter();
+                    });
+
+                    // 公司/员工信息行
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem().Element(CellStyleZero).Column(c =>
                         {
-                            table.Cell().Element(CellStyle).Text(""); // 其余单元格留空或填数据
+                            c.Item().Element(CellStyle).Text("Nombre o Razón Social:");
+                            c.Item().Element(CellStyle).Text("CIF:");
+                            c.Item().Element(CellStyle).Text("C.C.C.:");
+                        });
+                        row.RelativeItem().Element(CellStyleZero).Column(c =>
+                        {
+                            c.Item().Element(CellStyle).Text("Nombre:");
+                            c.Item().Element(CellStyle).Text("NIF:");
+                            c.Item().Element(CellStyle).Text("NAF:");
+                        });
+                    });
+
+                    // 结算周期行
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem(1.5F).Element(CellStyle).Text("Período de liquidación:").Bold();
+                        row.RelativeItem(3).Element(CellStyle).Text("1 al --- de ------- de 20--");
+                        row.RelativeItem(1.5F).Element(CellStyle).Text("Fecha:").Bold();
+                        row.RelativeItem(3).Element(CellStyle).Text("--- de ---------- de 20--");
+                    });
+
+                    // 表格
+                    col.Item().Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(40); // Día del mes
+                            columns.RelativeColumn(1);  // Mañana Entrada
+                            columns.RelativeColumn(1);  // Tarde Entrada
+                            columns.RelativeColumn(1);  // Mañana Salida
+                            columns.RelativeColumn(1);  // Tarde Salida
+                            columns.RelativeColumn(1.2f); // Total Horas Jornada
+                            columns.RelativeColumn(1.2f); // Horas Ordinarias
+                            columns.RelativeColumn(1.2f); // Horas Complementarias
+                        });
+                        // 多级表头
+                        table.Header(header =>
+                        {
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Día\ndel\nmes").AlignCenter().Bold();
+                            header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Entrada").AlignCenter().Bold();
+                            header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Salida").AlignCenter().Bold();
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Total\nHoras\nJornada").AlignCenter().Bold();
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Horas\nOrdinarias").AlignCenter().Bold();
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Horas\nComplementarias").AlignCenter().Bold();
+
+                            // 第二行
+                            header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
+                        });
+                        // 内容行
+                        for (int i = 1; i <= 31; i++)
+                        {
+                            table.Cell().Element(CellStyle).Text(i.ToString()).AlignCenter();
+                            for (int j = 0; j < 7; j++)
+                            {
+                                table.Cell().Element(CellStyle).Text(""); // 其余单元格留空或填数据
+                            }
                         }
-                    }
+                    });
                 });
                 page.Footer().AlignCenter().Text(x =>
                 {
@@ -222,9 +261,12 @@ public partial class SignInReportPage : ContentPage
             await DisplayAlertAsync("Error", ex.Message, "OK");
         }
         static IContainer CellStyle(IContainer container) =>
-            container
-                .PaddingVertical(0)
-                .PaddingHorizontal(0)
+            container 
+                .Border(1)
+                .BorderColor(Colors.Black)
+                .Padding(2);
+        static IContainer CellStyleZero(IContainer container) =>
+            container 
                 .Border(1)
                 .BorderColor(Colors.Black);
 #else
