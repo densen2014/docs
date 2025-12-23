@@ -143,7 +143,7 @@ public partial class SignInReportPage : ContentPage
 #if ANDROID || WINDOWS || MACCATALYST
         if (_report.Count == 0)
         {
-            await DisplayAlertAsync("提示", "无数据可导出", "确定");
+            await DisplayAlertAsync("Aviso", "No hay datos para exportar", "OK");
             return;
         }
         var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.pdf";
@@ -154,43 +154,59 @@ public partial class SignInReportPage : ContentPage
         {
             container.Page(page =>
             {
+                page.Size(PageSizes.A4);
                 page.Margin(30);
                 page.Header().Text("Informe del historial de registro de jornada laboral").FontSize(20).Bold().AlignCenter();
                 page.Content().Table(table =>
                 {
                     table.ColumnsDefinition(columns =>
                     {
-                        columns.ConstantColumn(80); // 用户名
-                        columns.ConstantColumn(80); // 公司
-                        columns.ConstantColumn(80); // 类型
-                        columns.RelativeColumn();   // 时间
+                        columns.ConstantColumn(40); // Día del mes
+                        columns.RelativeColumn(1);  // Mañana Entrada
+                        columns.RelativeColumn(1);  // Tarde Entrada
+                        columns.RelativeColumn(1);  // Mañana Salida
+                        columns.RelativeColumn(1);  // Tarde Salida
+                        columns.RelativeColumn(1.2f); // Total Horas Jornada
+                        columns.RelativeColumn(1.2f); // Horas Ordinarias
+                        columns.RelativeColumn(1.2f); // Horas Complementarias
                     });
+                    // 多级表头
                     table.Header(header =>
                     {
-                        header.Cell().Element(CellStyle).Text("Usuario");
-                        header.Cell().Element(CellStyle).Text("Compañía");
-                        header.Cell().Element(CellStyle).Text("Tipo");
-                        header.Cell().Element(CellStyle).Text("Hora");
+                        header.Cell().RowSpan(2).Element(CellStyle).Text("Día\ndel\nmes").AlignCenter().Bold();
+                        header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Entrada").AlignCenter().Bold();
+                        header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Salida").AlignCenter().Bold();
+                        header.Cell().RowSpan(2).Element(CellStyle).Text("Total\nHoras\nJornada").AlignCenter().Bold();
+                        header.Cell().RowSpan(2).Element(CellStyle).Text("Horas\nOrdinarias").AlignCenter().Bold();
+                        header.Cell().RowSpan(2).Element(CellStyle).Text("Horas\nComplementarias").AlignCenter().Bold();
+
+                        // 第二行
+                        header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
+                        header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
+                        header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
+                        header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
                     });
-                    foreach (var item in report)
+                    // 内容行
+                    for (int i = 1; i <= 31; i++)
                     {
-                        table.Cell().Element(CellStyle).Text(item.Username);
-                        table.Cell().Element(CellStyle).Text(item.TenantName);
-                        table.Cell().Element(CellStyle).Text(item.SignType.ToString());
-                        table.Cell().Element(CellStyle).Text(item.SignInTime?.ToString("yyyy-MM-dd HH:mm:ss"));
+                        table.Cell().Element(CellStyle).Text(i.ToString()).AlignCenter();
+                        for (int j = 0; j < 7; j++)
+                        {
+                            table.Cell().Element(CellStyle).Text(""); // 其余单元格留空或填数据
+                        }
                     }
                 });
                 page.Footer().AlignCenter().Text(x =>
                 {
-                    x.Span("Hora de exportación: ");
+                    x.Span("Fecha de exportación: ");
                     x.Span(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                }); 
+                });
             });
         });
         document.GeneratePdf(filePath);
         if (!File.Exists(filePath))
         {
-            await DisplayAlertAsync("错误", "PDF未生成，无法分享", "确定");
+            await DisplayAlertAsync("Error", "El PDF no se generó, no se puede compartir", "OK");
             return;
         }
         try
@@ -203,13 +219,17 @@ public partial class SignInReportPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("错误", ex.Message, "确定");
+            await DisplayAlertAsync("Error", ex.Message, "OK");
         }
-        static IContainer CellStyle(IContainer container) => container.PaddingVertical(2).PaddingHorizontal(4).BorderBottom(1).BorderColor(Colors.Grey.Lighten2);
+        static IContainer CellStyle(IContainer container) =>
+            container
+                .PaddingVertical(0)
+                .PaddingHorizontal(0)
+                .Border(1)
+                .BorderColor(Colors.Black);
 #else
-        await DisplayAlertAsync("提示", "当前平台暂不支持PDF导出", "确定");
+    await DisplayAlertAsync("Aviso", "La exportación a PDF no es compatible en esta plataforma", "OK");
 #endif
-
     }
 
     public async Task ShareText(string text)
