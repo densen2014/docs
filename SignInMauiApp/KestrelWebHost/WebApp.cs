@@ -30,12 +30,12 @@ public partial class WebApp
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Servicio de check-in</title>
+    <title>Registro de jornada laboral</title>
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
 </head>
 <body>
     <div class='container mt-5'>
-        <h1 class='text-center'>Servicio de check-in</h1>
+        <h1 class='text-center'>Registro de jornada laboral</h1>
         <form id='productForm' class='mt-4'>
             <div class='mb-3'>
                 <label for='username' class='form-label'>Nombre</label>

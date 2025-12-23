@@ -10,6 +10,12 @@ public class Tenant
     [Column(IsIdentity = true, IsPrimary = true)]
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
+
+    public string? TaxNumber { get; set; }  
+
+    public string? Account { get; set; }
+
+    public string? Phone { get; set; }  
 }
 
 public class User
@@ -18,6 +24,9 @@ public class User
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+    public string? Name { get; set; }
+    public string? TaxNumber { get; set; } 
+    public string? Phone { get; set; }
     public int TenantId { get; set; }
     public bool IsAdmin { get; internal set; }
 }
@@ -63,10 +72,45 @@ public class SignInRecord
 public class SignInReportItem
 {
     public string? Username { get; set; }
-    public string? TenantName { get; set; }
-    public SignTypeEnum SignType { get; set; }
+    public string? TenantName { get; set; } 
     public DateTime? SignInTime { get; set; }
-    public DateTime? SignOutTime { get; set; }
+    public DateTime? SignOutTime { get; set; } 
+    public string? TaxNumber { get; set; }
+
+    /// <summary>
+    /// 上午签到时间
+    /// </summary>
+    public DateTime? MorningSignInTime { get; set; } // 上午签到时间
+
+    /// <summary>
+    /// 上午签出时间
+    /// </summary>
+    public DateTime? MorningSignOutTime { get; set; } // 上午签出时间
+
+    /// <summary>
+    /// 下午签到时间
+    /// </summary>
+    public DateTime? AfternoonSignInTime { get; set; } // 下午签到时间
+
+    /// <summary>
+    /// 下午签出时间
+    /// </summary>
+    public DateTime? AfternoonSignOutTime { get; set; } // 下午签出时间
+
+    /// <summary>
+    /// 当日总工作时长
+    /// </summary>
+    public TimeSpan? TotalWorkDuration { get; set; } // 当日总工作时长
+
+    /// <summary>
+    /// 正常工时
+    /// </summary>
+    public TimeSpan? NormalWorkDuration { get; set; } // 正常工时
+
+    /// <summary>
+    /// 补充工时
+    /// </summary>
+    public TimeSpan? ExtraWorkDuration { get; set; } // 补充工时
 }
 
 public class SignInWeb

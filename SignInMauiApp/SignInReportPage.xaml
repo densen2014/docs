@@ -6,6 +6,8 @@
         <VerticalStackLayout Padding="20,30" Spacing="10">
             <Label Text="签到历史报表" FontSize="22" HorizontalOptions="Center" />
             <HorizontalStackLayout Spacing="10">
+                <Label Text="员工名称" VerticalOptions="Center" />
+                <Picker x:Name="UsernamePicker" WidthRequest="120" />
                 <DatePicker x:Name="StartDatePicker" />
                 <Label Text="至" VerticalOptions="Center" />
                 <DatePicker x:Name="EndDatePicker" />

@@ -1,6 +1,5 @@
 ﻿using MiniExcelLibs;
 using SignInMauiApp.Models;
-using System.Text;
 using IContainer = QuestPDF.Infrastructure.IContainer;
 using Colors = QuestPDF.Helpers.Colors;
 
@@ -22,27 +21,86 @@ public partial class SignInReportPage : ContentPage
     {
         InitializeComponent();
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
-        StartDatePicker.Date = DateTime.Today;
-        EndDatePicker.Date = DateTime.Today;
+        StartDatePicker.Date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+        EndDatePicker.Date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+        LoadUsernames();
         LoadReport();
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+    }
+
+    private void LoadUsernames()
+    {
+        var users = _fsql!.Select<User>().ToList();
+        UsernamePicker.ItemsSource = users.Select(u => u.Username).Distinct().ToList();
+        UsernamePicker.SelectedIndex = 0;
     }
 
     private void LoadReport()
     {
         var start = StartDatePicker.Date;
         var end = EndDatePicker.Date!.Value.AddDays(1);
-        _report = _fsql!.Select<SignInRecord, User, Tenant>()
+        var selectedUsername = UsernamePicker.SelectedItem as string;
+        var records = _fsql!.Select<SignInRecord, User, Tenant>()
             .LeftJoin((r, u, t) => r.UserId == u.Id)
             .LeftJoin((r, u, t) => r.TenantId == t.Id)
-            .Where((r, u, t) => r.SignInTime >= start && r.SignInTime <= end)
-            .ToList((r, u, t) => new SignInReportItem()
-            {
-                Username = u.Username,
+            .Where((r, u, t) => r.SignInTime >= start && r.SignInTime < end)
+            .ToList((r, u, t) => new {
+                r.UserId,
+                Username = string.IsNullOrEmpty(u.Name) ? u.Username : u.Name,
+                u.TaxNumber,        
                 TenantName = t.Name,
-                SignInTime = r.SignInTime,
-                SignType = r.SignType,
+                r.SignInTime,
+                r.SignType
             });
+        if (!string.IsNullOrEmpty(selectedUsername))
+        {
+            records = records.Where(x => x.Username == selectedUsername).ToList();
+        }
+        _report = records
+            .GroupBy(x => new { x.UserId, Date = x.SignInTime?.Date })
+            .Select(g =>
+            {
+                var items = g.OrderBy(x => x.SignInTime).ToList();
+                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour < 12)?.SignInTime;
+                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.Hour < 12)?.SignInTime;
+                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour >= 12)?.SignInTime;
+                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.Hour >= 12)?.SignInTime;
+                // 计算工时
+                TimeSpan? total = null;
+                if (morningSignIn.HasValue && morningSignOut.HasValue && morningSignOut > morningSignIn)
+                {
+                    total = (morningSignOut - morningSignIn);
+                }
+
+                if (afternoonSignIn.HasValue && afternoonSignOut.HasValue && afternoonSignOut > afternoonSignIn)
+                {
+                    total = (total ?? TimeSpan.Zero) + (afternoonSignOut - afternoonSignIn);
+                }
+                // 正常工时8小时，补充工时为超出部分
+                TimeSpan normal = TimeSpan.FromHours(8);
+                TimeSpan? extra = null;
+                if (total.HasValue)
+                {
+                    extra = total > normal ? total - normal : TimeSpan.Zero;
+                }
+
+                return new SignInReportItem
+                {
+                    Username = items.First().Username,
+                    TenantName = items.First().TenantName,
+                    MorningSignInTime = morningSignIn,
+                    MorningSignOutTime = morningSignOut,
+                    AfternoonSignInTime = afternoonSignIn,
+                    AfternoonSignOutTime = afternoonSignOut,
+                    TotalWorkDuration = total,
+                    NormalWorkDuration = total.HasValue ? (total > normal ? normal : total) : null,
+                    ExtraWorkDuration = extra,
+                    SignInTime = items.FirstOrDefault()?.SignInTime,
+                    SignOutTime = items.LastOrDefault()?.SignInTime
+                };
+            })
+            .OrderByDescending(x => x.MorningSignInTime ?? x.AfternoonSignInTime)
+            .ToList();
         ReportCollectionView.ItemsSource = _report;
     }
 
@@ -58,7 +116,7 @@ public partial class SignInReportPage : ContentPage
             await DisplayAlertAsync("提示", "无数据可导出", "确定");
             return;
         }
-        var fileName = $"签到报表_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+        var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
         var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
         await MiniExcel.SaveAsAsync(filePath, _report);
         if (!File.Exists(filePath))
@@ -70,7 +128,7 @@ public partial class SignInReportPage : ContentPage
         {
             await Share.RequestAsync(new ShareFileRequest
             {
-                Title = "导出签到报表",
+                Title = "Exportar informe",
                 File = new ShareFile(filePath),
             });
         }
@@ -88,7 +146,7 @@ public partial class SignInReportPage : ContentPage
             await DisplayAlertAsync("提示", "无数据可导出", "确定");
             return;
         }
-        var fileName = $"签到报表_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+        var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.pdf";
         var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
         var report = _report;
         // 生成PDF
@@ -97,7 +155,7 @@ public partial class SignInReportPage : ContentPage
             container.Page(page =>
             {
                 page.Margin(30);
-                page.Header().Text("签到历史报表").FontSize(20).Bold().AlignCenter();
+                page.Header().Text("Informe del historial de registro de jornada laboral").FontSize(20).Bold().AlignCenter();
                 page.Content().Table(table =>
                 {
                     table.ColumnsDefinition(columns =>
@@ -109,10 +167,10 @@ public partial class SignInReportPage : ContentPage
                     });
                     table.Header(header =>
                     {
-                        header.Cell().Element(CellStyle).Text("用户名");
-                        header.Cell().Element(CellStyle).Text("公司");
-                        header.Cell().Element(CellStyle).Text("类型");
-                        header.Cell().Element(CellStyle).Text("时间");
+                        header.Cell().Element(CellStyle).Text("Usuario");
+                        header.Cell().Element(CellStyle).Text("Compañía");
+                        header.Cell().Element(CellStyle).Text("Tipo");
+                        header.Cell().Element(CellStyle).Text("Hora");
                     });
                     foreach (var item in report)
                     {
@@ -124,7 +182,7 @@ public partial class SignInReportPage : ContentPage
                 });
                 page.Footer().AlignCenter().Text(x =>
                 {
-                    x.Span("导出时间: ");
+                    x.Span("Hora de exportación: ");
                     x.Span(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 }); 
             });
@@ -139,7 +197,7 @@ public partial class SignInReportPage : ContentPage
         {
             await Share.RequestAsync(new ShareFileRequest
             {
-                Title = "导出签到报表PDF",
+                Title = "Exportar informe en PDF",
                 File = new ShareFile(filePath),
             });
         }
