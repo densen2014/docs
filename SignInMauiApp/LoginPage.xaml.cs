@@ -1,7 +1,7 @@
-﻿using Microsoft.Maui.Controls;
+﻿using FreeSql;
+using KestrelWebHost;
+using QRCoder;
 using SignInMauiApp.Models;
-using FreeSql;
-using Microsoft.Maui.Storage;
 
 namespace SignInMauiApp;
 
@@ -9,6 +9,7 @@ public partial class LoginPage : ContentPage
 {
     private readonly IFreeSql? _fsql;
     private List<Tenant> _tenants = new();
+    private string qrLink = "";
 
     public LoginPage()
     {
@@ -17,6 +18,27 @@ public partial class LoginPage : ContentPage
         // 新增：检查是否需要显示引导页
         CheckAndShowOnboardingAsync();
         LoadTenants();
+        GenerateAndShowQRCode();
+        // 订阅 OnPlayControl 回调
+        WebApp.OnControl = async signInWeb =>
+        {
+            var res = string.Empty;
+            res = await OnsigninWeb(signInWeb);
+            return res;
+        };
+
+    }
+
+    private void GenerateAndShowQRCode()
+    {
+        qrLink = $"http://{App.WebHostParameters.ServerIpEndpoint?.Address}:{App.WebHostParameters.ServerIpEndpoint?.Port}"; // 可自定义内容
+        using (var qrGenerator = new QRCodeGenerator())
+        using (var qrCodeData = qrGenerator.CreateQrCode(qrLink, QRCodeGenerator.ECCLevel.Q))
+        using (var qrCode = new PngByteQRCode(qrCodeData))
+        {
+            var qrBytes = qrCode.GetGraphic(20);
+            ImageQR.Source = ImageSource.FromStream(() => new MemoryStream(qrBytes));
+        }
     }
 
     protected override void OnAppearing()
@@ -64,12 +86,15 @@ public partial class LoginPage : ContentPage
     private async void OnLoginClicked(object sender, EventArgs e)
     {
         ErrorLabel.IsVisible = false;
+        SignInResultLabel.IsVisible = false;
+        ErrorLabel.Text = "";
         var username = UsernameEntry.Text?.Trim();
         var password = PasswordEntry.Text;
         var tenantIdx = TenantPicker.SelectedIndex;
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
         {
             ErrorLabel.Text = "请填写完整信息";
+            SignInResultLabel.Text = "";
             ErrorLabel.IsVisible = true;
             return;
         }
@@ -78,6 +103,7 @@ public partial class LoginPage : ContentPage
         if (user == null)
         {
             ErrorLabel.Text = "用户名或密码错误";
+            SignInResultLabel.Text = "";
             ErrorLabel.IsVisible = true;
             return;
         }
@@ -86,6 +112,60 @@ public partial class LoginPage : ContentPage
         Preferences.Set("LastUsername", username);
         // 登录成功，跳转到签到页面
         await Navigation.PushAsync(new SignInPage(user, _tenants[tenantIdx]));
+    }
+
+    private async Task<string> OnsigninWeb(SignInWeb signInWeb)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            ErrorLabel.IsVisible = false;
+            SignInResultLabel.IsVisible = false;
+        });
+        var username = signInWeb.Username.Trim();
+        var password = signInWeb.Password;
+        var tenantIdx = TenantPicker.SelectedIndex;
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
+        {
+            MainThread.BeginInvokeOnMainThread(() => {
+             ErrorLabel.Text = "请填写完整信息";
+            SignInResultLabel.Text = "";
+            ErrorLabel.IsVisible = true;
+            });
+            return "Por favor complete la información completa";
+        }
+        var tenantId = _tenants[tenantIdx].Id;
+        var user = _fsql!.Select<User>().Where(u => u.Username == username && u.Password == password && u.TenantId == tenantId).First();
+        if (user == null)
+        {
+            MainThread.BeginInvokeOnMainThread(() => {
+                ErrorLabel.Text = "用户名或密码错误";
+                SignInResultLabel.Text = "";
+                ErrorLabel.IsVisible = true;
+            });
+            return "Nombre de usuario o contraseña incorrectos";
+        }
+        var record = new SignInRecord
+        {
+            UserId = user.Id,
+            TenantId = tenantId,
+        };
+        if (signInWeb.Action == "signin")
+        {
+            record.SignInTime = DateTime.Now;
+            record.SignType = SignTypeEnum.SignInWork;
+        }
+        else
+        {
+            record.SignInTime = DateTime.Now;
+            record.SignType = SignTypeEnum.SignOutWork;
+        }
+        await _fsql!.Insert(record).ExecuteAffrowsAsync();
+        MainThread.BeginInvokeOnMainThread(() => {
+            SignInResultLabel.Text = $"{(signInWeb.Action == "signin" ? "签到" : "签出")}成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
+            ErrorLabel.Text = "";
+            SignInResultLabel.IsVisible = true;
+        });
+        return $"{(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")} ：{record.SignInTime:dd/MM/yyyy HH:mm:ss}"; ;
     }
 
     private async void OnRegisterClicked(object sender, EventArgs e)
@@ -131,4 +211,9 @@ public partial class LoginPage : ContentPage
         shortcut.GetType().InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
     }
 #endif
+
+    private async void OnImageQRTapped(object sender, EventArgs e)
+    {
+        await Launcher.Default.OpenAsync(qrLink);
+    }
 }

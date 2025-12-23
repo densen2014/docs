@@ -82,6 +82,16 @@
         <PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
         <PackageReference Include="MiniExcel" Version="1.42.0" />
-    </ItemGroup> 
-
+        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.3.0" />
+        <PackageReference Include="QRCoder" Version="1.7.0" />
+        <PackageReference Include="QuestPDF" Version="2025.12.0" />
+        <PackageReference Include="Xamarinme.Configuration" Version="1.0.2" />
+        <PackageReference Include="Xamarinme.WebHostPatch" Version="1.0.0" />
+        <PackageReference Include="System.Runtime.Caching" Version="9.0.4" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <EmbeddedResource Include="appsettings.json" />
+    </ItemGroup>
+    
 </Project>

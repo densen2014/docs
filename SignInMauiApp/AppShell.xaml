@@ -7,7 +7,7 @@
     Title="SignInMauiApp">
 
     <ShellContent
-        Title="登录"
+        Title="Sistema electrónico de fichaje"
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage" />
 

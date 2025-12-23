@@ -4,8 +4,9 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using Microsoft.Extensions.Logging;
 using FreeSql;
+using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace SignInMauiApp;
 
@@ -13,6 +14,9 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()

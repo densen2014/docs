@@ -23,10 +23,28 @@ public partial class SignInPage : ContentPage
         {
             UserId = _user.Id,
             TenantId = _tenant.Id,
-            SignInTime = DateTime.Now
+            SignInTime = DateTime.Now,
+            SignType = SignTypeEnum.SignInWork
         };
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
         SignInResultLabel.Text = $"签到成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
+        SignInResultLabel.IsVisible = true;
+        // 跳转到签到历史页面
+        await Navigation.PushAsync(new SignInHistoryPage(_user, _tenant));
+    }
+    
+
+    private async void OnSignOutClicked(object sender, EventArgs e)
+    {
+        var record = new SignInRecord
+        {
+            UserId = _user.Id,
+            TenantId = _tenant.Id,
+            SignInTime = DateTime.Now,
+            SignType = SignTypeEnum.SignOutWork
+        };
+        await _fsql!.Insert(record).ExecuteAffrowsAsync();
+        SignInResultLabel.Text = $"签出成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
         SignInResultLabel.IsVisible = true;
         // 跳转到签到历史页面
         await Navigation.PushAsync(new SignInHistoryPage(_user, _tenant));

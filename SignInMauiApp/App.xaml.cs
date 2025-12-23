@@ -4,16 +4,25 @@
 // e-mail:zhouchuanglin@gmail.com 
 // **********************************
 
-using Microsoft.Extensions.DependencyInjection;
+using KestrelWebHost;
+using MauiWebApi;
+using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 
 namespace SignInMauiApp;
 
 public partial class App : Application
 {
+    [NotNull]
+    public static IWebHost? Host { get; set; }
+    public static WebHostParameters WebHostParameters { get; set; } = new WebHostParameters();
+
     public App()
     {
         InitializeComponent();
         InitializeData();
+        Task.Run(InitializeWebHostAsync);
     }
 
     private void InitializeData()
@@ -34,5 +43,26 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState? activationState)
     {
         return new Window(new AppShell());
+    }
+
+    private async Task InitializeWebHostAsync()
+    {
+        try
+        {
+            var ip = NetworkHelper.GetIpAddress() ?? IPAddress.Loopback; 
+            WebHostParameters.ServerIpEndpoint = new IPEndPoint(ip, 5001);
+
+            Log($"监听地址: {WebHostParameters.ServerIpEndpoint}");
+            await KestrelWebHost.WebHostProgram.WebHostMain(WebHostParameters);
+        }
+        catch (Exception ex)
+        {
+            Log($"######## EXCEPTION: {ex.Message}");
+        }
+    }
+
+    private void Log(string message)
+    {
+        System.Diagnostics.Debug.WriteLine($"[App] {message}");
     }
 }
