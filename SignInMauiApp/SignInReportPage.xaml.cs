@@ -49,6 +49,7 @@ public partial class SignInReportPage : ContentPage
                 Username = string.IsNullOrEmpty(u.Name) ? u.Username : u.Name,
                 u.TaxNumber,        
                 TenantName = t.Name,
+                TenantTaxNumber = t.TaxNumber,
                 r.SignInTime,
                 r.SignType
             });
@@ -61,10 +62,10 @@ public partial class SignInReportPage : ContentPage
             .Select(g =>
             {
                 var items = g.OrderBy(x => x.SignInTime).ToList();
-                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour < 12)?.SignInTime;
-                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.Hour < 12)?.SignInTime;
-                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour >= 12)?.SignInTime;
-                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.Hour >= 12)?.SignInTime;
+                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour < 14)?.SignInTime;
+                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.Hour < 14)?.SignInTime;
+                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour >= 14)?.SignInTime;
+                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.Hour >= 14)?.SignInTime;
                 // 计算工时
                 TimeSpan? total = null;
                 if (morningSignIn.HasValue && morningSignOut.HasValue && morningSignOut > morningSignIn)
@@ -87,7 +88,9 @@ public partial class SignInReportPage : ContentPage
                 return new SignInReportItem
                 {
                     Username = items.First().Username,
+                    TaxNumber= items.First().TaxNumber,
                     TenantName = items.First().TenantName,
+                    TenantTaxNumber= items.First().TenantTaxNumber,
                     MorningSignInTime = morningSignIn,
                     MorningSignOutTime = morningSignOut,
                     AfternoonSignInTime = afternoonSignIn,
@@ -171,16 +174,17 @@ public partial class SignInReportPage : ContentPage
                     // 公司/员工信息行
                     col.Item().Row(row =>
                     {
+                        var first = report.FirstOrDefault();
                         row.RelativeItem().Element(CellStyleZero).Column(c =>
                         {
-                            c.Item().Element(CellStyle).Text("Nombre o Razón Social:");
-                            c.Item().Element(CellStyle).Text("CIF:");
+                            c.Item().Element(CellStyle).Text($"Nombre o Razón Social: {first?.TenantName ?? ""}");
+                            c.Item().Element(CellStyle).Text($"CIF: {first?.TenantTaxNumber ?? ""}");
                             c.Item().Element(CellStyle).Text("C.C.C.:");
                         });
                         row.RelativeItem().Element(CellStyleZero).Column(c =>
                         {
-                            c.Item().Element(CellStyle).Text("Nombre:");
-                            c.Item().Element(CellStyle).Text("NIF:");
+                            c.Item().Element(CellStyle).Text($"Nombre: {first?.Username ?? ""}");
+                            c.Item().Element(CellStyle).Text($"NIF: {first?.TaxNumber ?? ""}");
                             c.Item().Element(CellStyle).Text("NAF:");
                         });
                     });
@@ -189,9 +193,9 @@ public partial class SignInReportPage : ContentPage
                     col.Item().Row(row =>
                     {
                         row.RelativeItem(1.5F).Element(CellStyle).Text("Período de liquidación:").Bold();
-                        row.RelativeItem(3).Element(CellStyle).Text("1 al --- de ------- de 20--");
+                        row.RelativeItem(3).Element(CellStyle).Text($"{StartDatePicker.Date:dd} al {EndDatePicker.Date:dd} de {EndDatePicker.Date:MM} de {EndDatePicker.Date:yyyy}").AlignCenter();
                         row.RelativeItem(1.5F).Element(CellStyle).Text("Fecha:").Bold();
-                        row.RelativeItem(3).Element(CellStyle).Text("--- de ---------- de 20--");
+                        row.RelativeItem(3).Element(CellStyle).Text($"{DateTime.Now:dd} de {DateTime.Now:MM} de {DateTime.Now:yyyy}").AlignCenter();
                     });
 
                     // 表格
@@ -227,11 +231,20 @@ public partial class SignInReportPage : ContentPage
                         // 内容行
                         for (int i = 1; i <= 31; i++)
                         {
+                            // 查找当天的数据
+                            var item = report.FirstOrDefault(x =>
+                                (x.MorningSignInTime?.Day == i) ||
+                                (x.AfternoonSignInTime?.Day == i)
+                            );
+
                             table.Cell().Element(CellStyle).Text(i.ToString()).AlignCenter();
-                            for (int j = 0; j < 7; j++)
-                            {
-                                table.Cell().Element(CellStyle).Text(""); // 其余单元格留空或填数据
-                            }
+                            table.Cell().Element(CellStyle).Text(item?.MorningSignInTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.MorningSignOutTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.AfternoonSignInTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.AfternoonSignOutTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.TotalWorkHoursDisplay).AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.NormalWorkHoursDisplay).AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.ExtraWorkHoursDisplay).AlignCenter();
                         }
                     });
                 });
