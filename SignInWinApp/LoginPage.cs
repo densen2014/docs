@@ -106,7 +106,10 @@ public partial class LoginPage: AntdUI.Window
 
     private async void OnRegisterClicked(object? sender, EventArgs e)
     {
-        //await Navigation.PushAsync(new RegisterPage());
+        var registerPage = new RegisterPage();
+        Hide();
+        registerPage.ShowDialog();
+        Show();
     }
 
     private async void CheckAndCreateDesktopShortcutAsync()

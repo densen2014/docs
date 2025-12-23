@@ -1,5 +1,5 @@
-﻿using AntdUI;
-using SignInMauiApp.Models;
+﻿using SignInMauiApp.Models;
+using MenuItem = AntdUI.MenuItem;
 
 namespace SignInWinApp;
 
@@ -34,46 +34,51 @@ public partial class SignInPage: AntdUI.Window
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
         SignInResultLabel.Text = $"签到成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
         SignInResultLabel.Visible = true;
+        Hide();
         // 跳转到签到历史页面
-        //await Navigation.PushAsync(new SignInHistoryPage(_user, _tenant));
+        var signInHistoryPage=new SignInHistoryPage(_user, _tenant);
+        signInHistoryPage.ShowDialog();
+        Show();
     }
 
     protected void OnAppearing()
     {
-        // 添加退出登录按钮
-        //if (ToolbarItems.Items.All(t => t.Text != "退出登录"))
-        //{
-        //    ToolbarItems.Items.Add(new TagTabCollection(new TabHeader(){Text ="退出登录", onclu async () =>
-        //    {
-        //        await Navigation.PopToRootAsync();
-        //    }));
-        //}
-        // 添加租户管理按钮
-        //if (ToolbarItems.Items.All(t => t.Text != "公司管理"))
-        //{
-        //    ToolbarItems.Add(new ToolbarItem("公司管理", null, async () =>
-        //    {
-        //        await Navigation.PushAsync(new TenantManagementPage());
-        //    }));
-        //}
-        //// 添加签到报表按钮（仅管理员可见，这里假设用户名为admin为管理员）
-        //if (_user.Username == "admin" && ToolbarItems.Items.All(t => t.Text != "签到报表"))
-        //{
-        //    ToolbarItems.Add(new ToolbarItem("签到报表", null, async () =>
-        //    {
-        //        await Navigation.PushAsync(new SignInReportPage());
-        //    }));
-        //}
+        //添加退出登录按钮
+        var exitMenu = new MenuItem("退出登录");
+        MenuTop.Items.Add(exitMenu); 
+        // 添加签到报表按钮（仅管理员可见，这里假设用户名为admin为管理员）
+        if (_user.Username == "admin")
+        {
+            //添加租户管理按钮
+            var tenantMenu = new MenuItem("公司管理");
+            MenuTop.Items.Add(tenantMenu); 
+            var reportMenu = new MenuItem("签到报表");
+            MenuTop.Items.Add(reportMenu); 
+        }
+        MenuTop.SelectChanged += (s, e) =>
+        {
+            var selectedItem = MenuTop.SelectItem;
+            if (selectedItem != null)
+            {
+                if (selectedItem.Text == "退出登录")
+                {
+                    //关闭当前窗口，返回登录页面
+                    this.Close();
+                }
+                else if (selectedItem.Text == "签到报表")
+                {
+                    //打开签到报表页面
+                    var reportPage = new SignInReportPage();
+                    reportPage.Show();
+                }
+                else if (selectedItem.Text == "公司管理")
+                {
+                    //打开租户管理页面
+                    var tenantPage = new TenantManagementPage();
+                    tenantPage.Show();
+                }
+            }
+        };
     }
-
-    private void ToolbarItems_TabChanged(object sender, TabChangedEventArgs e)
-    {
-        //if (e.Index == 0)
-        //{
-        //    new TenantManagementPage();
-        //}else if (e.Index == 1)
-        //{
-        //    new SignInReportPage();
-        //}
-    }
+     
 }

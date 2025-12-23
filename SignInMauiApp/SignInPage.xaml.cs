@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Controls;
-using SignInMauiApp.Models;
-using FreeSql;
-using System.Diagnostics.CodeAnalysis;
+﻿using SignInMauiApp.Models;
 
 namespace SignInMauiApp;
 

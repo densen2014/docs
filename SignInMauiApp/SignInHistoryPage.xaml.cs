@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using SignInMauiApp.Models;
-using FreeSql;
+﻿using SignInMauiApp.Models;
 
 namespace SignInMauiApp;
 

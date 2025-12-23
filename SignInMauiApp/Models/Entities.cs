@@ -1,4 +1,5 @@
 ﻿using FreeSql.DataAnnotations;
+using System.ComponentModel;
 
 namespace SignInMauiApp.Models;
 
@@ -23,9 +24,16 @@ public class User
 
 public class SignInRecord
 {
+    [DisplayName("记录ID")]
     [Column(IsIdentity = true, IsPrimary = true)]
     public int Id { get; set; }
+
+    [DisplayName("用户ID")]
     public int UserId { get; set; }
+
+    [DisplayName("租户ID")]
     public int TenantId { get; set; }
+
+    [DisplayName("签到时间")]
     public DateTime SignInTime { get; set; }
 }

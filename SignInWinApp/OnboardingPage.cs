@@ -16,7 +16,7 @@ public partial class OnboardingPage : AntdUI.Window
     private Input _firstUserEntry;
     private Input _firstUserPassEntry;
     private Button _submitButton;
-    private StackPanel Content;
+    private StackPanel VerticalStackLayout;
     private PageHeader? Header;
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -124,7 +124,7 @@ public partial class OnboardingPage : AntdUI.Window
             TextAlign = ContentAlignment.MiddleCenter,
             Size = size
         };
-        Content = new StackPanel
+        VerticalStackLayout = new StackPanel
         {
             Vertical = true,
             Padding = new Padding(30),
@@ -140,10 +140,10 @@ public partial class OnboardingPage : AntdUI.Window
                 _tenantEntry,
                 _labelHeader,
                 ];
-        Content.Controls.AddRange(controls);
+        VerticalStackLayout.Controls.AddRange(controls);
 
 
-        Controls.Add(Content);
+        Controls.Add(VerticalStackLayout);
         ResumeLayout(false);
 
         _fsql = fsql;

@@ -1,9 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using System;
-using System.Threading.Tasks;
-using Microsoft.Maui.Storage;
-using FreeSql;
-using SignInMauiApp.Models;
+﻿using SignInMauiApp.Models;
 
 namespace SignInMauiApp;
 

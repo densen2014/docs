@@ -30,15 +30,13 @@ namespace SignInWinApp
         /// </summary>
         private void InitializeComponent()
         {
-            var tagTabItem4 = new TagTabItem();
-            var tagTabItem5 = new TagTabItem();
-            var tagTabItem6 = new TagTabItem();
             lblResult = new AntdUI.Label();
             WelcomeLabel = new AntdUI.Label();
             btnSignIn = new AntdUI.Button();
             Logo = new PictureBox();
             SignInResultLabel = new AntdUI.Label();
             ToolbarItems = new TabHeader();
+            MenuTop = new AntdUI.Menu();
             ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
             SuspendLayout();
             // 
@@ -55,7 +53,7 @@ namespace SignInWinApp
             // WelcomeLabel
             // 
             WelcomeLabel.Dock = DockStyle.Top;
-            WelcomeLabel.Location = new Point(0, 155);
+            WelcomeLabel.Location = new Point(0, 193);
             WelcomeLabel.Margin = new Padding(3, 2, 3, 2);
             WelcomeLabel.Name = "WelcomeLabel";
             WelcomeLabel.Size = new Size(643, 65);
@@ -66,7 +64,7 @@ namespace SignInWinApp
             // btnSignIn
             // 
             btnSignIn.Dock = DockStyle.Top;
-            btnSignIn.Location = new Point(0, 220);
+            btnSignIn.Location = new Point(0, 258);
             btnSignIn.Margin = new Padding(3, 4, 3, 4);
             btnSignIn.Name = "btnSignIn";
             btnSignIn.Size = new Size(643, 42);
@@ -77,7 +75,7 @@ namespace SignInWinApp
             // Logo
             // 
             Logo.Dock = DockStyle.Top;
-            Logo.Location = new Point(0, 35);
+            Logo.Location = new Point(0, 73);
             Logo.Margin = new Padding(3, 2, 3, 2);
             Logo.Name = "Logo";
             Logo.Size = new Size(643, 120);
@@ -89,7 +87,7 @@ namespace SignInWinApp
             // 
             SignInResultLabel.Dock = DockStyle.Top;
             SignInResultLabel.ForeColor = Color.Green;
-            SignInResultLabel.Location = new Point(0, 262);
+            SignInResultLabel.Location = new Point(0, 300);
             SignInResultLabel.Margin = new Padding(3, 2, 3, 2);
             SignInResultLabel.Name = "SignInResultLabel";
             SignInResultLabel.Size = new Size(643, 38);
@@ -102,18 +100,9 @@ namespace SignInWinApp
             ToolbarItems.DividerShow = true;
             ToolbarItems.Dock = DockStyle.Top;
             ToolbarItems.Font = new Font("Microsoft YaHei UI", 11F);
-            tagTabItem4.Tag = null;
-            tagTabItem4.Text = "签到";
-            tagTabItem5.Tag = null;
-            tagTabItem5.Text = "签到报表";
-            tagTabItem6.Tag = null;
-            tagTabItem6.Text = "Text";
-            ToolbarItems.Items.Add(tagTabItem4);
-            ToolbarItems.Items.Add(tagTabItem5);
-            ToolbarItems.Items.Add(tagTabItem6);
             ToolbarItems.LeftGap = 40;
             ToolbarItems.Location = new Point(0, 0);
-            ToolbarItems.Margin = new Padding(4, 4, 4, 4);
+            ToolbarItems.Margin = new Padding(4);
             ToolbarItems.Name = "ToolbarItems";
             ToolbarItems.ShowBack = true;
             ToolbarItems.ShowButton = true;
@@ -122,7 +111,17 @@ namespace SignInWinApp
             ToolbarItems.Text = "返回";
             ToolbarItems.UseForeColorDrawIcons = true;
             ToolbarItems.UseLeftMargin = false;
-            ToolbarItems.TabChanged += ToolbarItems_TabChanged;
+            // 
+            // MenuTop
+            // 
+            MenuTop.Dock = DockStyle.Top;
+            MenuTop.Location = new Point(0, 35);
+            MenuTop.Mode = TMenuMode.Horizontal;
+            MenuTop.Name = "MenuTop";
+            MenuTop.ScrollBarBlock = true;
+            MenuTop.Size = new Size(643, 38);
+            MenuTop.TabIndex = 9;
+            MenuTop.Text = "menu1";
             // 
             // SignInPage
             // 
@@ -134,6 +133,7 @@ namespace SignInWinApp
             Controls.Add(WelcomeLabel);
             Controls.Add(lblResult);
             Controls.Add(Logo);
+            Controls.Add(MenuTop);
             Controls.Add(ToolbarItems);
             Font = new Font("Microsoft YaHei UI", 11F);
             Margin = new Padding(3, 4, 3, 4);
@@ -152,5 +152,6 @@ namespace SignInWinApp
         private PictureBox Logo;
         private AntdUI.Label SignInResultLabel;
         private TabHeader ToolbarItems;
+        private AntdUI.Menu MenuTop;
     }
 }

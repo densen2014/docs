@@ -1,31 +1,35 @@
-﻿using Microsoft.Maui.Controls;
+﻿using AntdUI;
 using SignInMauiApp.Models;
-using FreeSql;
-using Microsoft.Maui.Storage;
 
-namespace SignInMauiApp;
+namespace SignInWinApp;
 
-public partial class LoginPage : ContentPage
+public partial class SignInReportPage: AntdUI.Window
 {
     private readonly IFreeSql? _fsql;
     private List<Tenant> _tenants = new();
 
-    public LoginPage()
+    public SignInReportPage()
     {
         InitializeComponent();
-        _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
+        ErrorLabel.Text = "";
+        Logo.Image = Program.GetLogoImage();
+        btnLogin.Click += OnLoginClicked;
+        btnRegister.Click += OnRegisterClicked;
+
+        _fsql = Program.Fsql;
         // 新增：检查是否需要显示引导页
         CheckAndShowOnboardingAsync();
         LoadTenants();
+
+        OnAppearing();
+
     }
 
-    protected override void OnAppearing()
+
+    protected void OnAppearing()
     {
-        base.OnAppearing();
         LoadTenants(); // 注册后刷新租户列表
-#if WINDOWS
         CheckAndCreateDesktopShortcutAsync();
-#endif
     }
 
     private async void CheckAndShowOnboardingAsync()
@@ -35,14 +39,23 @@ public partial class LoginPage : ContentPage
         var tenantsCount = _fsql!.Select<Tenant>().Count();
         if (tenantsCount == 0 || !onboardingDone)
         {
-            await Navigation.PushModalAsync(new OnboardingPage(_fsql));
+            Hide();
+            var onboardingPage = new OnboardingPage(_fsql);
+            onboardingPage.ShowDialog();
+            onboardingPage.OnboardingCompleted += (s, e) =>
+            {
+                Show();
+            }; 
         }
     }
 
     private void LoadTenants()
     {
         _tenants = _fsql!.Select<Tenant>().ToList();
-        TenantPicker.ItemsSource = _tenants.Select(t => t.Name).ToList();
+        var items = _tenants.Select(a => new SelectItem(a.Name,a.Id)).ToArray();
+        TenantPicker.Items.AddRange(items);
+
+
         int lastTenantId = Preferences.Get("LastTenantId", -1);
         int idx = 0;
         if (_tenants.Count > 0)
@@ -61,16 +74,16 @@ public partial class LoginPage : ContentPage
         UsernameEntry.Text = Preferences.Get("LastUsername", "");
     }
 
-    private async void OnLoginClicked(object sender, EventArgs e)
+    private async void OnLoginClicked(object? sender, EventArgs e)
     {
-        ErrorLabel.IsVisible = false;
+        ErrorLabel.Visible = false;
         var username = UsernameEntry.Text?.Trim();
         var password = PasswordEntry.Text;
         var tenantIdx = TenantPicker.SelectedIndex;
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
         {
             ErrorLabel.Text = "请填写完整信息";
-            ErrorLabel.IsVisible = true;
+            ErrorLabel.Visible = true;
             return;
         }
         var tenantId = _tenants[tenantIdx].Id;
@@ -78,22 +91,24 @@ public partial class LoginPage : ContentPage
         if (user == null)
         {
             ErrorLabel.Text = "用户名或密码错误";
-            ErrorLabel.IsVisible = true;
+            ErrorLabel.Visible = true;
             return;
         }
         // 记住租户和用户名
         Preferences.Set("LastTenantId", tenantId);
         Preferences.Set("LastUsername", username);
         // 登录成功，跳转到签到页面
-        await Navigation.PushAsync(new SignInPage(user, _tenants[tenantIdx]));
+        Hide();
+        var SignIn = new SignInPage(user, _tenants[tenantIdx]);
+        SignIn.ShowDialog();
+        Show();
     }
 
-    private async void OnRegisterClicked(object sender, EventArgs e)
+    private async void OnRegisterClicked(object? sender, EventArgs e)
     {
-        await Navigation.PushAsync(new RegisterPage());
+        //await Navigation.PushAsync(new RegisterPage());
     }
 
-#if WINDOWS
     private async void CheckAndCreateDesktopShortcutAsync()
     {
         string shortcutName = "SignIn.lnk";
@@ -101,7 +116,7 @@ public partial class LoginPage : ContentPage
         string shortcutPath = Path.Combine(desktopPath, shortcutName);
         if (!File.Exists(shortcutPath))
         {
-            bool create = await DisplayAlertAsync("创建桌面快捷方式", "未检测到桌面快捷方式，是否创建？", "是", "否");
+            bool create = Program.DisplayAlert("创建桌面快捷方式", "未检测到桌面快捷方式，是否创建？", "是", "否");
             if (create)
             {
                 try
@@ -110,11 +125,12 @@ public partial class LoginPage : ContentPage
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlertAsync("错误", $"创建快捷方式失败: {ex.Message}", "确定");
+                    Program.DisplayAlert("错误", $"创建快捷方式失败: {ex.Message}", "确定");
                 }
             }
         }
     }
+
 
     private void CreateShortcut(string shortcutPath)
     {
@@ -130,5 +146,5 @@ public partial class LoginPage : ContentPage
         shortcut.GetType().InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "SignInMauiApp" });
         shortcut.GetType().InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
     }
-#endif
 }
+

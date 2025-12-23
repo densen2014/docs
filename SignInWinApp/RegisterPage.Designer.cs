@@ -2,7 +2,7 @@
 
 namespace SignInWinApp
 {
-    partial class LoginPage
+    partial class RegisterPage
     {
         /// <summary>
         ///  Required designer variable.
@@ -31,17 +31,15 @@ namespace SignInWinApp
         private void InitializeComponent()
         {
             lblResult = new AntdUI.Label();
-            WelcomeLabel = new AntdUI.Label();
-            btnLogin = new AntdUI.Button();
-            Logo = new PictureBox();
+            btnRegister = new AntdUI.Button();
             ErrorLabel = new AntdUI.Label();
             TenantPicker = new Select();
             UsernameEntry = new Input();
             PasswordEntry = new Input();
-            btnRegister = new AntdUI.Button();
             Header = new PageHeader();
             VerticalStackLayout = new StackPanel();
-            ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
+            NewTenantEntry = new Input();
+            WelcomeLabel = new AntdUI.Label();
             VerticalStackLayout.SuspendLayout();
             SuspendLayout();
             // 
@@ -55,39 +53,19 @@ namespace SignInWinApp
             lblResult.Text = "";
             lblResult.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // WelcomeLabel
-            // 
-            WelcomeLabel.Location = new Point(3, 2);
-            WelcomeLabel.Margin = new Padding(3, 2, 3, 2);
-            WelcomeLabel.Name = "WelcomeLabel";
-            WelcomeLabel.Size = new Size(578, 50);
-            WelcomeLabel.TabIndex = 4;
-            WelcomeLabel.Text = "签到系统登录";
-            WelcomeLabel.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(20, 295);
-            btnLogin.Margin = new Padding(20, 2, 20, 2);
-            btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(544, 39);
-            btnLogin.TabIndex = 2;
-            btnLogin.Text = "登录";
-            // 
-            // Logo
-            // 
-            Logo.Location = new Point(3, 56);
-            Logo.Margin = new Padding(3, 2, 3, 2);
-            Logo.Name = "Logo";
-            Logo.Size = new Size(578, 106);
-            Logo.SizeMode = PictureBoxSizeMode.Zoom;
-            Logo.TabIndex = 5;
-            Logo.TabStop = false;
+            btnRegister.Location = new Point(20, 228);
+            btnRegister.Margin = new Padding(20, 2, 20, 2);
+            btnRegister.Name = "btnLogin";
+            btnRegister.Size = new Size(544, 39);
+            btnRegister.TabIndex = 2;
+            btnRegister.Text = "注册";
             // 
             // ErrorLabel
             // 
             ErrorLabel.ForeColor = Color.Red;
-            ErrorLabel.Location = new Point(3, 381);
+            ErrorLabel.Location = new Point(3, 271);
             ErrorLabel.Margin = new Padding(3, 2, 3, 2);
             ErrorLabel.Name = "ErrorLabel";
             ErrorLabel.Size = new Size(578, 39);
@@ -97,7 +75,7 @@ namespace SignInWinApp
             // 
             // TenantPicker
             // 
-            TenantPicker.Location = new Point(20, 166);
+            TenantPicker.Location = new Point(20, 56);
             TenantPicker.Margin = new Padding(20, 2, 20, 2);
             TenantPicker.Name = "TenantPicker";
             TenantPicker.PlaceholderText = "选择公司";
@@ -107,7 +85,7 @@ namespace SignInWinApp
             // 
             // UsernameEntry
             // 
-            UsernameEntry.Location = new Point(20, 209);
+            UsernameEntry.Location = new Point(20, 142);
             UsernameEntry.Margin = new Padding(20, 2, 20, 2);
             UsernameEntry.Name = "UsernameEntry";
             UsernameEntry.PlaceholderText = "用户名";
@@ -116,22 +94,13 @@ namespace SignInWinApp
             // 
             // PasswordEntry
             // 
-            PasswordEntry.Location = new Point(20, 252);
+            PasswordEntry.Location = new Point(20, 185);
             PasswordEntry.Margin = new Padding(20, 2, 20, 2);
             PasswordEntry.Name = "PasswordEntry";
             PasswordEntry.PasswordChar = '*';
             PasswordEntry.PlaceholderText = "密码";
             PasswordEntry.Size = new Size(544, 39);
             PasswordEntry.TabIndex = 10;
-            // 
-            // btnRegister
-            // 
-            btnRegister.Location = new Point(20, 338);
-            btnRegister.Margin = new Padding(20, 2, 20, 2);
-            btnRegister.Name = "btnRegister";
-            btnRegister.Size = new Size(544, 39);
-            btnRegister.TabIndex = 11;
-            btnRegister.Text = "注册新用户";
             // 
             // Header
             // 
@@ -152,11 +121,10 @@ namespace SignInWinApp
             // 
             VerticalStackLayout.Controls.Add(ErrorLabel);
             VerticalStackLayout.Controls.Add(btnRegister);
-            VerticalStackLayout.Controls.Add(btnLogin);
             VerticalStackLayout.Controls.Add(PasswordEntry);
             VerticalStackLayout.Controls.Add(UsernameEntry);
+            VerticalStackLayout.Controls.Add(NewTenantEntry);
             VerticalStackLayout.Controls.Add(TenantPicker);
-            VerticalStackLayout.Controls.Add(Logo);
             VerticalStackLayout.Controls.Add(WelcomeLabel);
             VerticalStackLayout.Dock = DockStyle.Fill;
             VerticalStackLayout.Location = new Point(0, 35);
@@ -166,7 +134,26 @@ namespace SignInWinApp
             VerticalStackLayout.Text = "VerticalStackLayout";
             VerticalStackLayout.Vertical = true;
             // 
-            // LoginPage
+            // NewTenantEntry
+            // 
+            NewTenantEntry.Location = new Point(20, 99);
+            NewTenantEntry.Margin = new Padding(20, 2, 20, 2);
+            NewTenantEntry.Name = "NewTenantEntry";
+            NewTenantEntry.PlaceholderText = "新建公司（可选）";
+            NewTenantEntry.Size = new Size(544, 39);
+            NewTenantEntry.TabIndex = 12;
+            // 
+            // WelcomeLabel
+            // 
+            WelcomeLabel.Location = new Point(3, 2);
+            WelcomeLabel.Margin = new Padding(3, 2, 3, 2);
+            WelcomeLabel.Name = "WelcomeLabel";
+            WelcomeLabel.Size = new Size(578, 50);
+            WelcomeLabel.TabIndex = 4;
+            WelcomeLabel.Text = "用户注册";
+            WelcomeLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // RegisterPage
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -177,25 +164,23 @@ namespace SignInWinApp
             Font = new Font("Microsoft YaHei UI", 11F);
             Margin = new Padding(3, 4, 3, 4);
             Mode = TAMode.Light;
-            Name = "LoginPage";
+            Name = "RegisterPage";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "签到";
-            ((System.ComponentModel.ISupportInitialize)Logo).EndInit();
             VerticalStackLayout.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
         private AntdUI.Label lblResult;
-        private AntdUI.Label WelcomeLabel;
-        private AntdUI.Button btnLogin;
-        private PictureBox Logo;
+        private AntdUI.Button btnRegister;
         private AntdUI.Label ErrorLabel;
         private Select TenantPicker;
+        private Input NewTenantEntry;
         private Input UsernameEntry;
         private Input PasswordEntry;
-        private AntdUI.Button btnRegister;
         private PageHeader Header;
         private StackPanel VerticalStackLayout;
+        private AntdUI.Label WelcomeLabel;
     }
 }

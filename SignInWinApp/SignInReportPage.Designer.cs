@@ -2,7 +2,7 @@
 
 namespace SignInWinApp
 {
-    partial class LoginPage
+    partial class SignInReportPage
     {
         /// <summary>
         ///  Required designer variable.
@@ -100,10 +100,9 @@ namespace SignInWinApp
             TenantPicker.Location = new Point(20, 166);
             TenantPicker.Margin = new Padding(20, 2, 20, 2);
             TenantPicker.Name = "TenantPicker";
-            TenantPicker.PlaceholderText = "选择公司";
             TenantPicker.Size = new Size(544, 39);
             TenantPicker.TabIndex = 8;
-            TenantPicker.Text = "选择公司";
+            TenantPicker.Text = "选择租户";
             // 
             // UsernameEntry
             // 
@@ -166,7 +165,7 @@ namespace SignInWinApp
             VerticalStackLayout.Text = "VerticalStackLayout";
             VerticalStackLayout.Vertical = true;
             // 
-            // LoginPage
+            // SignInReportPage
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -177,7 +176,7 @@ namespace SignInWinApp
             Font = new Font("Microsoft YaHei UI", 11F);
             Margin = new Padding(3, 4, 3, 4);
             Mode = TAMode.Light;
-            Name = "LoginPage";
+            Name = "SignInReportPage";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "签到";
             ((System.ComponentModel.ISupportInitialize)Logo).EndInit();
