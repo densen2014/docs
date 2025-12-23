@@ -57,12 +57,12 @@ internal static class Program
         if (!Fsql.Select<SignInMauiApp.Models.Tenant>().Any())
         {
             Preferences.Set("OnboardingDone", false);
-            var tenant = new SignInMauiApp.Models.Tenant { Name = "我的公司" };
-            tenant.Id = (int)Fsql.Insert(tenant).ExecuteIdentity();
-            // 初始化用户
-            var user = new SignInMauiApp.Models.User { Username = "admin", Password = "123456", TenantId = tenant.Id };
-            Fsql.Insert(user).ExecuteAffrows();
-            Logger?.LogInformation("已初始化默认租户和管理员用户。");
+            //var tenant = new SignInMauiApp.Models.Tenant { Name = "我的公司" };
+            //tenant.Id = (int)Fsql.Insert(tenant).ExecuteIdentity();
+            //// 初始化用户
+            //var user = new SignInMauiApp.Models.User { Username = "admin", Password = "123456", TenantId = tenant.Id };
+            //Fsql.Insert(user).ExecuteAffrows();
+            //Logger?.LogInformation("已初始化默认租户和管理员用户。");
         }
     }
 
@@ -95,5 +95,14 @@ internal static class Program
     static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         AntdUI.Notification.error(loginPage!, "未处理的非UI线程异常", e.ToString()!, autoClose: 3, align: AntdUI.TAlignFrom.TR);
+    }
+}
+
+public static class Ext
+{
+
+    public static string? IsNull(this string str, string defaultValue)
+    {
+        return string.IsNullOrEmpty(str) ? defaultValue : str?.Trim();
     }
 }

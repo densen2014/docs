@@ -10,7 +10,7 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <ForceDesignerDPIUnaware>true</ForceDesignerDPIUnaware>
         <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
-        <Copyright>Copyright © 2025 Densen Informatica</Copyright>
+        <Copyright>Copyright © 2026 Densen Informatica</Copyright>
         <Version>0.0.1</Version>
         <Authors>AlexChow</Authors>
         <RepositoryType>git</RepositoryType>

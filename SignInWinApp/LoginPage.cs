@@ -39,7 +39,13 @@ public partial class LoginPage: AntdUI.Window
         var tenantsCount = _fsql!.Select<Tenant>().Count();
         if (tenantsCount == 0 || !onboardingDone)
         {
-            //await Navigation.PushModalAsync(new OnboardingPage(_fsql));
+            Hide();
+            var onboardingPage = new OnboardingPage(_fsql);
+            onboardingPage.ShowDialog();
+            onboardingPage.OnboardingCompleted += (s, e) =>
+            {
+                Show();
+            }; 
         }
     }
 
@@ -92,8 +98,10 @@ public partial class LoginPage: AntdUI.Window
         Preferences.Set("LastTenantId", tenantId);
         Preferences.Set("LastUsername", username);
         // 登录成功，跳转到签到页面
+        Hide();
         var SignIn = new SignInPage(user, _tenants[tenantIdx]);
         SignIn.ShowDialog();
+        Show();
     }
 
     private async void OnRegisterClicked(object? sender, EventArgs e)
