@@ -4,3 +4,5 @@
 
 [直接下载](https://densen.obs.eu-west-101.myhuaweicloud.eu/file/APP/Fichaje.exe)
 
+[Patch](https://densen.obs.eu-west-101.myhuaweicloud.eu/file/APP/FichajePatch.exe)
+
