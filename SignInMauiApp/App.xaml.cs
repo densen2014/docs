@@ -8,7 +8,7 @@ using KestrelWebHost;
 using MauiWebApi;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
+using System.Net; 
 
 namespace SignInMauiApp;
 
@@ -28,7 +28,10 @@ public partial class App : Application
     private void InitializeData()
     {
         var fsql = MauiProgram.CreateMauiApp().Services.GetService<IFreeSql>();
-        if (fsql == null) return;
+        if (fsql == null)
+        {
+            return;
+        }
         // 初始化租户
         if (!fsql.Select<Models.Tenant>().Any())
         {
@@ -42,7 +45,9 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        return new Window(new AppShell());
+        var window = new Window(new AppShell());
+        window.Title = "Fichaje";
+        return window;
     }
 
     private async Task InitializeWebHostAsync()

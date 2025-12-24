@@ -7,7 +7,7 @@
     Title="SignInMauiApp">
 
     <ShellContent
-        Title="Fichaje"
+        Title=""
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage" />
 
