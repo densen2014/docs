@@ -1,6 +1,6 @@
 签到系统:免费/开源/符合政府规定
 
-[工程源码](https://github.com/densen2014/docs/tree/ma
+[工程源码](https://github.com/densen2014/docs/tree/main/SignInMauiApp)
 
 [直接下载](https://densen.obs.eu-west-101.myhuaweicloud.eu/file/APP/Fichaje.exe)
 
