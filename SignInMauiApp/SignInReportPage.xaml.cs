@@ -23,6 +23,7 @@ public partial class SignInReportPage : ContentPage
     DateTime endDate => startDate.AddMonths(1);
     private readonly User _user;
     private readonly Tenant _tenant;
+    private const string DisableShareKey = "DisableShare";
 
 
     public SignInReportPage(User user, Tenant tenant)
@@ -50,6 +51,7 @@ public partial class SignInReportPage : ContentPage
 
         LoadReport();
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+        DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
     }
 
     private void LoadUsernames()
@@ -62,7 +64,7 @@ public partial class SignInReportPage : ContentPage
             var users = _fsql!.Select<User>().ToList();
             UsernamePicker.ItemsSource = users.Select(u => u.Username).Distinct().ToList();
             UsernamePicker.SelectedIndex = 0;
-        } 
+        }
     }
 
     private void LoadReport()
@@ -72,6 +74,7 @@ public partial class SignInReportPage : ContentPage
         var records = _fsql!.Select<SignInRecord, User, Tenant>()
             .LeftJoin((r, u, t) => r.UserId == u.Id)
             .LeftJoin((r, u, t) => r.TenantId == t.Id)
+            .WhereIf(!string.IsNullOrEmpty(selectedUsername), (r, u, t) => u.Username == selectedUsername)
             .Where((r, u, t) => r.SignInTime >= startDate && r.SignInTime < endDate)
             .ToList((r, u, t) => new
             {
@@ -84,10 +87,6 @@ public partial class SignInReportPage : ContentPage
                 r.SignInTime,
                 r.SignType
             });
-        if (!string.IsNullOrEmpty(selectedUsername))
-        {
-            records = records.Where(x => x.Username == selectedUsername).ToList();
-        }
         _report = records
             .GroupBy(x => new { x.UserId, Date = x.SignInTime?.Date })
             .Select(g =>
@@ -166,6 +165,11 @@ public partial class SignInReportPage : ContentPage
             await DisplayAlertAsync("Error", "El archivo no se generó y no se puede compartir.", "Aceptar");
             return;
         }
+        if (Preferences.Default.Get(DisableShareKey, true))
+        {
+            await OpenFileAndFolder(filePath);
+            return;
+        }
         try
         {
             await Share.RequestAsync(new ShareFileRequest
@@ -173,10 +177,20 @@ public partial class SignInReportPage : ContentPage
                 Title = "Exportar informe",
                 File = new ShareFile(filePath),
             });
+            await Task.Delay(2000);
+            var result = await DisplayAlertAsync("¿Confirmación de exportar?", "¿Se ha exportar correctamente?", "Sí", "No");
+            if (!result)
+            {
+                Preferences.Default.Set(DisableShareKey, true);
+                DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
+                await OpenFileAndFolder(filePath);
+            }
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "Aceptar");
+            await Clipboard.SetTextAsync(filePath);
+            await DisplayAlertAsync("Error", $"{ex.Message}\nNo se pudo compartir el archivo automáticamente. La ruta del archivo se ha copiado al portapapeles, por favor compártalo manualmente.", "Aceptar");
+            await OpenFileAndFolder(filePath);
         }
     }
 
@@ -306,6 +320,11 @@ public partial class SignInReportPage : ContentPage
             await DisplayAlertAsync("Error", "El PDF no se generó, no se puede compartir", "OK");
             return;
         }
+        if (Preferences.Default.Get(DisableShareKey, true))
+        {
+            await OpenFileAndFolder(filePath);
+            return;
+        }
         try
         {
             await Share.RequestAsync(new ShareFileRequest
@@ -313,10 +332,20 @@ public partial class SignInReportPage : ContentPage
                 Title = "Exportar informe en PDF",
                 File = new ShareFile(filePath),
             });
+            await Task.Delay(2000);
+            var result = await DisplayAlertAsync("¿Confirmación de exportar?", "¿Se ha exportar correctamente?", "Sí", "No");
+            if (!result)
+            {
+                Preferences.Default.Set(DisableShareKey, true);
+                DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
+                await OpenFileAndFolder(filePath);
+            }
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await Clipboard.SetTextAsync(filePath);
+            await DisplayAlertAsync("Error", $"{ex.Message}\nNo se pudo compartir el archivo automáticamente. La ruta del archivo se ha copiado al portapapeles, por favor compártalo manualmente.", "OK");
+            await OpenFileAndFolder(filePath);
         }
         static IContainer CellStyle(IContainer container) =>
             container
@@ -375,6 +404,46 @@ public partial class SignInReportPage : ContentPage
             Title = "Share multiple files",
             Files = new List<ShareFile> { new ShareFile(file1), new ShareFile(file2) }
         });
+    }
+
+    private async Task OpenFileAndFolder(string filePath)
+    {
+#if WINDOWS
+        var folder = Path.GetDirectoryName(filePath);
+        var file = Path.GetFileName(filePath);
+        if (folder != null)
+        {
+            // 打开文件夹并选中文件
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"/select,\"{filePath}\"",
+                UseShellExecute = true
+            };
+            System.Diagnostics.Process.Start(psi);
+        }
+        // 打开文件
+        var psi2 = new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = filePath,
+            UseShellExecute = true
+        };
+        System.Diagnostics.Process.Start(psi2);
+#elif MACCATALYST
+        // Mac 打开文件夹和文件
+        var folder = Path.GetDirectoryName(filePath);
+        if (folder != null)
+        {
+            System.Diagnostics.Process.Start("open", folder);
+        }
+        System.Diagnostics.Process.Start("open", filePath);
+#else
+        await DisplayAlertAsync("Aviso", $"Archivo exportado: {filePath}", "OK");
+#endif
+    } 
+    private void OnDisableShareToggled(object sender, ToggledEventArgs e)
+    {
+        Preferences.Default.Set(DisableShareKey, e.Value);
     }
 }
 
