@@ -14,7 +14,16 @@ public partial class SignInPage : ContentPage
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
         _user = user;
         _tenant = tenant;
-        WelcomeLabel.Text = $"欢迎 {_user.Username}，公司：{_tenant.Name}";
+        WelcomeLabel.Text = $"Bienvenido {_user.Username}，empresa：{_tenant.Name}";
+        var lastSignIn = _fsql!.Select<SignInRecord>()
+            .Where(r => r.UserId == _user.Id && r.TenantId == _tenant.Id)
+            .OrderByDescending(r => r.SignInTime)
+            .First();
+        if (lastSignIn != null)
+        {
+            SignInResultLabel.Text = $"Hora del último check-in：{lastSignIn.SignInTime:yyyy-MM-dd HH:mm:ss}，tipo：{lastSignIn.SignType}";
+            SignInResultLabel.IsVisible = true;
+        }
     }
 
     private async void OnSignInClicked(object sender, EventArgs e)
@@ -27,12 +36,12 @@ public partial class SignInPage : ContentPage
             SignType = SignTypeEnum.SignInWork
         };
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        SignInResultLabel.Text = $"签到成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
+        SignInResultLabel.Text = $"Hora de entrada：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
         SignInResultLabel.IsVisible = true;
         // 跳转到签到历史页面
-        await Navigation.PushAsync(new SignInHistoryPage(_user, _tenant));
+        await Navigation.PushAsync(new SignInReportPage(_user, _tenant));
     }
-    
+
 
     private async void OnSignOutClicked(object sender, EventArgs e)
     {
@@ -44,34 +53,57 @@ public partial class SignInPage : ContentPage
             SignType = SignTypeEnum.SignOutWork
         };
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        SignInResultLabel.Text = $"签出成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
+        SignInResultLabel.Text = $"Hora de salida：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
         SignInResultLabel.IsVisible = true;
         // 跳转到签到历史页面
-        await Navigation.PushAsync(new SignInHistoryPage(_user, _tenant));
+        await Navigation.PushAsync(new SignInReportPage(_user, _tenant));
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        // 仅管理员可见
+        if (_user.IsAdmin)
+        {
+            // 添加签到报表按钮
+            if (_user.IsAdmin && ToolbarItems.All(t => t.Text != "Informe"))
+            {
+                ToolbarItems.Add(new ToolbarItem("Informe", null, async () =>
+                {
+                    await Navigation.PushAsync(new SignInReportPage(_user, _tenant));
+                }));
+            }
+            // 添加租户管理按钮
+            if (_user.IsAdmin && ToolbarItems.All(t => t.Text != "Gestión de la empresa"))
+            {
+                ToolbarItems.Add(new ToolbarItem("Gestión de la empresa", null, async () =>
+                {
+                    await Navigation.PushAsync(new TenantManagementPage());
+                }));
+            }
+            // 添加用户管理按钮
+            if (_user.IsAdmin && ToolbarItems.All(t => t.Text != "Gestión de usuarios"))
+            {
+                ToolbarItems.Add(new ToolbarItem("Gestión de usuarios", null, async () =>
+                {
+                    await Navigation.PushAsync(new UserManagementPage(_tenant));
+                }));
+            }
+        }
+        // 添加签到历史
+        if (!_user.IsAdmin && ToolbarItems.All(t => t.Text != "Historial"))
+        {
+            ToolbarItems.Add(new ToolbarItem("Historial", null, async () =>
+            {
+                await Navigation.PushAsync(new SignInReportPage(_user, _tenant)); 
+            }));
+        }
         // 添加退出登录按钮
-        if (ToolbarItems.All(t => t.Text != "退出登录"))
+        if (ToolbarItems.All(t => t.Text != "Finalizar la sesión"))
         {
-            ToolbarItems.Add(new ToolbarItem("退出登录", null, async () => {
+            ToolbarItems.Add(new ToolbarItem("Finalizar la sesión", null, async () =>
+            {
                 await Navigation.PopToRootAsync();
-            }));
-        }
-        // 添加租户管理按钮
-        if (ToolbarItems.All(t => t.Text != "公司管理"))
-        {
-            ToolbarItems.Add(new ToolbarItem("公司管理", null, async () => {
-                await Navigation.PushAsync(new TenantManagementPage());
-            }));
-        }
-        // 添加签到报表按钮（仅管理员可见，这里假设用户名为admin为管理员）
-        if (_user.Username == "admin" && ToolbarItems.All(t => t.Text != "签到报表"))
-        {
-            ToolbarItems.Add(new ToolbarItem("签到报表", null, async () => {
-                await Navigation.PushAsync(new SignInReportPage());
             }));
         }
     }

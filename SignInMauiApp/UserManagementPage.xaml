@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SignInMauiApp.UserManagementPage">
+    <VerticalStackLayout Padding="20,30" Spacing="10">
+        <Label Text="Gestión de usuarios" FontSize="22" HorizontalOptions="Center" />
+        <CollectionView x:Name="UserCollectionView" SelectionMode="Single" SelectionChanged="OnUserSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="0,5" Padding="10">
+                        <HorizontalStackLayout>
+                            <Label Text="{Binding Username}" VerticalOptions="Center" Padding="10" WidthRequest="150" />
+                            <Label Text="{Binding Name}" VerticalOptions="Center"  Padding="10" WidthRequest="100" />
+                            <Label Text="{Binding TaxNumber}" VerticalOptions="Center"  Padding="10" WidthRequest="150"/>
+                            <Label Text="{Binding WorkDuration}" VerticalOptions="Center"  Padding="10" WidthRequest="100" /> 
+                            <Button Text="Editar" Clicked="OnEditUserClicked" CommandParameter="{Binding .}"  Margin="5" />
+                            <Button Text="Borrar" Clicked="OnDeleteUserClicked" CommandParameter="{Binding .}" Margin="5" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

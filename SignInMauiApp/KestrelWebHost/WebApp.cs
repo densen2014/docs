@@ -45,8 +45,8 @@ public partial class WebApp
                 <label for='password' class='form-label'>Clave</label>
                 <input type='password' class='form-control' id='password' name='password' placeholder='Clave' value='' required>
             </div> 
-            <button type='button' class='btn btn-primary mb-3' onclick='submitForm("signin")'>Check-in</button>
-            <button type='button' class='btn btn-success mb-3' onclick='submitForm("signout")'>Check-out</button>
+            <button type='button' class='btn btn-primary mb-3' onclick='submitForm("signin")'>Marcar la entrada</button>
+            <button type='button' class='btn btn-success mb-3' onclick='submitForm("signout")'>Marcar la salida</button>
             <button type='button' class='btn btn-danger mb-3' onclick='clearCache()'>Borrar Caché</button>
             <h6 id='result' class='text-info'>bienvenido</h6>
         </form>
@@ -106,7 +106,7 @@ public partial class WebApp
         }
         function clearCache() {
             // 显示确认对话框
-            const userConfirmed = confirm('您确定要清除缓存吗？此操作无法撤销。');
+            const userConfirmed = confirm('¿Estás seguro de que quieres borrar el caché?');
 
             if (userConfirmed) {
                 // 清除 localStorage 中的所有数据
@@ -119,10 +119,10 @@ public partial class WebApp
                 });
 
                 // 提示用户缓存已清除
-                result.html ='缓存已清除！';
+                result.html ='Caché borrado！';
             } else {
                 // 用户取消操作
-                alert('操作已取消。');
+                alert('Operación cancelada.');
             }
         }  
     </script>

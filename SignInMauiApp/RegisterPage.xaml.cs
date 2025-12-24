@@ -43,6 +43,11 @@ public partial class RegisterPage : ContentPage
         var username = UsernameEntry.Text?.Trim();
         var password = PasswordEntry.Text;
         var newTenant = NewTenantEntry.Text?.Trim();
+        var name= NameEntry.Text?.Trim();
+        var taxNumber= TaxNumberEntry.Text?.Trim();
+        var workDuration = 8;
+        int.TryParse(WorkDurationEntry.Text, out workDuration);
+
         int tenantId = -1;
         if (!string.IsNullOrEmpty(newTenant))
         {
@@ -55,19 +60,26 @@ public partial class RegisterPage : ContentPage
         }
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantId < 0)
         {
-            ErrorLabel.Text = "请填写完整信息";
+            ErrorLabel.Text = "Por favor complete la información completa";
             ErrorLabel.IsVisible = true;
             return;
         }
         if (_fsql!.Select<User>().Any(u => u.Username == username && u.TenantId == tenantId))
         {
-            ErrorLabel.Text = "该用户已存在";
+            ErrorLabel.Text = "Este usuario ya existe";
             ErrorLabel.IsVisible = true;
             return;
         }
-        var user = new User { Username = username, Password = password, TenantId = tenantId };
+        var user = new User {
+            Username = username,
+            Password = password,
+            TenantId = tenantId,
+            Name = name,
+            TaxNumber = taxNumber,
+            WorkDuration = workDuration,
+        };
         await _fsql!.Insert(user).ExecuteAffrowsAsync();
-        await DisplayAlertAsync("注册成功", "请返回登录", "确定");
+        await DisplayAlertAsync("Registro exitoso", "Por favor regrese para iniciar sesión", "Aceptar");
         await Navigation.PopAsync();
     }
 }

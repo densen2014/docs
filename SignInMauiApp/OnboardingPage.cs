@@ -15,20 +15,20 @@ public partial class OnboardingPage : ContentPage
     public OnboardingPage(IFreeSql? fsql)
     {
         _fsql = fsql;
-        Title = "初次设置";
-        _tenantEntry = new Entry { Placeholder = "请输入公司名称, 默认为[我的公司]", MaximumWidthRequest = 600, Margin = 5 };
-        _adminUserEntry = new Entry { Placeholder = "管理员账号, 默认为[admin]", MaximumWidthRequest = 600, Margin = 5 };
-        _adminPassEntry = new Entry { Placeholder = "管理员密码, 默认为[123456]", IsPassword = true, MaximumWidthRequest = 600, Margin = 5 };
-        _firstUserEntry = new Entry { Placeholder = "第一个用户名称, 默认为[demo]", MaximumWidthRequest = 600, Margin = 5 };
-        _firstUserPassEntry = new Entry { Placeholder = "第一个用户密码, 默认为[0]", IsPassword = true, MaximumWidthRequest = 600, Margin = 5 };
-        _submitButton = new Button { Text = "完成设置", MaximumWidthRequest = 600, Margin = new Thickness(0, 50) };
+        Title = "Configuración por primera vez";
+        _tenantEntry = new Entry { Placeholder = "Nombre de la empresa, la predeterminada es [Mi empresa]", MaximumWidthRequest = 600, Margin = 5 };
+        _adminUserEntry = new Entry { Placeholder = "Cuenta de administrador, la predeterminada es [admin]", MaximumWidthRequest = 600, Margin = 5 };
+        _adminPassEntry = new Entry { Placeholder = "Contraseña de administrador, la predeterminada es [123456]", IsPassword = true, MaximumWidthRequest = 600, Margin = 5 };
+        _firstUserEntry = new Entry { Placeholder = "El primer nombre de usuario, el predeterminado es [demo]", MaximumWidthRequest = 600, Margin = 5 };
+        _firstUserPassEntry = new Entry { Placeholder = "La contraseña del primer usuario, la predeterminada es [0]", IsPassword = true, MaximumWidthRequest = 600, Margin = 5 };
+        _submitButton = new Button { Text = "Configuración completa", MaximumWidthRequest = 600, Margin = new Thickness(0, 50) };
         _submitButton.Clicked += OnSubmitClicked;
         Content = new VerticalStackLayout
         {
             Padding = 30,
             Children =
             {
-                new Label { Text = "欢迎使用，请完成初始设置：", FontSize = 20, HorizontalOptions = LayoutOptions.Center , Margin = new Thickness(0,50) },
+                new Label { Text = "Bienvenido, complete la configuración inicial：", FontSize = 20, HorizontalOptions = LayoutOptions.Center , Margin = new Thickness(0,50) },
                 _tenantEntry,
                 _adminUserEntry,
                 _adminPassEntry,
@@ -41,14 +41,14 @@ public partial class OnboardingPage : ContentPage
 
     private async void OnSubmitClicked(object? sender, EventArgs e)
     {
-        var tenantName = _tenantEntry.Text?.Trim() ?? "我的公司";
+        var tenantName = _tenantEntry.Text?.Trim() ?? "Mi empresa";
         var adminUser = _adminUserEntry.Text?.Trim() ?? "admin";
         var adminPass = _adminPassEntry.Text?.Trim() ?? "123456";
         var firstUser = _firstUserEntry.Text?.Trim() ?? "demo";
         var firstUserPass = _firstUserPassEntry.Text?.Trim() ?? "0";
         if (string.IsNullOrEmpty(tenantName) || string.IsNullOrEmpty(adminUser) || string.IsNullOrEmpty(adminPass) || string.IsNullOrEmpty(firstUser))
         {
-            await DisplayAlertAsync("提示", "请填写所有信息", "确定");
+            await DisplayAlertAsync("Aviso", "Por favor complete toda la información", "Aceptar");
             return;
         }
         // 创建租户
@@ -61,7 +61,7 @@ public partial class OnboardingPage : ContentPage
         var user = new User { Username = firstUser, Password = firstUserPass, IsAdmin = false, TenantId = tenant.Id };
         _fsql?.Insert(user).ExecuteAffrows();
         Preferences.Set("OnboardingDone", true);
-        await DisplayAlertAsync("完成", "初始化完成！", "进入系统");
+        await DisplayAlertAsync("Finalizar", "Inicialización completada！", "Ingrese al sistema");
         await Navigation.PopModalAsync();
     }
 }

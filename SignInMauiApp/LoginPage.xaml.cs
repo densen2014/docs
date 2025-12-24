@@ -15,7 +15,7 @@ public partial class LoginPage : ContentPage
     {
         InitializeComponent();
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
-        // 新增：检查是否需要显示引导页
+        // 检查是否需要显示引导页
         CheckAndShowOnboardingAsync();
         LoadTenants();
         GenerateAndShowQRCode();
@@ -44,6 +44,7 @@ public partial class LoginPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        PasswordEntry.Text = "";
         LoadTenants(); // 注册后刷新租户列表
 #if WINDOWS
         CheckAndCreateDesktopShortcutAsync();
@@ -93,7 +94,7 @@ public partial class LoginPage : ContentPage
         var tenantIdx = TenantPicker.SelectedIndex;
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
         {
-            ErrorLabel.Text = "请填写完整信息";
+            ErrorLabel.Text = "Por favor complete la información completa";
             SignInResultLabel.Text = "";
             ErrorLabel.IsVisible = true;
             return;
@@ -102,7 +103,7 @@ public partial class LoginPage : ContentPage
         var user = _fsql!.Select<User>().Where(u => u.Username == username && u.Password == password && u.TenantId == tenantId).First();
         if (user == null)
         {
-            ErrorLabel.Text = "用户名或密码错误";
+            ErrorLabel.Text = "Nombre de usuario o contraseña incorrectos";
             SignInResultLabel.Text = "";
             ErrorLabel.IsVisible = true;
             return;
@@ -127,7 +128,7 @@ public partial class LoginPage : ContentPage
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
         {
             MainThread.BeginInvokeOnMainThread(() => {
-             ErrorLabel.Text = "请填写完整信息";
+             ErrorLabel.Text = "Por favor complete la información completa";
             SignInResultLabel.Text = "";
             ErrorLabel.IsVisible = true;
             });
@@ -138,7 +139,7 @@ public partial class LoginPage : ContentPage
         if (user == null)
         {
             MainThread.BeginInvokeOnMainThread(() => {
-                ErrorLabel.Text = "用户名或密码错误";
+                ErrorLabel.Text = "Nombre de usuario o contraseña incorrectos";
                 SignInResultLabel.Text = "";
                 ErrorLabel.IsVisible = true;
             });
@@ -161,11 +162,11 @@ public partial class LoginPage : ContentPage
         }
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
         MainThread.BeginInvokeOnMainThread(() => {
-            SignInResultLabel.Text = $"{(signInWeb.Action == "signin" ? "签到" : "签出")}成功：{record.SignInTime:yyyy-MM-dd HH:mm:ss}";
+            SignInResultLabel.Text = $"{(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
             ErrorLabel.Text = "";
             SignInResultLabel.IsVisible = true;
         });
-        return $"{(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")} ：{record.SignInTime:dd/MM/yyyy HH:mm:ss}"; ;
+        return $"{(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}"; ;
     }
 
     private async void OnRegisterClicked(object sender, EventArgs e)
@@ -181,7 +182,7 @@ public partial class LoginPage : ContentPage
         string shortcutPath = Path.Combine(desktopPath, shortcutName);
         if (!File.Exists(shortcutPath))
         {
-            bool create = await DisplayAlertAsync("创建桌面快捷方式", "未检测到桌面快捷方式，是否创建？", "是", "否");
+            bool create = await DisplayAlertAsync("Crear acceso directo en el escritorio ", "Acceso directo en el escritorio no detectado, ¿crearlo?", "Sí", "No");
             if (create)
             {
                 try
@@ -190,7 +191,7 @@ public partial class LoginPage : ContentPage
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlertAsync("错误", $"创建快捷方式失败: {ex.Message}", "确定");
+                    await DisplayAlertAsync("error", $"No se pudo crear el acceso directo: {ex.Message}", "Aceptar");
                 }
             }
         }

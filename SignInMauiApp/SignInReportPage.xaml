@@ -4,16 +4,17 @@
              x:Class="SignInMauiApp.SignInReportPage">
     <ScrollView>
         <VerticalStackLayout Padding="20,30" Spacing="10">
-            <Label Text="签到历史报表" FontSize="22" HorizontalOptions="Center" />
+            <Label Text="REGISTRO DIARIO DE JORNADA EN TRABAJADORES" FontSize="22" HorizontalOptions="Center" />
             <HorizontalStackLayout Spacing="10">
-                <Label Text="员工名称" VerticalOptions="Center" />
-                <Picker x:Name="UsernamePicker" WidthRequest="120" />
-                <DatePicker x:Name="StartDatePicker" />
-                <Label Text="至" VerticalOptions="Center" />
-                <DatePicker x:Name="EndDatePicker" />
-                <Button Text="查询" Clicked="OnQueryClicked" WidthRequest="100" />
-                <Button Text="导出Excel" Clicked="OnExportClicked" WidthRequest="100" />
-                <Button Text="导出PDF" Clicked="OnExportPdfClicked" WidthRequest="100" />
+                <Label x:Name="UsernameLabel" Text="TRABAJADOR" VerticalOptions="Center" />
+                <Picker x:Name="UsernamePicker" WidthRequest="100" />
+                <Label Text="Años" VerticalOptions="Center" />
+                <Picker x:Name="YearPicker" WidthRequest="90" />
+                <Label Text="Mes" VerticalOptions="Center" />
+                <Picker x:Name="MonthPicker" WidthRequest="70" />
+                <Button Text="Consulta" Clicked="OnQueryClicked" WidthRequest="100" />
+                <Button Text="Exportar Excel" Clicked="OnExportClicked" WidthRequest="120" />
+                <Button Text="Exportar PDF" Clicked="OnExportPdfClicked" WidthRequest="120" />
             </HorizontalStackLayout>
 
             <!-- 表头 -->
@@ -23,26 +24,26 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="60"/> <!-- 假日 -->
+                    <ColumnDefinition Width="60"/> 
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="90"/>
-                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="130"/>
                     <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
-                <Label Text="员工" FontAttributes="Bold" Grid.Column="0" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="日" FontAttributes="Bold" Grid.Column="1" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="上午签到" FontAttributes="Bold" Grid.Column="2" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="上午签退" FontAttributes="Bold" Grid.Column="3" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="下午签到" FontAttributes="Bold" Grid.Column="4" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="下午签退" FontAttributes="Bold" Grid.Column="5" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="总工时" FontAttributes="Bold" Grid.Column="6" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="正常工时" FontAttributes="Bold" Grid.Column="7" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="补充工时" FontAttributes="Bold" Grid.Column="8" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                <Label Text="公司" FontAttributes="Bold" Grid.Column="9" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Trabajador" FontAttributes="Bold" Grid.Column="0" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Día del mes" FontAttributes="Bold" Grid.Column="1" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Entrada de mañana" FontAttributes="Bold" Grid.Column="2" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Salida de mañana" FontAttributes="Bold" Grid.Column="3" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Entrada de tarde" FontAttributes="Bold" Grid.Column="4" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Salida de tarde" FontAttributes="Bold" Grid.Column="5" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Total Horas Jornada" FontAttributes="Bold" Grid.Column="6" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Horas Ordinarias" FontAttributes="Bold" Grid.Column="7" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Horas Complementarias" FontAttributes="Bold" Grid.Column="8" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Empresa" FontAttributes="Bold" Grid.Column="9" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
             </Grid>
 
             <CollectionView x:Name="ReportCollectionView" ItemsLayout="VerticalList" Margin="0">
@@ -58,7 +59,7 @@
                                 <ColumnDefinition Width="90"/>
                                 <ColumnDefinition Width="90"/>
                                 <ColumnDefinition Width="90"/>
-                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="130"/>
                                 <ColumnDefinition Width="120"/>
                             </Grid.ColumnDefinitions>
                             <Label Text="{Binding Username}" Grid.Column="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>

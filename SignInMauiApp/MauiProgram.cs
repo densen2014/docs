@@ -28,8 +28,10 @@ public static class MauiProgram
 
         // 注册 FreeSql ORM，使用 SQLite 数据库
         var fsql = new FreeSqlBuilder()
-            .UseAutoSyncStructure(true)
-            .UseConnectionString(DataType.Sqlite, "Data Source=signindb.db")
+#if DEBUG
+ .UseAutoSyncStructure(true)
+#endif
+          .UseConnectionString(DataType.Sqlite, "Data Source=signindb.db")
             .Build();
         builder.Services.AddSingleton(fsql);
 

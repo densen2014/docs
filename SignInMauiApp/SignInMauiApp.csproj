@@ -38,8 +38,8 @@
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         
         <!-- 便携，不依赖系统 -->
-        <!--<SelfContained>true</SelfContained>
-        <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>-->
+        <SelfContained>true</SelfContained>
+        <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 
         <!-- 不用 MSIX -->
         <WindowsPackageType>None</WindowsPackageType> 
@@ -60,14 +60,13 @@
 
     <ItemGroup>
         <!-- App Icon -->
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+        <MauiIcon Include="Resources\AppIcon\appicon2.png"/>
 
         <!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+        <MauiSplashScreen Include="Resources\Images\logo2.png" BaseSize="128,128" />
 
         <!-- Images -->
         <MauiImage Include="Resources\Images\*" />
-        <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
         <!-- Custom Fonts -->
         <MauiFont Include="Resources\Fonts\*" />
@@ -92,6 +91,6 @@
     
     <ItemGroup>
         <EmbeddedResource Include="appsettings.json" />
-    </ItemGroup>
+    </ItemGroup> 
     
 </Project>

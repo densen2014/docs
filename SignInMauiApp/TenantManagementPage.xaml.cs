@@ -30,11 +30,17 @@ public partial class TenantManagementPage : ContentPage
 
         if (_fsql!.Select<Tenant>().Any(t => t.Name == name))
         {
-            await DisplayAlertAsync("提示", "公司已存在", "确定");
+            await DisplayAlertAsync("Aviso", "La empresa ya existe.", "Aceptar");
             return;
         }
-        await _fsql!.Insert(new Tenant { Name = name }).ExecuteAffrowsAsync();
+        var tenant = new Tenant
+        {
+            Name = name,
+            TaxNumber = NewTenantTaxNumberEntry.Text
+        };
+        await _fsql!.Insert(tenant).ExecuteAffrowsAsync();
         NewTenantEntry.Text = string.Empty;
+        NewTenantTaxNumberEntry.Text = string.Empty;
         LoadTenants();
     }
 
@@ -42,10 +48,15 @@ public partial class TenantManagementPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Tenant tenant)
         {
-            string result = await DisplayPromptAsync("编辑公司", "请输入新名称", initialValue: tenant.Name);
-            if (!string.IsNullOrEmpty(result) && result != tenant.Name)
+            string result = await DisplayPromptAsync("Editar nombre de la empresa", "Por favor ingresa un nuevo nombre", initialValue: tenant.Name);
+            if (!string.IsNullOrEmpty(result))
             {
                 tenant.Name = result;
+                result = await DisplayPromptAsync("Editar el número de identificación fiscal de la empresa", "Por favor ingrese el nuevo número de identificación fiscal", initialValue: tenant.TaxNumber);
+                if (!string.IsNullOrEmpty(result) && result != tenant.TaxNumber)
+                {
+                    tenant.TaxNumber = result; 
+                } 
                 await _fsql!.Update<Tenant>().SetSource(tenant).ExecuteAffrowsAsync();
                 LoadTenants();
             }
@@ -56,7 +67,7 @@ public partial class TenantManagementPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Tenant tenant)
         {
-            if (await DisplayAlertAsync("确认", $"确定删除公司：{tenant.Name}？", "删除", "取消"))
+            if (await DisplayAlertAsync("Confirmar", $"Confirmar para eliminar empresa：{tenant.Name}？", "Borrar", "Cancelar"))
             {
                 await _fsql!.Delete<Tenant>().Where(t => t.Id == tenant.Id).ExecuteAffrowsAsync();
                 LoadTenants();
