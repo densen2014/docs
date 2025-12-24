@@ -19,7 +19,7 @@
         <Nullable>enable</Nullable>
 
         <!-- Display name -->
-        <ApplicationTitle>SignInMauiApp</ApplicationTitle>
+        <ApplicationTitle>Fichaje</ApplicationTitle>
 
         <!-- App Identifier -->
         <ApplicationId>es.densen.signinmauiapp</ApplicationId>

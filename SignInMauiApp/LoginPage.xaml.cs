@@ -127,10 +127,11 @@ public partial class LoginPage : ContentPage
         var tenantIdx = TenantPicker.SelectedIndex;
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
         {
-            MainThread.BeginInvokeOnMainThread(() => {
-             ErrorLabel.Text = "Por favor complete la información completa";
-            SignInResultLabel.Text = "";
-            ErrorLabel.IsVisible = true;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ErrorLabel.Text = "Por favor complete la información completa";
+                SignInResultLabel.Text = "";
+                ErrorLabel.IsVisible = true;
             });
             return "Por favor complete la información completa";
         }
@@ -138,7 +139,8 @@ public partial class LoginPage : ContentPage
         var user = _fsql!.Select<User>().Where(u => u.Username == username && u.Password == password && u.TenantId == tenantId).First();
         if (user == null)
         {
-            MainThread.BeginInvokeOnMainThread(() => {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
                 ErrorLabel.Text = "Nombre de usuario o contraseña incorrectos";
                 SignInResultLabel.Text = "";
                 ErrorLabel.IsVisible = true;
@@ -161,7 +163,8 @@ public partial class LoginPage : ContentPage
             record.SignType = SignTypeEnum.SignOutWork;
         }
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        MainThread.BeginInvokeOnMainThread(() => {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
             SignInResultLabel.Text = $"{(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
             ErrorLabel.Text = "";
             SignInResultLabel.IsVisible = true;
@@ -177,23 +180,26 @@ public partial class LoginPage : ContentPage
 #if WINDOWS
     private async void CheckAndCreateDesktopShortcutAsync()
     {
-        string shortcutName = "SignIn.lnk";
+        string shortcutName = "Fichaje.lnk";
         string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         string shortcutPath = Path.Combine(desktopPath, shortcutName);
         if (!File.Exists(shortcutPath))
         {
-            bool create = await DisplayAlertAsync("Crear acceso directo en el escritorio ", "Acceso directo en el escritorio no detectado, ¿crearlo?", "Sí", "No");
-            if (create)
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
-                try
+                bool create = await DisplayAlertAsync("Crear acceso directo en el escritorio ", "Acceso directo en el escritorio no detectado, ¿crearlo?", "Sí", "No");
+                if (create)
                 {
-                    CreateShortcut(shortcutPath);
+                    try
+                    {
+                        CreateShortcut(shortcutPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlertAsync("error", $"No se pudo crear el acceso directo: {ex.Message}", "Aceptar");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    await DisplayAlertAsync("error", $"No se pudo crear el acceso directo: {ex.Message}", "Aceptar");
-                }
-            }
+            });
         }
     }
 
@@ -208,7 +214,7 @@ public partial class LoginPage : ContentPage
         shortcut!.GetType().InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { exePath });
         shortcut.GetType().InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object?[] { Path.GetDirectoryName(exePath) });
         shortcut.GetType().InvokeMember("WindowStyle", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { 1 });
-        shortcut.GetType().InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "SignInMauiApp" });
+        shortcut.GetType().InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "Fichaje - Registro de Jornada Laboral" });
         shortcut.GetType().InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
     }
 #endif
