@@ -8,9 +8,11 @@ public static class NetworkHelper
     public static IPAddress? GetIpAddress()
     {
         // Up, Ethernet and IP4.
-        var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(network => network.OperationalStatus == OperationalStatus.Up &&
-                network.GetIPProperties().UnicastAddresses.Any(ai => ai.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
-                network.NetworkInterfaceType != NetworkInterfaceType.Loopback))
+        var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(nic =>
+                                    nic.OperationalStatus == OperationalStatus.Up &&
+                                    nic.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                                    nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel &&
+                                    nic.GetIPProperties().GatewayAddresses.Count>0)
             .ToArray();
         if (networkInterfaces.Count() == 0)
         {
