@@ -147,3 +147,12 @@ public class SignInWeb
     public string Password { get; set; } = string.Empty;
     public string Action { get; set; } = "signin";
 }
+
+public class SignInResponse
+{
+    public bool Success { get; set; }
+    public string? Status { get; set; } 
+    public string? Message { get; set; }
+    public DateTime? LastSignIn { get; set; }
+
+} 

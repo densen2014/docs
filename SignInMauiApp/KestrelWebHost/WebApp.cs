@@ -14,17 +14,40 @@ public partial class WebApp
         {
             { "/", async (ctx, res) =>
                 {
+                    if (!IsAuthenticated(ctx)) {
+                        await RenderLoginForm(res);
+                        return;
+                    }
                     if (ctx.Request.Method == "POST") {
-                        await HandleControlRequest(ctx, res);
+                        await HandleSignInControlRequest(ctx, res);
                     } else {
-                        await RenderPlayerControlForm(res);
+                        await RenderSignInControlForm(res);
                     }
                 }
             },
+            { "/login", async (ctx, res) =>
+                {
+                    if (ctx.Request.Method == "POST") {
+                        await HandleLoginRequest(ctx, res);
+                    } else {
+                        await RenderLoginForm(res);
+                    }
+                }
+            },
+            { "/logout", async (ctx, res) =>
+                { 
+                    HandleLogoutRequest(ctx, res); 
+                }
+            },
         };
-    private static async Task RenderPlayerControlForm(HttpResponse response)
+    private static bool IsAuthenticated(HttpContext ctx)
     {
-        var html = """"
+        return ctx.Request.Cookies.TryGetValue("auth", out var val) && val == "1";
+    }
+
+    private static async Task RenderLoginForm(HttpResponse response)
+    {
+        var html = """
 <!DOCTYPE html>
 <html lang='es'>
 <head>
@@ -34,28 +57,25 @@ public partial class WebApp
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
 </head>
 <body>
-    <div class='container mt-5'>
-        <h1 class='text-center'>Registro de jornada laboral</h1>
-        <form id='productForm' class='mt-4'>
+    <div class='container mt-5 text-center w-75'>
+        <h4>Inicia sesión</h4><br/><br/> 
+        <form id='loginForm' class='mt-4'>
             <div class='mb-3'>
-                <label for='username' class='form-label'>Nombre</label>
-                <input type='text' class='form-control' id='username' name='username' placeholder='Nombre' value='' required>
+                <input type='text' class='form-control' id='username' name='username' placeholder="Usuario" required>
             </div>
             <div class='mb-3'>
-                <label for='password' class='form-label'>Clave</label>
-                <input type='password' class='form-control' id='password' name='password' placeholder='Clave' value='' required>
+                <input type='password' class='form-control' id='password' name='password' placeholder="Contraseña" required>
             </div> 
-            <button type='button' class='btn btn-primary mb-3' onclick='submitForm("signin")'>Marcar la entrada</button>
-            <button type='button' class='btn btn-success mb-3' onclick='submitForm("signout")'>Marcar la salida</button>
-            <button type='button' class='btn btn-danger mb-3' onclick='clearCache()'>Borrar Caché</button>
-            <h6 id='result' class='text-info'>bienvenido</h6>
+            <button type='button' class='btn btn-primary w-100' onclick='submitLogin()'>Iniciar sesión</button><br/><br/>
+            <h6 id='result' class='text-info'></h6>
+            <h6 id='resultError' class='text-danger'></h6>
         </form>
     </div>
     <script>
-        const form = document.getElementById('productForm');
         const result = document.getElementById('result');
+        const resultError = document.getElementById('resultError');
         // 在页面加载时恢复输入框的值
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded',async function () {
             const inputs = document.querySelectorAll('input, textarea'); // 选择所有输入框和文本区域
             inputs.forEach(input => {
                 const savedValue = localStorage.getItem(input.id); // 从 localStorage 获取值
@@ -70,17 +90,122 @@ public partial class WebApp
                     }
                 }); 
             });
+            if (localStorage.getItem('username')){
+                const jsonData = {}; 
+                jsonData['username'] = localStorage.getItem('username');
+                jsonData['password'] = localStorage.getItem('password'); 
+                jsonData['action'] = 'login';
+                submitLoginData(jsonData);
+            }
         });
-        async function submitForm(action) {
+        async function submitLogin() {
+            result.innerText ='',
+            resultError.innerText ='';
+            const form = document.getElementById('loginForm');
             const formData = new FormData(form);
-
-            // Convertir los datos del formulario a un objeto JSON
             const jsonData = {};
             formData.forEach((value, key) => {
                 jsonData[key] = value;
             });
+            jsonData['action'] = 'login';
+            await submitLoginData(jsonData);
+        }
+        async function submitLoginData(jsonData) { 
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(jsonData)
+                });
+                if (response.ok) {
+                    const resultresponse = await response.json(); 
+                    if (resultresponse.Success) {
+                        result.innerText = resultresponse.Message;
+                        setTimeout(() => { window.location.href = '/'; }, 50);
+                    } else { 
+                        resultError.innerText = resultresponse.Message;
+                    } 
+                } else {
+                    result.innerText = 'Error de inicio de sesión';
+                }
+            } catch {
+                resultError.innerText = 'Error de red';
+            }
+        }
+    </script>
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'></script>
+</body>
+</html>
+""";
+        response.ContentType = "text/html";
+        response.StatusCode = 200;
+        var htmlBytes = Encoding.UTF8.GetBytes(html);
+        response.ContentLength = htmlBytes.Length;
+        await response.Body.WriteAsync(htmlBytes, 0, htmlBytes.Length);
+    }
+    private static async Task RenderSignInControlForm(HttpResponse response)
+    {
+        var html = """
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Registro de jornada laboral</title>
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
+    <style>
+        .logout-fixed {
+            position: fixed; 
+            bottom: 10px;
+            width: 100%;
+            z-index: 999; 
+        }
+    </style>
+</head>
+<body>
+    <div class='container mt-5 text-center'>
+        <h4>Registro de jornada laboral</h4><hr/><br/><br/>
+        <h6 id='result' class='mt-3 mb-3 text-success'>Bienvenido</h6>
+        <h6 id='resultError' class='mt-3 mb-3 text-danger'></h6><br/><br/> 
+        <div class='m-4'>  
+            <button type='button' class='btn btn-primary w-75' onclick='submitForm("signin")'>Entrada</button>
+        </div>
+        <div class='m-4'>
+            <button type='button' class='btn btn-success w-75' onclick='submitForm("signout")'>Salida</button>
+        </div>
+    </div>
+    <div class='container logout-fixed text-center'>
+        <div class='m-4'>
+            <button type='button' class='btn btn-secondary w-75' onclick='logout()'>Cerrar sesión</button>
+        </div>
+    </div>
+    <script>
+        const result = document.getElementById('result');
+        const resultError = document.getElementById('resultError');
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        function deleteCookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+        document.addEventListener('DOMContentLoaded',function () { 
+            const lastSignIn = getCookie('lastSignIn');
+            if (lastSignIn){
+                result.innerText = 'Bienvenido,' + localStorage.getItem('username') + ' ' + lastSignIn;
+            } else {
+                result.innerText = 'Bienvenido,' + localStorage.getItem('username');
+            }
+        });
+        async function submitForm(action) {
+            result.innerText ='',
+            resultError.innerText ='';
+            const jsonData = {};
+            jsonData['username'] = localStorage.getItem('username');
+            jsonData['password'] = localStorage.getItem('password'); 
             jsonData['action'] = action;
-
             try {
                 const response = await fetch('/', {
                     method: 'POST',
@@ -89,56 +214,52 @@ public partial class WebApp
                     },
                     body: JSON.stringify(jsonData)
                 });
-
                 if (response.ok) {
                     const resultresponse = await response.json();
-                    result.innerText = resultresponse.message;
+                    if (resultresponse.Success) {
+                        result.innerText = resultresponse.Message;
+                    } else { 
+                        resultError.innerText = resultresponse.Message;
+                    }
                 } else {
                     const errorText = await response.text();
-                    result.innerText = errorText;
+                    resultError.innerText = errorText;
                     alert('Error: ' + errorText);
                 }
             } catch (error) {
                 console.error('Error al enviar el formulario:', error);
-                result.innerText = 'Ocurrió un error al enviar el formulario.';
+                resultError.innerText = 'Ocurrió un error al enviar el formulario.';
                 alert('Ocurrió un error al enviar el formulario.');
             }
         }
-        function clearCache() {
-            // 显示确认对话框
-            const userConfirmed = confirm('¿Estás seguro de que quieres borrar el caché?');
+        function logout() {
+            const userConfirmed = confirm('¿Cerrar sesión?');
 
-            if (userConfirmed) {
-                // 清除 localStorage 中的所有数据
-                localStorage.clear();
-
-                // 清空页面上的所有输入框和文本区域
-                const inputs = document.querySelectorAll('input, textarea');
-                inputs.forEach(input => {
-                    input.value = ''; // 清空输入框内容
-                });
-
-                // 提示用户缓存已清除
-                result.html ='Caché borrado！';
-            } else {
-                // 用户取消操作
-                alert('Operación cancelada.');
+            if (userConfirmed) { 
+                localStorage.clear(); 
+                deleteCookie('lastSignIn');
+                fetch('/logout', { method: 'POST' })
+                    .then(() => {
+                        window.location.href = '/';
+                    });
+                //setTimeout(() => { window.location.href = '/'; }, 500);  
             }
         }  
     </script>
     <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'></script>
 </body>
 </html>
-"""";
+""";
         response.ContentType = "text/html";
         response.StatusCode = 200;
         var htmlBytes = Encoding.UTF8.GetBytes(html);
         response.ContentLength = htmlBytes.Length;
         await response.Body.WriteAsync(htmlBytes, 0, htmlBytes.Length);
     }
-    public static Func<SignInWeb, Task<string>>? OnControl { get; set; }
 
-    private static async Task HandleControlRequest(HttpContext httpContext, HttpResponse response)
+    public static Func<SignInWeb, Task<SignInResponse>>? OnControl { get; set; }
+
+    private static async Task HandleSignInControlRequest(HttpContext httpContext, HttpResponse response)
     {
         try
         {
@@ -149,18 +270,9 @@ public partial class WebApp
             if (data != null && OnControl != null)
             {
                 // 触发回调
-                var res =await OnControl.Invoke(data);
-
-                // 创建响应 JSON 对象
-                var responseData = new Dictionary<string, object>
-                    {
-                        { "message", res??"Received and processed successfully" },
-                        { "code", 1 },
-                    };
-
-                var jsonResponse = JsonSerializer.Serialize(responseData);
+                var res = await OnControl.Invoke(data); 
+                var jsonResponse = JsonSerializer.Serialize(res);
                 var jsonResponseBytes = Encoding.UTF8.GetBytes(jsonResponse);
-
                 response.ContentLength = jsonResponseBytes.Length;
                 await response.Body.WriteAsync(jsonResponseBytes, 0, jsonResponseBytes.Length);
             }
@@ -197,6 +309,49 @@ public partial class WebApp
             var notFoundBytes = Encoding.UTF8.GetBytes("404 - Not Found");
             response.ContentLength = notFoundBytes.Length;
             await response.Body.WriteAsync(notFoundBytes, 0, notFoundBytes.Length);
+        }
+    }
+
+    private static void HandleLogoutRequest(HttpContext httpContext, HttpResponse response)
+    {
+        response.Cookies.Delete("auth");
+        response.Cookies.Delete("lastSignIn");
+    }
+
+    private static async Task HandleLoginRequest(HttpContext httpContext, HttpResponse response)
+    {
+        try
+        {
+            using var reader = new StreamReader(httpContext.Request.Body, Encoding.UTF8);
+            var requestBody = await reader.ReadToEndAsync();
+            var data = JsonSerializer.Deserialize<SignInWeb>(requestBody, optionsIn);
+
+            if (data != null && OnControl != null)
+            {
+                // 触发回调
+                var res = await OnControl.Invoke(data);
+                var jsonResponse = JsonSerializer.Serialize(res);
+                if (!res.Success)
+                {
+                    response.StatusCode = 401;
+                }
+                else
+                {
+                    response.Cookies.Append("auth", "1", new CookieOptions { HttpOnly = true });
+                    response.Cookies.Append("lastSignIn", $"{res.LastSignIn}", new CookieOptions { HttpOnly = true });
+                }
+
+                var jsonResponseBytes = Encoding.UTF8.GetBytes(jsonResponse);
+                response.ContentLength = jsonResponseBytes.Length;
+                await response.Body.WriteAsync(jsonResponseBytes, 0, jsonResponseBytes.Length);
+            } 
+        }
+        catch
+        {
+            response.StatusCode = 400;
+            var errorResponse = Encoding.UTF8.GetBytes("Invalid login data");
+            response.ContentLength = errorResponse.Length;
+            await response.Body.WriteAsync(errorResponse, 0, errorResponse.Length);
         }
     }
 

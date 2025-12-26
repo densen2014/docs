@@ -22,8 +22,7 @@ public partial class LoginPage : ContentPage
         // 订阅 OnPlayControl 回调
         WebApp.OnControl = async signInWeb =>
         {
-            var res = string.Empty;
-            res = await OnsigninWeb(signInWeb);
+            var res = await OnsigninWeb(signInWeb);
             return res;
         };
 
@@ -56,7 +55,7 @@ public partial class LoginPage : ContentPage
         // 检查本地存储是否已完成引导
         var onboardingDone = Preferences.Get("OnboardingDone", false);
         var tenantsCount = _fsql!.Select<Tenant>().Count();
-        if (tenantsCount == 0 || !onboardingDone)
+        if (tenantsCount == 0) // || !onboardingDone)
         {
             await Navigation.PushModalAsync(new OnboardingPage(_fsql));
         }
@@ -115,7 +114,7 @@ public partial class LoginPage : ContentPage
         await Navigation.PushAsync(new SignInPage(user, _tenants[tenantIdx]));
     }
 
-    private async Task<string> OnsigninWeb(SignInWeb signInWeb)
+    private async Task<SignInResponse> OnsigninWeb(SignInWeb signInWeb)
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -133,7 +132,11 @@ public partial class LoginPage : ContentPage
                 SignInResultLabel.Text = "";
                 ErrorLabel.IsVisible = true;
             });
-            return "Por favor complete la información completa";
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = "Por favor complete la información completa"
+            };
         }
         var tenantId = _tenants[tenantIdx].Id;
         var user = _fsql!.Select<User>().Where(u => u.Username == username && u.Password == password && u.TenantId == tenantId).First();
@@ -145,17 +148,76 @@ public partial class LoginPage : ContentPage
                 SignInResultLabel.Text = "";
                 ErrorLabel.IsVisible = true;
             });
-            return "Nombre de usuario o contraseña incorrectos";
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = "Nombre de usuario o contraseña incorrectos"
+            };
+        }
+        var lastSignIn = _fsql!.Select<SignInRecord>()
+                   .Where(r => r.UserId == user.Id && r.TenantId == tenantId)
+                   .OrderByDescending(r => r.SignInTime)
+                   .First();
+        if (signInWeb.Action == "login")
+        {
+            if (lastSignIn.SignInTime != null)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    SignInResultLabel.Text = $"{user.Username} iniciar sesión exitosamente, Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+                    SignInResultLabel.IsVisible = true;
+                });
+            }
+            return new SignInResponse()
+            {
+                Success = true,
+                Message = "Iniciar sesión exitosamente",
+                LastSignIn = lastSignIn?.SignInTime
+            };
         }
         var record = new SignInRecord
         {
             UserId = user.Id,
             TenantId = tenantId,
         };
-        if (signInWeb.Action == "signin")
+
+        var message = string.Empty;
+        if (signInWeb.Action == "signin" && lastSignIn.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignInWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
         {
-            record.SignInTime = DateTime.Now;
-            record.SignType = SignTypeEnum.SignInWork;
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                SignInResultLabel.Text = message;
+                SignInResultLabel.IsVisible = true;
+            });
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = message,
+                LastSignIn = lastSignIn?.SignInTime
+            };
+        }
+        else if (signInWeb.Action == "signout" && lastSignIn.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignOutWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
+        {
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                SignInResultLabel.Text = message;
+                SignInResultLabel.IsVisible = true;
+            });
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = message,
+                LastSignIn = lastSignIn?.SignInTime
+            };
+        }
+        else if (signInWeb.Action == "signin")
+        {
+            {
+                record.SignInTime = DateTime.Now;
+                record.SignType = SignTypeEnum.SignInWork;
+            }
         }
         else
         {
@@ -163,13 +225,19 @@ public partial class LoginPage : ContentPage
             record.SignType = SignTypeEnum.SignOutWork;
         }
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
+        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}"; 
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            SignInResultLabel.Text = $"{(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            SignInResultLabel.Text = message;
             ErrorLabel.Text = "";
             SignInResultLabel.IsVisible = true;
         });
-        return $"{(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}"; ;
+        return new SignInResponse()
+        {
+            Success = true,
+            Message = message,
+            LastSignIn = DateTime.Now 
+        };
     }
 
     private async void OnRegisterClicked(object sender, EventArgs e)

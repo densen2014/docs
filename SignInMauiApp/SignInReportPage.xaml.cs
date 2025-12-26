@@ -310,7 +310,7 @@ public partial class SignInReportPage : ContentPage
                 page.Footer().AlignCenter().Text(x =>
                 {
                     x.Span("Fecha de exportación: ");
-                    x.Span(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                    x.Span(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
                 });
             });
         });

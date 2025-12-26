@@ -19,9 +19,9 @@ public partial class SignInPage : ContentPage
             .Where(r => r.UserId == _user.Id && r.TenantId == _tenant.Id)
             .OrderByDescending(r => r.SignInTime)
             .First();
-        if (lastSignIn != null)
+        if (lastSignIn.SignInTime != null)
         {
-            SignInResultLabel.Text = $"Hora del último check-in：{lastSignIn.SignInTime:yyyy-MM-dd HH:mm:ss}，tipo：{lastSignIn.SignType}";
+            SignInResultLabel.Text = $"Hora del último marcar la {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
             SignInResultLabel.IsVisible = true;
         }
     }
