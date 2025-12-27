@@ -73,10 +73,6 @@ public partial class TenantManagementPage : ContentPage
                 LoadTenants();
             }
         }
-    }
-
-    private void OnTenantSelected(object sender, SelectionChangedEventArgs e)
-    {
-        // 可扩展：选中公司后显示详情或关联用户
-    }
+    } 
+   
 }

@@ -19,7 +19,7 @@ public partial class SignInPage : ContentPage
             .Where(r => r.UserId == _user.Id && r.TenantId == _tenant.Id)
             .OrderByDescending(r => r.SignInTime)
             .First();
-        if (lastSignIn.SignInTime != null)
+        if (lastSignIn?.SignInTime != null)
         {
             SignInResultLabel.Text = $"Hora del último marcar la {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
             SignInResultLabel.IsVisible = true;
@@ -99,9 +99,9 @@ public partial class SignInPage : ContentPage
             }));
         }
         // 添加退出登录按钮
-        if (ToolbarItems.All(t => t.Text != "Finalizar la sesión"))
+        if (ToolbarItems.All(t => t.Text != "Salir"))
         {
-            ToolbarItems.Add(new ToolbarItem("Finalizar la sesión", null, async () =>
+            ToolbarItems.Add(new ToolbarItem("Salir", null, async () =>
             {
                 await Navigation.PopToRootAsync();
             }));

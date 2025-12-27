@@ -52,10 +52,8 @@ public partial class LoginPage : ContentPage
 
     private async void CheckAndShowOnboardingAsync()
     {
-        // 检查本地存储是否已完成引导
-        var onboardingDone = Preferences.Get("OnboardingDone", false);
         var tenantsCount = _fsql!.Select<Tenant>().Count();
-        if (tenantsCount == 0) // || !onboardingDone)
+        if (tenantsCount == 0)
         {
             await Navigation.PushModalAsync(new OnboardingPage(_fsql));
         }
@@ -160,7 +158,7 @@ public partial class LoginPage : ContentPage
                    .First();
         if (signInWeb.Action == "login")
         {
-            if (lastSignIn.SignInTime != null)
+            if (lastSignIn?.SignInTime != null)
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
@@ -182,7 +180,7 @@ public partial class LoginPage : ContentPage
         };
 
         var message = string.Empty;
-        if (signInWeb.Action == "signin" && lastSignIn.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignInWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
+        if (signInWeb.Action == "signin" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignInWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
         {
             message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
             MainThread.BeginInvokeOnMainThread(() =>
@@ -197,7 +195,7 @@ public partial class LoginPage : ContentPage
                 LastSignIn = lastSignIn?.SignInTime
             };
         }
-        else if (signInWeb.Action == "signout" && lastSignIn.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignOutWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
+        else if (signInWeb.Action == "signout" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignOutWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
         {
             message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
             MainThread.BeginInvokeOnMainThread(() =>

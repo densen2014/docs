@@ -24,23 +24,33 @@ public partial class UserManagementPage : ContentPage
 
     private async void OnEditUserClicked(object sender, EventArgs e)
     {
-        if (sender is Button btn && btn.CommandParameter is User User)
+        if (sender is Button btn && btn.CommandParameter is User user)
         {
-            string result = await DisplayPromptAsync("Editar nombre", "Por favor ingresa un nuevo nombre", initialValue: User.Name);
+            string result = await DisplayPromptAsync("Editar nombre de usuario", "Por favor ingresa un nuevo nombre", initialValue: user.Username);
             if (!string.IsNullOrEmpty(result))
             {
-                User.Name = result;
-                result = await DisplayPromptAsync("Editar número de identificación fiscal", "Por favor ingrese el nuevo número de identificación fiscal", initialValue: User.TaxNumber);
-                if (!string.IsNullOrEmpty(result) && result != User.TaxNumber)
+                user.Username = result;
+                result = await DisplayPromptAsync("Editar contraseña", "Por favor ingrese nuevo contraseña");
+                if (!string.IsNullOrEmpty(result) && result != user.Password)
                 {
-                    User.TaxNumber = result; 
+                    user.Password = result; 
                 } 
-                result = await DisplayPromptAsync("Editar horas de trabajo", "Por favor introduce un nuevo horario laboral", initialValue: User.WorkDuration.ToString());
-                if (!string.IsNullOrEmpty(result) && result != User.WorkDuration.ToString() && int.TryParse(result,out var workDuration))
+                result = await DisplayPromptAsync("Editar nombre y apellido", "Por favor ingrese nombre y apellido", initialValue: user.Name);
+                if (!string.IsNullOrEmpty(result) && result != user.Name)
                 {
-                    User.WorkDuration = workDuration; 
+                    user.Name = result; 
                 } 
-                await _fsql!.Update<User>().SetSource(User).ExecuteAffrowsAsync();
+                result = await DisplayPromptAsync("Editar número de identificación fiscal", "Por favor ingrese el nuevo número de identificación fiscal", initialValue: user.TaxNumber);
+                if (!string.IsNullOrEmpty(result) && result != user.TaxNumber)
+                {
+                    user.TaxNumber = result; 
+                } 
+                result = await DisplayPromptAsync("Editar horas de trabajo", "Por favor introduce un nuevo horario laboral", initialValue: user.WorkDuration.ToString());
+                if (!string.IsNullOrEmpty(result) && result != user.WorkDuration.ToString() && int.TryParse(result,out var workDuration))
+                {
+                    user.WorkDuration = workDuration; 
+                } 
+                await _fsql!.Update<User>().SetSource(user).ExecuteAffrowsAsync();
                 LoadUsers();
             }
         }
@@ -48,18 +58,13 @@ public partial class UserManagementPage : ContentPage
 
     private async void OnDeleteUserClicked(object sender, EventArgs e)
     {
-        if (sender is Button btn && btn.CommandParameter is User User)
+        if (sender is Button btn && btn.CommandParameter is User user)
         {
-            if (await DisplayAlertAsync("Confirmar", $"Confirmar para eliminar empresa：{User.Name}？", "Borrar", "Cancelar"))
+            if (await DisplayAlertAsync("Confirmar", $"Confirmar para eliminar empresa：{user.Name}？", "Borrar", "Cancelar"))
             {
-                await _fsql!.Delete<User>().Where(t => t.Id == User.Id).ExecuteAffrowsAsync();
+                await _fsql!.Delete<User>().Where(t => t.Id == user.Id).ExecuteAffrowsAsync();
                 LoadUsers();
             }
         }
-    }
-
-    private void OnUserSelected(object sender, SelectionChangedEventArgs e)
-    {
-        // 可扩展：选中公司后显示详情或关联用户
-    }
+    } 
 }

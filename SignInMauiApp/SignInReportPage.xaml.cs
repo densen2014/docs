@@ -36,7 +36,7 @@ public partial class SignInReportPage : ContentPage
         LoadUsernames();
 
         // 初始化年份和月份
-        var years = Enumerable.Range(DateTime.Today.Year - 10, 11).ToList();
+        var years = Enumerable.Range(DateTime.Today.Year - 5, 11).ToList();
         YearPicker.ItemsSource = years;
         YearPicker.SelectedItem = DateTime.Today.Year;
 
@@ -61,8 +61,8 @@ public partial class SignInReportPage : ContentPage
 
         if (_user.IsAdmin)
         {
-            var users = _fsql!.Select<User>().ToList();
-            UsernamePicker.ItemsSource = users.Select(u => u.Username).Distinct().ToList();
+            var users = _fsql!.Select<User>().Distinct().ToList();
+            UsernamePicker.ItemsSource = users.Select(u => u.Username).ToList();
             UsernamePicker.SelectedIndex = 0;
         }
     }

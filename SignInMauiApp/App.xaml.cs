@@ -7,6 +7,7 @@
 using KestrelWebHost;
 using MauiWebApi;
 using Microsoft.AspNetCore.Hosting;
+using SignInMauiApp.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Net; 
 
@@ -32,14 +33,14 @@ public partial class App : Application
         {
             return;
         }
-        // 初始化租户
-        if (!fsql.Select<Models.Tenant>().Any())
+        // 初始化数据库
+        var tables = fsql.DbFirst.GetTablesByDatabase();
+        var tableNames = tables.Select(t => t.Name).ToList();
+        var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord) }
+            .Where(t => !tableNames.Contains(t)).ToList();  
+        if (missingTables.Count > 0)
         {
-            Preferences.Set("OnboardingDone", false);
-            //var tenant = new Models.Tenant { Name = "我的公司" };
-            //fsql.Insert(tenant).ExecuteAffrows();
-            // 初始化用户
-            //fsql.Insert(new Models.User { Username = "admin", Password = "123456", TenantId = tenant.Id }).ExecuteAffrows();
+            fsql.CodeFirst.SyncStructure(typeof(Tenant), typeof(User), typeof(SignInRecord));
         }
     }
 

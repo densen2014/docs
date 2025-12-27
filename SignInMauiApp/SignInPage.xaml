@@ -5,8 +5,8 @@
     <VerticalStackLayout Padding="30,60" Spacing="20">
         <Image  HeightRequest="100" WidthRequest="100" Source="logo.jpg" HorizontalOptions="Center" />
         <Label x:Name="WelcomeLabel" FontSize="20" HorizontalOptions="Center" />
-        <Button Text="Marcar la entrada" Clicked="OnSignInClicked"  MaximumWidthRequest="600" />
-        <Button Text="Marcar la salida" Clicked="OnSignOutClicked"  MaximumWidthRequest="600" />
+        <Button Text="Entrada" Clicked="OnSignInClicked"  MaximumWidthRequest="600" />
+        <Button Text="Salida" Clicked="OnSignOutClicked"  MaximumWidthRequest="600" />
         <Label x:Name="SignInResultLabel" FontSize="16" TextColor="Green" IsVisible="False" HorizontalOptions="Center"  />
     </VerticalStackLayout>
 </ContentPage>

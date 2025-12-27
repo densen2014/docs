@@ -59,8 +59,7 @@ public partial class OnboardingPage : ContentPage
         _fsql?.Insert(admin).ExecuteAffrows();
         // 创建第一个普通用户
         var user = new User { Username = firstUser, Password = firstUserPass, IsAdmin = false, TenantId = tenant.Id };
-        _fsql?.Insert(user).ExecuteAffrows();
-        Preferences.Set("OnboardingDone", true);
+        _fsql?.Insert(user).ExecuteAffrows(); 
         await DisplayAlertAsync("Finalizar", "Inicialización completada！", "Ingrese al sistema");
         await Navigation.PopModalAsync();
     }
