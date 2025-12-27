@@ -39,10 +39,51 @@ public partial class WebApp
                     HandleLogoutRequest(ctx, res); 
                 }
             },
+            { "/bootstrap.bundle.min.js", StaticFiles},
+            { "/bootstrap.min.css", StaticFiles},
         };
     private static bool IsAuthenticated(HttpContext ctx)
     {
         return ctx.Request.Cookies.TryGetValue("auth", out var val) && val == "1";
+    }
+    private static async Task StaticFiles(HttpContext ctx, HttpResponse response)
+    {
+        var wwwroot = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot");
+        var filePath = ctx.Request.Path.Value?.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+        if (string.IsNullOrEmpty(filePath))
+        {
+            response.StatusCode = 404;
+            await response.WriteAsync("File not found");
+            return;
+        }
+        var fullPath = Path.Combine(wwwroot, filePath);
+
+        if (!File.Exists(fullPath))
+        {
+            response.StatusCode = 404;
+            await response.WriteAsync("File not found");
+            return;
+        }
+
+        var ext = Path.GetExtension(fullPath).ToLowerInvariant();
+        response.ContentType = ext switch
+        {
+            ".js" => "application/javascript",
+            ".css" => "text/css",
+            ".png" => "image/png",
+            ".jpg" => "image/jpeg",
+            ".jpeg" => "image/jpeg",
+            ".gif" => "image/gif",
+            ".ico" => "image/x-icon",
+            ".svg" => "image/svg+xml",
+            ".html" => "text/html",
+            _ => "application/octet-stream"
+        };
+
+        var bytes = await File.ReadAllBytesAsync(fullPath);
+        response.StatusCode = 200;
+        response.ContentLength = bytes.Length;
+        await response.Body.WriteAsync(bytes, 0, bytes.Length);
     }
 
     private static async Task RenderLoginForm(HttpResponse response)
@@ -54,7 +95,7 @@ public partial class WebApp
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Registro de jornada laboral</title>
-    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='bootstrap.min.css' rel='stylesheet'>
 </head>
 <body>
     <div class='container mt-5 text-center w-75'>
@@ -133,7 +174,7 @@ public partial class WebApp
             }
         }
     </script>
-    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'></script>
+    <script src='bootstrap.bundle.min.js'></script>
 </body>
 </html>
 """;
@@ -152,7 +193,7 @@ public partial class WebApp
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Registro de jornada laboral</title>
-    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='bootstrap.min.css' rel='stylesheet'>
     <style>
         .logout-fixed {
             position: fixed; 
@@ -246,7 +287,7 @@ public partial class WebApp
             }
         }  
     </script>
-    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'></script>
+    <script src='bootstrap.bundle.min.js'></script>
 </body>
 </html>
 """;

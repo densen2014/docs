@@ -3,7 +3,7 @@
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
         <OutputType>WinExe</OutputType>
-        <TargetFrameworks>net10.0-windows;net48</TargetFrameworks>
+        <TargetFramework>net10.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -21,6 +21,8 @@
     <ItemGroup>
       <None Remove="logo2.png" />
       <None Remove="logo.jpg" />
+      <None Remove="wwwroot\bootstrap.bundle.min.js" />
+      <None Remove="wwwroot\bootstrap.min.css" />
     </ItemGroup>
 
     <ItemGroup>
@@ -31,6 +33,12 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="Registro_de_Jornada.ico" />
+      <Content Include="wwwroot\bootstrap.bundle.min.js">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="wwwroot\bootstrap.min.css">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     
     <ItemGroup>
