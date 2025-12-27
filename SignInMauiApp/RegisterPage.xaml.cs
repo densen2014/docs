@@ -6,13 +6,18 @@ namespace SignInMauiApp;
 public partial class RegisterPage : ContentPage
 {
     private readonly IFreeSql? _fsql;
-    private List<Tenant> _tenants = new();
+    private List<Tenant> _tenants = new(); 
 
-    public RegisterPage()
+    public RegisterPage(bool allowAddTenant=true)
     {
         InitializeComponent();
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
-        LoadTenants();
+        LoadTenants(); 
+        if (!allowAddTenant)
+        {
+            NewTenantEntry.IsVisible = false;
+            TenantPicker.IsVisible = false; 
+        }
     }
 
     private void LoadTenants()
