@@ -44,6 +44,7 @@ namespace SignInWinApp
             btnExportPDF = new AntdUI.Button();
             ReportCollectionView = new Table();
             labelTitle = new AntdUI.Label();
+            btnToday = new AntdUI.Button();
             HorizontalStackLayout.SuspendLayout();
             SuspendLayout();
             // 
@@ -82,6 +83,7 @@ namespace SignInWinApp
             HorizontalStackLayout.Controls.Add(labelMonth);
             HorizontalStackLayout.Controls.Add(MonthPicker);
             HorizontalStackLayout.Controls.Add(btnQuery);
+            HorizontalStackLayout.Controls.Add(btnToday);
             HorizontalStackLayout.Controls.Add(btnExportExcel);
             HorizontalStackLayout.Controls.Add(btnExportPDF);
             HorizontalStackLayout.Dock = DockStyle.Top;
@@ -108,7 +110,7 @@ namespace SignInWinApp
             UsernamePicker.Margin = new Padding(5, 2, 5, 2);
             UsernamePicker.Name = "UsernamePicker";
             UsernamePicker.PlaceholderText = "Usuario";
-            UsernamePicker.Size = new Size(101, 39);
+            UsernamePicker.Size = new Size(143, 39);
             UsernamePicker.TabIndex = 9;
             UsernamePicker.Text = "Usuario";
             // 
@@ -116,7 +118,7 @@ namespace SignInWinApp
             // 
             labelYear.AutoSizeMode = TAutoSize.Auto;
             labelYear.AutoSizePadding = true;
-            labelYear.Location = new Point(217, 3);
+            labelYear.Location = new Point(259, 3);
             labelYear.Name = "labelYear";
             labelYear.Padding = new Padding(0, 8, 0, 0);
             labelYear.Size = new Size(36, 27);
@@ -125,7 +127,7 @@ namespace SignInWinApp
             // 
             // YearPicker
             // 
-            YearPicker.Location = new Point(261, 2);
+            YearPicker.Location = new Point(303, 2);
             YearPicker.Margin = new Padding(5, 2, 5, 2);
             YearPicker.Name = "YearPicker";
             YearPicker.PlaceholderText = "Años";
@@ -137,7 +139,7 @@ namespace SignInWinApp
             // 
             labelMonth.AutoSizeMode = TAutoSize.Auto;
             labelMonth.AutoSizePadding = true;
-            labelMonth.Location = new Point(352, 3);
+            labelMonth.Location = new Point(394, 3);
             labelMonth.Name = "labelMonth";
             labelMonth.Padding = new Padding(0, 8, 0, 0);
             labelMonth.Size = new Size(30, 27);
@@ -146,7 +148,7 @@ namespace SignInWinApp
             // 
             // MonthPicker
             // 
-            MonthPicker.Location = new Point(390, 2);
+            MonthPicker.Location = new Point(432, 2);
             MonthPicker.Margin = new Padding(5, 2, 5, 2);
             MonthPicker.Name = "MonthPicker";
             MonthPicker.PlaceholderText = "Mes";
@@ -156,7 +158,7 @@ namespace SignInWinApp
             // 
             // btnQuery
             // 
-            btnQuery.Location = new Point(475, 3);
+            btnQuery.Location = new Point(517, 3);
             btnQuery.Name = "btnQuery";
             btnQuery.Size = new Size(86, 39);
             btnQuery.TabIndex = 15;
@@ -164,7 +166,7 @@ namespace SignInWinApp
             // 
             // btnExportExcel
             // 
-            btnExportExcel.Location = new Point(567, 3);
+            btnExportExcel.Location = new Point(701, 3);
             btnExportExcel.Name = "btnExportExcel";
             btnExportExcel.Size = new Size(86, 39);
             btnExportExcel.TabIndex = 16;
@@ -172,7 +174,7 @@ namespace SignInWinApp
             // 
             // btnExportPDF
             // 
-            btnExportPDF.Location = new Point(659, 3);
+            btnExportPDF.Location = new Point(793, 3);
             btnExportPDF.Name = "btnExportPDF";
             btnExportPDF.Size = new Size(86, 39);
             btnExportPDF.TabIndex = 17;
@@ -198,6 +200,14 @@ namespace SignInWinApp
             labelTitle.TabIndex = 19;
             labelTitle.Text = "REGISTRO DIARIO DE JORNADA EN TRABAJADORES";
             labelTitle.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // btnToday
+            // 
+            btnToday.Location = new Point(609, 3);
+            btnToday.Name = "btnToday";
+            btnToday.Size = new Size(86, 39);
+            btnToday.TabIndex = 19;
+            btnToday.Text = "Hoy";
             // 
             // SignInReportPage
             // 
@@ -235,5 +245,6 @@ namespace SignInWinApp
         private AntdUI.Label labelMonth;
         private Table ReportCollectionView;
         private AntdUI.Label labelTitle;
+        private AntdUI.Button btnToday;
     }
 }

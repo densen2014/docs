@@ -14,20 +14,20 @@ public partial class LoginPage : AntdUI.Window
     public LoginPage()
     {
         InitializeComponent();
+        Logo.Image = Program.GetLogoImage();
+        Icon = Program.GetAppIcon();
         ErrorLabel.Visible = false;
         SignInResultLabel.Visible = false;
         ErrorLabel.Text = "";
         SignInResultLabel.Text = "";
-        Logo.Image = Program.GetLogoImage();
         btnLogin.Click += OnLoginClicked;
         btnRegister.Click += OnRegisterClicked;
         ImageQR.Click += OnImageQRTapped;
 
         _fsql = Program.Fsql;
         // 检查是否需要显示引导页
-        CheckAndShowOnboardingAsync();
-        LoadTenants();
         GenerateAndShowQRCode();
+        CheckAndShowOnboardingAsync();
         OnAppearing();
         // 订阅 OnPlayControl 回调
         WebApp.OnControl = async signInWeb =>

@@ -91,7 +91,7 @@ namespace SignInWinApp
             // 
             // btnAddTenant
             // 
-            btnAddTenant.Location = new Point(453, 2);
+            btnAddTenant.Location = new Point(656, 2);
             btnAddTenant.Margin = new Padding(20, 2, 20, 2);
             btnAddTenant.Name = "btnAddTenant";
             btnAddTenant.Size = new Size(166, 39);
@@ -100,11 +100,11 @@ namespace SignInWinApp
             // 
             // NewTenantTaxNumberEntry
             // 
-            NewTenantTaxNumberEntry.Location = new Point(252, 2);
+            NewTenantTaxNumberEntry.Location = new Point(323, 2);
             NewTenantTaxNumberEntry.Margin = new Padding(5, 2, 5, 2);
             NewTenantTaxNumberEntry.Name = "NewTenantTaxNumberEntry";
             NewTenantTaxNumberEntry.PlaceholderText = "Nuevo número fiscal de empresa";
-            NewTenantTaxNumberEntry.Size = new Size(176, 39);
+            NewTenantTaxNumberEntry.Size = new Size(308, 39);
             NewTenantTaxNumberEntry.TabIndex = 15;
             // 
             // NewTenantEntry
@@ -113,7 +113,7 @@ namespace SignInWinApp
             NewTenantEntry.Margin = new Padding(5, 2, 5, 2);
             NewTenantEntry.Name = "NewTenantEntry";
             NewTenantEntry.PlaceholderText = "Nuevo nombre de la empresa";
-            NewTenantEntry.Size = new Size(237, 39);
+            NewTenantEntry.Size = new Size(308, 39);
             NewTenantEntry.TabIndex = 14;
             // 
             // TenantManagementPage

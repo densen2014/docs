@@ -13,9 +13,11 @@ public partial class TenantManagementPage : AntdUI.Window
     public TenantManagementPage()
     {
         InitializeComponent();
-
+        Icon = Program.GetAppIcon();
         window = this;
         btnAddTenant.Click += OnAddTenantClicked;
+        Header.BackClick += (s, e) => Close();
+        TenantCollectionView.EmptyText = "No hay datos de informe disponibles";
         _fsql = Program.Fsql;
         InitTableColumns();
         LoadTenants();

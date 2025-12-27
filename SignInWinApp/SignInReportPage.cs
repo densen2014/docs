@@ -13,24 +13,26 @@ public partial class SignInReportPage : AntdUI.Window
 {
     private readonly IFreeSql? _fsql;
     private List<SignInReportItem> _report = new();
-    int year => int.Parse(YearPicker.SelectedText ?? DateTime.Now.Year.ToString());
-    int month => int.Parse(MonthPicker.SelectedText ?? DateTime.Now.Month.ToString());
+    int year => int.Parse(YearPicker.Text ?? DateTime.Now.Year.ToString());
+    int month => int.Parse(MonthPicker.Text ?? DateTime.Now.Month.ToString());
     DateTime startDate => new DateTime(year, month, 1);
     DateTime endDate => startDate.AddMonths(1);
-    private readonly User _user;
-    private readonly Tenant _tenant;
+    private readonly User _user; 
     private AntList<SignInReportItem> antList = new AntList<SignInReportItem>();
 
-    public SignInReportPage(User user, Tenant tenant)
+    public SignInReportPage(User user)
     {
         InitializeComponent();
-        btnQuery.Click += OnQueryClicked;
+        Icon = Program.GetAppIcon();
+        btnQuery.Click += (s, e) => LoadReport();
+        btnToday.Click += (s, e) => LoadReport(today:true);
         btnExportExcel.Click += OnExportClicked;
         btnExportPDF.Click += OnExportPdfClicked;
+        Header.BackClick += (s, e) => Close();
+        ReportCollectionView.EmptyText = "No hay datos de informe disponibles";
 
         _fsql = Program.Fsql;
         _user = user;
-        _tenant = tenant;
 
         LoadUsernames();
         InitTableColumns();
@@ -57,15 +59,15 @@ public partial class SignInReportPage : AntdUI.Window
     {
         ReportCollectionView.Columns =
         [
-            new Column("Username", "Trabajador",ColumnAlign.Center) { Width = "80",ColBreak=true },
-            new Column("Day", "Día del mes",ColumnAlign.Center) { Width = "60" ,ColBreak=true},
-            new Column("MorningSignInTime", "Entrada de mañana",ColumnAlign.Center) { Width = "90" ,ColBreak=true},
-            new Column("MorningSignOutTime", "Salida de mañana",ColumnAlign.Center) { Width = "90",ColBreak=true },
-            new Column("AfternoonSignInTime", "Entrada de tarde",ColumnAlign.Center) { Width = "90",ColBreak=true },
-            new Column("AfternoonSignOutTime", "Salida de tarde",ColumnAlign.Center) { Width = "90",ColBreak=true },
-            new Column("TotalWorkHoursDisplay", "Total Horas Jornada",ColumnAlign.Center) { Width = "90",ColBreak=true },
-            new Column("NormalWorkHoursDisplay", "Horas Ordinarias",ColumnAlign.Center) { Width = "90",ColBreak=true },
-            new Column("ExtraWorkHoursDisplay", "Horas Complementarias",ColumnAlign.Center) { Width = "130",ColBreak=true },
+            new Column("Username", "Trabajador",ColumnAlign.Center) { Width = "80", ColBreak=true },
+            new Column("Day", "Día del mes",ColumnAlign.Center) { Width = "60" , ColBreak=true},
+            new Column("MorningSignInTime", "Entrada de mañana",ColumnAlign.Center) { Width = "90", ColBreak=true, DisplayFormat="HH:mm"},
+            new Column("MorningSignOutTime", "Salida de mañana",ColumnAlign.Center) { Width = "90", ColBreak=true, DisplayFormat="HH:mm" },
+            new Column("AfternoonSignInTime", "Entrada de tarde",ColumnAlign.Center) { Width = "90", ColBreak=true, DisplayFormat="HH:mm" },
+            new Column("AfternoonSignOutTime", "Salida de tarde",ColumnAlign.Center) { Width = "90", ColBreak=true, DisplayFormat="HH:mm" },
+            new Column("TotalWorkHoursDisplay", "Total Horas Jornada",ColumnAlign.Center) { Width = "90", ColBreak=true },
+            new Column("NormalWorkHoursDisplay", "Horas Ordinarias",ColumnAlign.Center) { Width = "90", ColBreak=true },
+            new Column("ExtraWorkHoursDisplay", "Horas Complementarias",ColumnAlign.Center) { Width = "130", ColBreak=true },
             new Column("TenantName", "Empresa",ColumnAlign.Center) { Width = "120" },
         ];
         ////初始化表格列头
@@ -90,15 +92,16 @@ public partial class SignInReportPage : AntdUI.Window
         }
     }
 
-    private void LoadReport()
+    private void LoadReport(bool today=false)
     {
 
-        var selectedUsername = (UsernamePicker.SelectedText as string) ?? _user.Username;
+        var selectedUsername = UsernamePicker.Text ?? _user.Username;
         var records = _fsql!.Select<SignInRecord, User, Tenant>()
             .LeftJoin((r, u, t) => r.UserId == u.Id)
             .LeftJoin((r, u, t) => r.TenantId == t.Id)
             .WhereIf(!string.IsNullOrEmpty(selectedUsername), (r, u, t) => u.Username == selectedUsername)
-            .Where((r, u, t) => r.SignInTime >= startDate && r.SignInTime < endDate)
+            .WhereIf(!today ,(r, u, t) => r.SignInTime >= startDate && r.SignInTime < endDate)
+            .WhereIf(today ,(r, u, t) => r.SignInTime >= DateTime.Today  && r.SignInTime < DateTime.Today.AddDays(1))
             .ToList((r, u, t) => new
             {
                 r.UserId,
@@ -168,12 +171,7 @@ public partial class SignInReportPage : AntdUI.Window
         antList.Clear();
         antList.AddRange(_report);
         ReportCollectionView.Binding(antList);
-    }
-
-    private void OnQueryClicked(object? sender, EventArgs e)
-    {
-        LoadReport();
-    }
+    } 
 
     private async void OnExportClicked(object? sender, EventArgs e)
     {

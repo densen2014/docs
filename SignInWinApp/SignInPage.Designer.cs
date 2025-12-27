@@ -35,7 +35,7 @@ namespace SignInWinApp
             btnSignIn = new AntdUI.Button();
             Logo = new PictureBox();
             SignInResultLabel = new AntdUI.Label();
-            ToolbarItems = new TabHeader();
+            Header = new TabHeader();
             MenuTop = new AntdUI.Menu();
             btnSignOut = new AntdUI.Button();
             ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
@@ -97,22 +97,22 @@ namespace SignInWinApp
             SignInResultLabel.Text = "SignInResultLabel";
             SignInResultLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // ToolbarItems
+            // Header
             // 
-            ToolbarItems.DividerShow = true;
-            ToolbarItems.Dock = DockStyle.Top;
-            ToolbarItems.Font = new Font("Microsoft YaHei UI", 11F);
-            ToolbarItems.LeftGap = 40;
-            ToolbarItems.Location = new Point(0, 0);
-            ToolbarItems.Margin = new Padding(4);
-            ToolbarItems.Name = "ToolbarItems";
-            ToolbarItems.ShowBack = true;
-            ToolbarItems.ShowButton = true;
-            ToolbarItems.Size = new Size(970, 35);
-            ToolbarItems.TabIndex = 8;
-            ToolbarItems.Text = "Fichaje";
-            ToolbarItems.UseForeColorDrawIcons = true;
-            ToolbarItems.UseLeftMargin = false;
+            Header.DividerShow = true;
+            Header.Dock = DockStyle.Top;
+            Header.Font = new Font("Microsoft YaHei UI", 11F);
+            Header.LeftGap = 40;
+            Header.Location = new Point(0, 0);
+            Header.Margin = new Padding(4);
+            Header.Name = "Header";
+            Header.ShowBack = true;
+            Header.ShowButton = true;
+            Header.Size = new Size(970, 35);
+            Header.TabIndex = 8;
+            Header.Text = "Fichaje";
+            Header.UseForeColorDrawIcons = true;
+            Header.UseLeftMargin = false;
             // 
             // MenuTop
             // 
@@ -148,7 +148,7 @@ namespace SignInWinApp
             Controls.Add(lblResult);
             Controls.Add(Logo);
             Controls.Add(MenuTop);
-            Controls.Add(ToolbarItems);
+            Controls.Add(Header);
             Font = new Font("Microsoft YaHei UI", 11F);
             Margin = new Padding(3, 4, 3, 4);
             Mode = TAMode.Light;
@@ -165,7 +165,7 @@ namespace SignInWinApp
         private AntdUI.Button btnSignIn;
         private PictureBox Logo;
         private AntdUI.Label SignInResultLabel;
-        private TabHeader ToolbarItems;
+        private TabHeader Header;
         private AntdUI.Menu MenuTop;
         private AntdUI.Button btnSignOut;
     }

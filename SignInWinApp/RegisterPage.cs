@@ -8,14 +8,21 @@ public partial class RegisterPage : AntdUI.Window
     private readonly IFreeSql? _fsql;
     private List<Tenant> _tenants = new();
 
-    public RegisterPage()
+    public RegisterPage(bool allowAddTenant = true)
     {
         InitializeComponent();
+        Icon = Program.GetAppIcon();
         ErrorLabel.Text = "";
         btnRegister.Click += OnRegisterClicked;
+        Header.BackClick += (s, e) => Close();
 
         _fsql = Program.Fsql;
         LoadTenants();
+        if (!allowAddTenant)
+        {
+            NewTenantEntry.Visible = false;
+            TenantPicker.Visible = false;
+        }
     }
 
     private void LoadTenants()
@@ -51,7 +58,12 @@ public partial class RegisterPage : AntdUI.Window
         int tenantId = -1;
         var name = NameEntry.Text?.Trim();
         var taxNumber = TaxNumberEntry.Text?.Trim();
-        var workDuration = (int)WorkDurationEntry.Value;
+        var workDuration = 8;
+        int.TryParse(WorkDurationEntry.Text, out workDuration);
+        if (workDuration <= 0)
+        {
+            workDuration = 8;
+        }
         if (!string.IsNullOrEmpty(newTenant))
         {
             var tenant = new Tenant { Name = newTenant! };

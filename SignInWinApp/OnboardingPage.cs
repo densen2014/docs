@@ -149,6 +149,7 @@ public partial class OnboardingPage : AntdUI.Window
         _fsql = fsql;
         Text = "Configuración por primera vez";
 
+        Icon = Program.GetAppIcon();
     }
 
     private async void OnSubmitClicked(object? sender, EventArgs e)

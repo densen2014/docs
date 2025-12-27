@@ -31,6 +31,7 @@ namespace SignInWinApp
         private void InitializeComponent()
         {
             Header = new PageHeader();
+            btnRegister = new AntdUI.Button();
             labelTitle = new AntdUI.Label();
             UserCollectionView = new Table();
             SuspendLayout();
@@ -50,6 +51,15 @@ namespace SignInWinApp
             Header.Text = "Fichaje";
             Header.UseForeColorDrawIcons = true;
             Header.UseLeftMargin = false;
+            // 
+            // btnRegister
+            // 
+            btnRegister.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnRegister.Location = new Point(826, 45);
+            btnRegister.Name = "btnRegister";
+            btnRegister.Size = new Size(137, 40);
+            btnRegister.TabIndex = 0;
+            btnRegister.Text = "Nuevo usuario";
             // 
             // labelTitle
             // 
@@ -77,6 +87,7 @@ namespace SignInWinApp
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(970, 650);
+            Controls.Add(btnRegister);
             Controls.Add(UserCollectionView);
             Controls.Add(labelTitle);
             Controls.Add(Header);
@@ -93,5 +104,6 @@ namespace SignInWinApp
         private PageHeader Header;
         private AntdUI.Label labelTitle;
         private Table UserCollectionView;
+        private AntdUI.Button btnRegister;
     }
 }

@@ -14,7 +14,10 @@ public partial class UserManagementPage : AntdUI.Window
     public UserManagementPage(Tenant tenant)
     {
         InitializeComponent();
-
+        Icon = Program.GetAppIcon();
+        btnRegister.Click += OnRegisterClicked;
+        Header.BackClick += (s, e) => Close();
+        UserCollectionView.EmptyText = "No hay datos de informe disponibles";
         window = this;
         _fsql = Program.Fsql;
         _tenant = tenant;
@@ -66,8 +69,8 @@ public partial class UserManagementPage : AntdUI.Window
     {
         var form = new UserEdit(window, user) { Size = new Size(500, 300) };
         AntdUI.Drawer.open(new AntdUI.Drawer.Config(window, form)
-        { 
-            OnClose =async () =>
+        {
+            OnClose = async () =>
             {
                 if (!form.submit)
                 {
@@ -118,5 +121,14 @@ public partial class UserManagementPage : AntdUI.Window
             LoadUsers();
         }
     }
+    private async void OnRegisterClicked(object? sender, EventArgs e)
+    {
+        var registerPage = new RegisterPage(false);
+        Hide();
+        registerPage.ShowDialog();
+        LoadUsers();
+        Show();
+    }
+     
 }
 

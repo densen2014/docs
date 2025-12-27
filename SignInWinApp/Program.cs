@@ -126,6 +126,20 @@ internal static class Program
     {
         AntdUI.Notification.error(loginPage!, "未处理的非UI线程异常", e.ToString()!, autoClose: 3, align: AntdUI.TAlignFrom.TR);
     }
+
+    internal static Icon GetAppIcon()
+    {
+        var iconPath = Path.Combine(AppContext.BaseDirectory, "Registro_de_Jornada.ico");
+        if (File.Exists(iconPath))
+        {
+            return new Icon(iconPath);
+        }
+        else
+        {
+            // Optionally, return a default icon or null
+            return SystemIcons.Application;
+        }
+    }
 }
 
 public static class Ext

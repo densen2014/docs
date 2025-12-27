@@ -12,10 +12,12 @@ public partial class SignInPage: AntdUI.Window
     public SignInPage(User user, Tenant tenant)
     {
         InitializeComponent();
+        Icon = Program.GetAppIcon();
         SignInResultLabel.Text = "";
         Logo.Image = Program.GetLogoImage();
         btnSignIn.Click += OnSignInClicked; 
         btnSignOut.Click += OnSignOutClicked;
+        Header.BackClick += (s, e) => Close();
         _fsql = Program.Fsql;
         _user = user;
         _tenant = tenant;
@@ -45,7 +47,7 @@ public partial class SignInPage: AntdUI.Window
         SignInResultLabel.Visible = true;
         Hide();
         // 跳转到签到历史页面
-        var signInHistoryPage=new SignInReportPage(_user, _tenant);
+        var signInHistoryPage=new SignInReportPage(_user);
         signInHistoryPage.ShowDialog();
         Show();
     }
@@ -65,7 +67,7 @@ public partial class SignInPage: AntdUI.Window
         SignInResultLabel.Visible = true;
         Hide();
         // 跳转到签到历史页面
-        var signInHistoryPage = new SignInReportPage(_user, _tenant);
+        var signInHistoryPage = new SignInReportPage(_user);
         signInHistoryPage.ShowDialog();
         Show();
     }
@@ -103,7 +105,7 @@ public partial class SignInPage: AntdUI.Window
                 {
                     Hide();
                     //打开签到报表页面
-                    var reportPage = new SignInReportPage(_user, _tenant);
+                    var reportPage = new SignInReportPage(_user);
                     reportPage.ShowDialog();
                     Show();
                 }
@@ -127,7 +129,7 @@ public partial class SignInPage: AntdUI.Window
                 {
                     Hide();
                     //打开租户管理页面
-                    var tenantPage = new SignInReportPage(_user, _tenant);
+                    var tenantPage = new SignInReportPage(_user);
                     tenantPage.ShowDialog();
                     Show();
                }

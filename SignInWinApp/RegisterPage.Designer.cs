@@ -38,7 +38,7 @@ namespace SignInWinApp
             PasswordEntry = new Input();
             Header = new PageHeader();
             VerticalStackLayout = new StackPanel();
-            WorkDurationEntry = new InputNumber();
+            WorkDurationEntry = new Input();
             TaxNumberEntry = new Input();
             NameEntry = new Input();
             NewTenantEntry = new Input();
@@ -61,7 +61,7 @@ namespace SignInWinApp
             btnRegister.Location = new Point(20, 362);
             btnRegister.Margin = new Padding(20, 2, 20, 2);
             btnRegister.Name = "btnRegister";
-            btnRegister.Size = new Size(544, 39);
+            btnRegister.Size = new Size(930, 39);
             btnRegister.TabIndex = 2;
             btnRegister.Text = "Registro";
             // 
@@ -71,7 +71,7 @@ namespace SignInWinApp
             ErrorLabel.Location = new Point(3, 405);
             ErrorLabel.Margin = new Padding(3, 2, 3, 2);
             ErrorLabel.Name = "ErrorLabel";
-            ErrorLabel.Size = new Size(578, 39);
+            ErrorLabel.Size = new Size(964, 39);
             ErrorLabel.TabIndex = 7;
             ErrorLabel.Text = "ErrorLabel";
             ErrorLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -82,7 +82,7 @@ namespace SignInWinApp
             TenantPicker.Margin = new Padding(20, 2, 20, 2);
             TenantPicker.Name = "TenantPicker";
             TenantPicker.PlaceholderText = "Seleccionar empresa";
-            TenantPicker.Size = new Size(544, 39);
+            TenantPicker.Size = new Size(930, 39);
             TenantPicker.TabIndex = 8;
             TenantPicker.Text = "Seleccionar empresa";
             // 
@@ -92,7 +92,7 @@ namespace SignInWinApp
             UsernameEntry.Margin = new Padding(20, 2, 20, 2);
             UsernameEntry.Name = "UsernameEntry";
             UsernameEntry.PlaceholderText = "Nombre de usuario";
-            UsernameEntry.Size = new Size(544, 39);
+            UsernameEntry.Size = new Size(930, 39);
             UsernameEntry.TabIndex = 9;
             // 
             // PasswordEntry
@@ -102,7 +102,7 @@ namespace SignInWinApp
             PasswordEntry.Name = "PasswordEntry";
             PasswordEntry.PasswordChar = '*';
             PasswordEntry.PlaceholderText = "Contraseña";
-            PasswordEntry.Size = new Size(544, 39);
+            PasswordEntry.Size = new Size(930, 39);
             PasswordEntry.TabIndex = 10;
             // 
             // Header
@@ -113,10 +113,11 @@ namespace SignInWinApp
             Header.Location = new Point(0, 0);
             Header.Margin = new Padding(4);
             Header.Name = "Header";
+            Header.ShowBack = true;
             Header.ShowButton = true;
-            Header.Size = new Size(584, 35);
+            Header.Size = new Size(970, 35);
             Header.TabIndex = 15;
-            Header.Text = "APP";
+            Header.Text = "Fichaje";
             Header.UseForeColorDrawIcons = true;
             Header.UseLeftMargin = false;
             // 
@@ -135,7 +136,7 @@ namespace SignInWinApp
             VerticalStackLayout.Dock = DockStyle.Fill;
             VerticalStackLayout.Location = new Point(0, 35);
             VerticalStackLayout.Name = "VerticalStackLayout";
-            VerticalStackLayout.Size = new Size(584, 514);
+            VerticalStackLayout.Size = new Size(970, 615);
             VerticalStackLayout.TabIndex = 0;
             VerticalStackLayout.Text = "VerticalStackLayout";
             VerticalStackLayout.Vertical = true;
@@ -145,12 +146,9 @@ namespace SignInWinApp
             WorkDurationEntry.Location = new Point(20, 319);
             WorkDurationEntry.Margin = new Padding(20, 2, 20, 2);
             WorkDurationEntry.Name = "WorkDurationEntry";
-            WorkDurationEntry.PlaceholderText = "Horas de trabajo";
-            WorkDurationEntry.Size = new Size(544, 39);
-            WorkDurationEntry.TabIndex = 15;
-            WorkDurationEntry.Maximum = new decimal(new int[] { 24, 0, 0, 0 });
-            WorkDurationEntry.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-
+            WorkDurationEntry.PlaceholderText = "Horas de trabajo, la predeterminada es [8]";
+            WorkDurationEntry.Size = new Size(930, 39);
+            WorkDurationEntry.TabIndex = 15; 
             // 
             // TaxNumberEntry
             // 
@@ -158,7 +156,7 @@ namespace SignInWinApp
             TaxNumberEntry.Margin = new Padding(20, 2, 20, 2);
             TaxNumberEntry.Name = "TaxNumberEntry";
             TaxNumberEntry.PlaceholderText = "Número de identificación fiscal";
-            TaxNumberEntry.Size = new Size(544, 39);
+            TaxNumberEntry.Size = new Size(930, 39);
             TaxNumberEntry.TabIndex = 14;
             // 
             // NameEntry
@@ -167,7 +165,7 @@ namespace SignInWinApp
             NameEntry.Margin = new Padding(20, 2, 20, 2);
             NameEntry.Name = "NameEntry";
             NameEntry.PlaceholderText = "Nombre y apellido";
-            NameEntry.Size = new Size(544, 39);
+            NameEntry.Size = new Size(930, 39);
             NameEntry.TabIndex = 13;
             // 
             // NewTenantEntry
@@ -176,7 +174,7 @@ namespace SignInWinApp
             NewTenantEntry.Margin = new Padding(20, 2, 20, 2);
             NewTenantEntry.Name = "NewTenantEntry";
             NewTenantEntry.PlaceholderText = "Crear una nueva empresa (opcional)";
-            NewTenantEntry.Size = new Size(544, 39);
+            NewTenantEntry.Size = new Size(930, 39);
             NewTenantEntry.TabIndex = 12;
             // 
             // WelcomeLabel
@@ -185,7 +183,7 @@ namespace SignInWinApp
             WelcomeLabel.Location = new Point(3, 2);
             WelcomeLabel.Margin = new Padding(3, 2, 3, 2);
             WelcomeLabel.Name = "WelcomeLabel";
-            WelcomeLabel.Size = new Size(578, 55);
+            WelcomeLabel.Size = new Size(964, 55);
             WelcomeLabel.TabIndex = 4;
             WelcomeLabel.Text = "Registro de usuario";
             WelcomeLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -194,7 +192,7 @@ namespace SignInWinApp
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(584, 549);
+            ClientSize = new Size(970, 650);
             Controls.Add(VerticalStackLayout);
             Controls.Add(lblResult);
             Controls.Add(Header);
@@ -221,6 +219,6 @@ namespace SignInWinApp
         private AntdUI.Label WelcomeLabel;
         private Input NameEntry;
         private Input TaxNumberEntry;
-        private InputNumber WorkDurationEntry;
+        private Input WorkDurationEntry;
     }
 }
