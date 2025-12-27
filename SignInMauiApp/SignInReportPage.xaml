@@ -13,10 +13,10 @@
                 <Label Text="Mes" VerticalOptions="Center" />
                 <Picker x:Name="MonthPicker" WidthRequest="70" />
                 <Button Text="Consulta" Clicked="OnQueryClicked" WidthRequest="100" />
+                <Button Text="Hoy" Clicked="OnTodayClicked" WidthRequest="100" />
                 <Button Text="Exportar Excel" Clicked="OnExportClicked" WidthRequest="120" />
                 <Button Text="Exportar PDF" Clicked="OnExportPdfClicked" WidthRequest="120" />
-                <Label Text="Desactivar compartir" VerticalOptions="Center" />
-                <Switch x:Name="DisableShareSwitch" Toggled="OnDisableShareToggled" VerticalOptions="Center" />
+                <Switch x:Name="DisableShareSwitch" Toggled="OnDisableShareToggled" VerticalOptions="Center" /> 
             </HorizontalStackLayout>
 
             <!-- 表头 -->

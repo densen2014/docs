@@ -65,7 +65,7 @@ public partial class SignInReportPage : ContentPage
         }
     }
 
-    private void LoadReport()
+    private void LoadReport(bool today = false)
     {
 
         var selectedUsername = (UsernamePicker.SelectedItem as string) ?? _user.Username;
@@ -73,7 +73,8 @@ public partial class SignInReportPage : ContentPage
             .LeftJoin((r, u, t) => r.UserId == u.Id)
             .LeftJoin((r, u, t) => r.TenantId == t.Id)
             .WhereIf(!string.IsNullOrEmpty(selectedUsername), (r, u, t) => u.Username == selectedUsername)
-            .Where((r, u, t) => r.SignInTime >= startDate && r.SignInTime < endDate)
+            .WhereIf(!today, (r, u, t) => r.SignInTime >= startDate && r.SignInTime < endDate)
+            .WhereIf(today, (r, u, t) => r.SignInTime >= DateTime.Today && r.SignInTime < DateTime.Today.AddDays(1))
             .ToList((r, u, t) => new
             {
                 r.UserId,
@@ -146,6 +147,11 @@ public partial class SignInReportPage : ContentPage
     private void OnQueryClicked(object sender, EventArgs e)
     {
         LoadReport();
+    }
+
+    private void OnTodayClicked(object sender, EventArgs e)
+    {
+        LoadReport(today:true);
     }
 
     private async void OnExportClicked(object sender, EventArgs e)

@@ -32,6 +32,7 @@ namespace SignInWinApp
         {
             lblResult = new AntdUI.Label();
             WelcomeLabel = new AntdUI.Label();
+            BottomLabel = new AntdUI.Label();
             btnLogin = new AntdUI.Button();
             Logo = new PictureBox();
             ErrorLabel = new AntdUI.Label();
@@ -71,9 +72,22 @@ namespace SignInWinApp
             WelcomeLabel.Text = "Registro de Jornada Laboral";
             WelcomeLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // BottomLabel
+            // 
+            BottomLabel.Dock = DockStyle.Bottom;
+            BottomLabel.Font = new Font("Microsoft YaHei UI", 8F);
+            BottomLabel.ForeColor = Color.LightGray;
+            BottomLabel.Location = new Point(0, 629);
+            BottomLabel.Margin = new Padding(3, 2, 3, 2);
+            BottomLabel.Name = "BottomLabel";
+            BottomLabel.Size = new Size(970, 21);
+            BottomLabel.TabIndex = 10;
+            BottomLabel.Text = "Control horario conforme al Real Decreto-ley 8/2019";
+            BottomLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(20, 228);
+            btnLogin.Location = new Point(20, 304);
             btnLogin.Margin = new Padding(20, 2, 20, 2);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(439, 39);
@@ -82,8 +96,8 @@ namespace SignInWinApp
             // 
             // Logo
             // 
-            Logo.Location = new Point(3, 2);
-            Logo.Margin = new Padding(3, 2, 3, 2);
+            Logo.Location = new Point(3, 30);
+            Logo.Margin = new Padding(3, 30, 3, 50);
             Logo.Name = "Logo";
             Logo.Size = new Size(473, 93);
             Logo.SizeMode = PictureBoxSizeMode.Zoom;
@@ -93,7 +107,7 @@ namespace SignInWinApp
             // ErrorLabel
             // 
             ErrorLabel.ForeColor = Color.Red;
-            ErrorLabel.Location = new Point(3, 357);
+            ErrorLabel.Location = new Point(3, 433);
             ErrorLabel.Margin = new Padding(3, 2, 3, 2);
             ErrorLabel.Name = "ErrorLabel";
             ErrorLabel.Size = new Size(473, 39);
@@ -103,7 +117,7 @@ namespace SignInWinApp
             // 
             // TenantPicker
             // 
-            TenantPicker.Location = new Point(20, 99);
+            TenantPicker.Location = new Point(20, 175);
             TenantPicker.Margin = new Padding(20, 2, 20, 2);
             TenantPicker.Name = "TenantPicker";
             TenantPicker.PlaceholderText = "Seleccionar empresa";
@@ -113,7 +127,7 @@ namespace SignInWinApp
             // 
             // UsernameEntry
             // 
-            UsernameEntry.Location = new Point(20, 142);
+            UsernameEntry.Location = new Point(20, 218);
             UsernameEntry.Margin = new Padding(20, 2, 20, 2);
             UsernameEntry.Name = "UsernameEntry";
             UsernameEntry.PlaceholderText = "Usuario";
@@ -122,7 +136,7 @@ namespace SignInWinApp
             // 
             // PasswordEntry
             // 
-            PasswordEntry.Location = new Point(20, 185);
+            PasswordEntry.Location = new Point(20, 261);
             PasswordEntry.Margin = new Padding(20, 2, 20, 2);
             PasswordEntry.Name = "PasswordEntry";
             PasswordEntry.PasswordChar = '*';
@@ -132,7 +146,7 @@ namespace SignInWinApp
             // 
             // btnRegister
             // 
-            btnRegister.Location = new Point(20, 271);
+            btnRegister.Location = new Point(20, 347);
             btnRegister.Margin = new Padding(20, 2, 20, 2);
             btnRegister.Name = "btnRegister";
             btnRegister.Size = new Size(439, 39);
@@ -175,7 +189,7 @@ namespace SignInWinApp
             // SignInResultLabel
             // 
             SignInResultLabel.ForeColor = Color.Green;
-            SignInResultLabel.Location = new Point(3, 314);
+            SignInResultLabel.Location = new Point(3, 390);
             SignInResultLabel.Margin = new Padding(3, 2, 3, 2);
             SignInResultLabel.Name = "SignInResultLabel";
             SignInResultLabel.Size = new Size(473, 39);
@@ -210,6 +224,7 @@ namespace SignInWinApp
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(970, 650);
+            Controls.Add(BottomLabel);
             Controls.Add(Grid);
             Controls.Add(lblResult);
             Controls.Add(WelcomeLabel);
@@ -229,6 +244,7 @@ namespace SignInWinApp
         #endregion
         private AntdUI.Label lblResult;
         private AntdUI.Label WelcomeLabel;
+        private AntdUI.Label BottomLabel;
         private AntdUI.Button btnLogin;
         private PictureBox Logo;
         private AntdUI.Label ErrorLabel;
