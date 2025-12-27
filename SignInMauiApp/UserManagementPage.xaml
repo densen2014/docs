@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SignInMauiApp.UserManagementPage">
     <VerticalStackLayout Padding="20,30" Spacing="10">
-        <Label Text="Gestión de usuarios" FontSize="22" HorizontalOptions="Center" />
-        <CollectionView x:Name="UserCollectionView" SelectionMode="Single" SelectionChanged="OnUserSelected">
+        <Label Text="Gestión de usuarios" FontSize="22" HorizontalOptions="Center" /> 
+        <CollectionView x:Name="UserCollectionView" SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="0,5" Padding="10">

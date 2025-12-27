@@ -7,7 +7,7 @@
         <Entry x:Name="NewTenantEntry" Placeholder="Nuevo nombre de la empresa" />
         <Entry x:Name="NewTenantTaxNumberEntry" Placeholder="Nuevo número fiscal de empresa" />
         <Button Text="Agregar empresa" Clicked="OnAddTenantClicked" />
-        <CollectionView x:Name="TenantCollectionView" SelectionMode="Single" SelectionChanged="OnTenantSelected">
+        <CollectionView x:Name="TenantCollectionView" SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="0,5" Padding="10">
