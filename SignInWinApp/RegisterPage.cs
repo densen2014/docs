@@ -40,7 +40,6 @@ public partial class RegisterPage : AntdUI.Window
             TenantPicker.SelectedIndex = idx;
             //TenantPicker.IsEnabled = false;
         }
-        UsernameEntry.Text = Preferences.Get("LastUsername", "");
     }
 
     private async void OnRegisterClicked(object? sender, EventArgs e)
@@ -61,19 +60,19 @@ public partial class RegisterPage : AntdUI.Window
         }
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantId < 0)
         {
-            ErrorLabel.Text = "请填写完整信息";
+            ErrorLabel.Text = "Por favor complete la información completa";
             ErrorLabel.Visible = true;
             return;
         }
         if (_fsql!.Select<User>().Any(u => u.Username == username && u.TenantId == tenantId))
         {
-            ErrorLabel.Text = "该用户已存在";
+            ErrorLabel.Text = "Este usuario ya existe";
             ErrorLabel.Visible = true;
             return;
         }
         var user = new User { Username = username!, Password = password, TenantId = tenantId };
         await _fsql!.Insert(user).ExecuteAffrowsAsync();
-        Program.DisplayAlert("注册成功", "请返回登录", "确定");
+        Program.DisplayAlert("Registro exitoso", "Por favor regrese para iniciar sesión", "Aceptar");
         Close();
     }
 

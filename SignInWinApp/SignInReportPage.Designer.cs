@@ -31,18 +31,20 @@ namespace SignInWinApp
         private void InitializeComponent()
         {
             lblResult = new AntdUI.Label();
-            WelcomeLabel = new AntdUI.Label();
-            btnLogin = new AntdUI.Button();
-            Logo = new PictureBox();
-            ErrorLabel = new AntdUI.Label();
-            TenantPicker = new Select();
-            UsernameEntry = new Input();
-            PasswordEntry = new Input();
-            btnRegister = new AntdUI.Button();
             Header = new PageHeader();
-            VerticalStackLayout = new StackPanel();
-            ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
-            VerticalStackLayout.SuspendLayout();
+            HorizontalStackLayout = new AntdUI.In.FlowLayoutPanel();
+            UsernameLabel = new AntdUI.Label();
+            UsernamePicker = new Select();
+            labelYear = new AntdUI.Label();
+            YearPicker = new Select();
+            labelMonth = new AntdUI.Label();
+            MonthPicker = new Select();
+            btnQuery = new AntdUI.Button();
+            btnExportExcel = new AntdUI.Button();
+            btnExportPDF = new AntdUI.Button();
+            ReportCollectionView = new Table();
+            labelTitle = new AntdUI.Label();
+            HorizontalStackLayout.SuspendLayout();
             SuspendLayout();
             // 
             // lblResult
@@ -55,83 +57,6 @@ namespace SignInWinApp
             lblResult.Text = "";
             lblResult.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // WelcomeLabel
-            // 
-            WelcomeLabel.Location = new Point(3, 2);
-            WelcomeLabel.Margin = new Padding(3, 2, 3, 2);
-            WelcomeLabel.Name = "WelcomeLabel";
-            WelcomeLabel.Size = new Size(578, 50);
-            WelcomeLabel.TabIndex = 4;
-            WelcomeLabel.Text = "签到系统登录";
-            WelcomeLabel.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // btnLogin
-            // 
-            btnLogin.Location = new Point(20, 295);
-            btnLogin.Margin = new Padding(20, 2, 20, 2);
-            btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(544, 39);
-            btnLogin.TabIndex = 2;
-            btnLogin.Text = "登录";
-            // 
-            // Logo
-            // 
-            Logo.Location = new Point(3, 56);
-            Logo.Margin = new Padding(3, 2, 3, 2);
-            Logo.Name = "Logo";
-            Logo.Size = new Size(578, 106);
-            Logo.SizeMode = PictureBoxSizeMode.Zoom;
-            Logo.TabIndex = 5;
-            Logo.TabStop = false;
-            // 
-            // ErrorLabel
-            // 
-            ErrorLabel.ForeColor = Color.Red;
-            ErrorLabel.Location = new Point(3, 381);
-            ErrorLabel.Margin = new Padding(3, 2, 3, 2);
-            ErrorLabel.Name = "ErrorLabel";
-            ErrorLabel.Size = new Size(578, 39);
-            ErrorLabel.TabIndex = 7;
-            ErrorLabel.Text = "ErrorLabel";
-            ErrorLabel.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // TenantPicker
-            // 
-            TenantPicker.Location = new Point(20, 166);
-            TenantPicker.Margin = new Padding(20, 2, 20, 2);
-            TenantPicker.Name = "TenantPicker";
-            TenantPicker.Size = new Size(544, 39);
-            TenantPicker.TabIndex = 8;
-            TenantPicker.Text = "选择租户";
-            // 
-            // UsernameEntry
-            // 
-            UsernameEntry.Location = new Point(20, 209);
-            UsernameEntry.Margin = new Padding(20, 2, 20, 2);
-            UsernameEntry.Name = "UsernameEntry";
-            UsernameEntry.PlaceholderText = "用户名";
-            UsernameEntry.Size = new Size(544, 39);
-            UsernameEntry.TabIndex = 9;
-            // 
-            // PasswordEntry
-            // 
-            PasswordEntry.Location = new Point(20, 252);
-            PasswordEntry.Margin = new Padding(20, 2, 20, 2);
-            PasswordEntry.Name = "PasswordEntry";
-            PasswordEntry.PasswordChar = '*';
-            PasswordEntry.PlaceholderText = "密码";
-            PasswordEntry.Size = new Size(544, 39);
-            PasswordEntry.TabIndex = 10;
-            // 
-            // btnRegister
-            // 
-            btnRegister.Location = new Point(20, 338);
-            btnRegister.Margin = new Padding(20, 2, 20, 2);
-            btnRegister.Name = "btnRegister";
-            btnRegister.Size = new Size(544, 39);
-            btnRegister.TabIndex = 11;
-            btnRegister.Text = "注册新用户";
-            // 
             // Header
             // 
             Header.DividerShow = true;
@@ -140,61 +65,175 @@ namespace SignInWinApp
             Header.Location = new Point(0, 0);
             Header.Margin = new Padding(4);
             Header.Name = "Header";
+            Header.ShowBack = true;
             Header.ShowButton = true;
-            Header.Size = new Size(584, 35);
+            Header.Size = new Size(970, 35);
             Header.TabIndex = 15;
-            Header.Text = "APP";
+            Header.Text = "Fichaje";
             Header.UseForeColorDrawIcons = true;
             Header.UseLeftMargin = false;
             // 
-            // VerticalStackLayout
+            // HorizontalStackLayout
             // 
-            VerticalStackLayout.Controls.Add(ErrorLabel);
-            VerticalStackLayout.Controls.Add(btnRegister);
-            VerticalStackLayout.Controls.Add(btnLogin);
-            VerticalStackLayout.Controls.Add(PasswordEntry);
-            VerticalStackLayout.Controls.Add(UsernameEntry);
-            VerticalStackLayout.Controls.Add(TenantPicker);
-            VerticalStackLayout.Controls.Add(Logo);
-            VerticalStackLayout.Controls.Add(WelcomeLabel);
-            VerticalStackLayout.Dock = DockStyle.Fill;
-            VerticalStackLayout.Location = new Point(0, 35);
-            VerticalStackLayout.Name = "VerticalStackLayout";
-            VerticalStackLayout.Size = new Size(584, 445);
-            VerticalStackLayout.TabIndex = 0;
-            VerticalStackLayout.Text = "VerticalStackLayout";
-            VerticalStackLayout.Vertical = true;
+            HorizontalStackLayout.Controls.Add(UsernameLabel);
+            HorizontalStackLayout.Controls.Add(UsernamePicker);
+            HorizontalStackLayout.Controls.Add(labelYear);
+            HorizontalStackLayout.Controls.Add(YearPicker);
+            HorizontalStackLayout.Controls.Add(labelMonth);
+            HorizontalStackLayout.Controls.Add(MonthPicker);
+            HorizontalStackLayout.Controls.Add(btnQuery);
+            HorizontalStackLayout.Controls.Add(btnExportExcel);
+            HorizontalStackLayout.Controls.Add(btnExportPDF);
+            HorizontalStackLayout.Dock = DockStyle.Top;
+            HorizontalStackLayout.Location = new Point(0, 90);
+            HorizontalStackLayout.Name = "HorizontalStackLayout";
+            HorizontalStackLayout.Size = new Size(970, 46);
+            HorizontalStackLayout.TabIndex = 0;
+            HorizontalStackLayout.WrapContents = false;
+            // 
+            // UsernameLabel
+            // 
+            UsernameLabel.AutoSizeMode = TAutoSize.Auto;
+            UsernameLabel.AutoSizePadding = true;
+            UsernameLabel.Location = new Point(3, 3);
+            UsernameLabel.Name = "UsernameLabel";
+            UsernameLabel.Padding = new Padding(0, 8, 0, 0);
+            UsernameLabel.Size = new Size(97, 27);
+            UsernameLabel.TabIndex = 12;
+            UsernameLabel.Text = "TRABAJADOR";
+            // 
+            // UsernamePicker
+            // 
+            UsernamePicker.Location = new Point(108, 2);
+            UsernamePicker.Margin = new Padding(5, 2, 5, 2);
+            UsernamePicker.Name = "UsernamePicker";
+            UsernamePicker.PlaceholderText = "Usuario";
+            UsernamePicker.Size = new Size(101, 39);
+            UsernamePicker.TabIndex = 9;
+            UsernamePicker.Text = "Usuario";
+            // 
+            // labelYear
+            // 
+            labelYear.AutoSizeMode = TAutoSize.Auto;
+            labelYear.AutoSizePadding = true;
+            labelYear.Location = new Point(217, 3);
+            labelYear.Name = "labelYear";
+            labelYear.Padding = new Padding(0, 8, 0, 0);
+            labelYear.Size = new Size(36, 27);
+            labelYear.TabIndex = 13;
+            labelYear.Text = "Años";
+            // 
+            // YearPicker
+            // 
+            YearPicker.Location = new Point(261, 2);
+            YearPicker.Margin = new Padding(5, 2, 5, 2);
+            YearPicker.Name = "YearPicker";
+            YearPicker.PlaceholderText = "Años";
+            YearPicker.Size = new Size(83, 39);
+            YearPicker.TabIndex = 10;
+            YearPicker.Text = "Años";
+            // 
+            // labelMonth
+            // 
+            labelMonth.AutoSizeMode = TAutoSize.Auto;
+            labelMonth.AutoSizePadding = true;
+            labelMonth.Location = new Point(352, 3);
+            labelMonth.Name = "labelMonth";
+            labelMonth.Padding = new Padding(0, 8, 0, 0);
+            labelMonth.Size = new Size(30, 27);
+            labelMonth.TabIndex = 18;
+            labelMonth.Text = "Mes";
+            // 
+            // MonthPicker
+            // 
+            MonthPicker.Location = new Point(390, 2);
+            MonthPicker.Margin = new Padding(5, 2, 5, 2);
+            MonthPicker.Name = "MonthPicker";
+            MonthPicker.PlaceholderText = "Mes";
+            MonthPicker.Size = new Size(77, 39);
+            MonthPicker.TabIndex = 11;
+            MonthPicker.Text = "Mes";
+            // 
+            // btnQuery
+            // 
+            btnQuery.Location = new Point(475, 3);
+            btnQuery.Name = "btnQuery";
+            btnQuery.Size = new Size(86, 39);
+            btnQuery.TabIndex = 15;
+            btnQuery.Text = "Consulta";
+            // 
+            // btnExportExcel
+            // 
+            btnExportExcel.Location = new Point(567, 3);
+            btnExportExcel.Name = "btnExportExcel";
+            btnExportExcel.Size = new Size(86, 39);
+            btnExportExcel.TabIndex = 16;
+            btnExportExcel.Text = "Excel";
+            // 
+            // btnExportPDF
+            // 
+            btnExportPDF.Location = new Point(659, 3);
+            btnExportPDF.Name = "btnExportPDF";
+            btnExportPDF.Size = new Size(86, 39);
+            btnExportPDF.TabIndex = 17;
+            btnExportPDF.Text = "PDF";
+            // 
+            // ReportCollectionView
+            // 
+            ReportCollectionView.Dock = DockStyle.Fill;
+            ReportCollectionView.Gap = 12;
+            ReportCollectionView.Location = new Point(0, 136);
+            ReportCollectionView.Name = "ReportCollectionView";
+            ReportCollectionView.Size = new Size(970, 514);
+            ReportCollectionView.TabIndex = 1;
+            ReportCollectionView.Text = "table1";
+            // 
+            // labelTitle
+            // 
+            labelTitle.Dock = DockStyle.Top;
+            labelTitle.Font = new Font("Microsoft YaHei UI", 18F);
+            labelTitle.Location = new Point(0, 35);
+            labelTitle.Name = "labelTitle";
+            labelTitle.Size = new Size(970, 55);
+            labelTitle.TabIndex = 19;
+            labelTitle.Text = "REGISTRO DIARIO DE JORNADA EN TRABAJADORES";
+            labelTitle.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // SignInReportPage
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(584, 480);
-            Controls.Add(VerticalStackLayout);
+            ClientSize = new Size(970, 650);
+            Controls.Add(ReportCollectionView);
+            Controls.Add(HorizontalStackLayout);
             Controls.Add(lblResult);
+            Controls.Add(labelTitle);
             Controls.Add(Header);
             Font = new Font("Microsoft YaHei UI", 11F);
             Margin = new Padding(3, 4, 3, 4);
             Mode = TAMode.Light;
             Name = "SignInReportPage";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "签到";
-            ((System.ComponentModel.ISupportInitialize)Logo).EndInit();
-            VerticalStackLayout.ResumeLayout(false);
+            Text = "Fichaje";
+            HorizontalStackLayout.ResumeLayout(false);
+            HorizontalStackLayout.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
         private AntdUI.Label lblResult;
-        private AntdUI.Label WelcomeLabel;
-        private AntdUI.Button btnLogin;
-        private PictureBox Logo;
-        private AntdUI.Label ErrorLabel;
-        private Select TenantPicker;
-        private Input UsernameEntry;
-        private Input PasswordEntry;
-        private AntdUI.Button btnRegister;
         private PageHeader Header;
-        private StackPanel VerticalStackLayout;
+        private AntdUI.In.FlowLayoutPanel HorizontalStackLayout;
+        private AntdUI.Label UsernameLabel;
+        private Select UsernamePicker;
+        private AntdUI.Label labelYear;
+        private Select YearPicker;
+        private Select MonthPicker;
+        private AntdUI.Button btnQuery;
+        private AntdUI.Button btnExportExcel;
+        private AntdUI.Button btnExportPDF;
+        private AntdUI.Label labelMonth;
+        private Table ReportCollectionView;
+        private AntdUI.Label labelTitle;
     }
 }

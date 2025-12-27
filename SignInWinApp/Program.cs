@@ -1,7 +1,10 @@
 ﻿using FreeSql;
+using KestrelWebHost;
+using MauiWebApi;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using SignInMauiApp.Models;
-using System.Diagnostics.CodeAnalysis;
+using System.Net;
 
 namespace SignInWinApp;
 
@@ -11,6 +14,8 @@ internal static class Program
     public static ILoggerFactory? LoggerFactory;
     public static ILogger? Logger;
     private static LoginPage? loginPage;
+    public static IWebHost? Host { get; set; }
+    public static WebHostParameters WebHostParameters { get; set; } = new WebHostParameters();
 
     /// <summary>
     ///  The main entry point for the application.
@@ -31,12 +36,17 @@ internal static class Program
 
         // 初始化 FreeSql ORM，使用 SQLite 数据库
         Fsql = new FreeSqlBuilder()
-            .UseAutoSyncStructure(true)
+#if DEBUG
+             //.UseAutoSyncStructure(true)
+#endif
             .UseConnectionString(DataType.Sqlite, "Data Source=signindb.db")
             .Build();
         Logger.LogInformation("FreeSql 初始化完成。");
 
         InitializeData();
+        Task.Run(InitializeWebHostAsync);
+
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
         AntdUI.Localization.DefaultLanguage = "zh-CN";
         //若文字不清晰，切换其他渲染方式
@@ -52,20 +62,40 @@ internal static class Program
 
     static void InitializeData()
     {
-        if (Fsql == null) return;
-        // 检查是否有租户
-        if (!Fsql.Select<SignInMauiApp.Models.Tenant>().Any())
+        if (Fsql == null)
         {
-            Preferences.Set("OnboardingDone", false);
-            //var tenant = new SignInMauiApp.Models.Tenant { Name = "我的公司" };
-            //tenant.Id = (int)Fsql.Insert(tenant).ExecuteIdentity();
-            //// 初始化用户
-            //var user = new SignInMauiApp.Models.User { Username = "admin", Password = "123456", TenantId = tenant.Id };
-            //Fsql.Insert(user).ExecuteAffrows();
-            //Logger?.LogInformation("已初始化默认租户和管理员用户。");
+            return;
+        }
+        // 初始化数据库
+        var tables = Fsql.DbFirst.GetTablesByDatabase();
+        var tableNames = tables.Select(t => t.Name).ToList();
+        var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord) }
+            .Where(t => !tableNames.Contains(t)).ToList();
+        if (missingTables.Count > 0)
+        {
+            Fsql.CodeFirst.SyncStructure(typeof(Tenant), typeof(User), typeof(SignInRecord));
         }
     }
 
+    private static async Task InitializeWebHostAsync()
+    {
+        try
+        {
+            var ip = NetworkHelper.GetIpAddress() ?? IPAddress.Loopback;
+            WebHostParameters.ServerIpEndpoint = new IPEndPoint(ip, 5001);
+
+            Log($"监听地址: {WebHostParameters.ServerIpEndpoint}");
+            await KestrelWebHost.WebHostProgram.WebHostMain(WebHostParameters);
+        }
+        catch (Exception ex)
+        {
+            Log($"######## EXCEPTION: {ex.Message}");
+        }
+    }
+    private static void Log(string message)
+    {
+        System.Diagnostics.Debug.WriteLine($"[App] {message}");
+    }
 
     internal static bool DisplayAlert(string v1, string v2, string v3, string? v4 = null)
     {

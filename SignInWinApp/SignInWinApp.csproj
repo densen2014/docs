@@ -15,9 +15,11 @@
         <Authors>AlexChow</Authors>
         <RepositoryType>git</RepositoryType>
         <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+        <ApplicationIcon>Registro_de_Jornada.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="logo2.png" />
       <None Remove="logo.jpg" />
     </ItemGroup>
 
@@ -25,6 +27,10 @@
       <Content Include="logo.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <Content Include="logo2.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Registro_de_Jornada.ico" />
     </ItemGroup>
     
     <ItemGroup>
@@ -37,6 +43,11 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="System.Text.Json" Version="10.0.1" />
+        <PackageReference Include="QRCoder" Version="1.7.0" />
+        <PackageReference Include="QuestPDF" Version="2025.12.1" /> 
+        <PackageReference Include="Xamarinme.Configuration" Version="1.0.2" />
+        <PackageReference Include="Xamarinme.WebHostPatch" Version="1.0.0" />
+        <PackageReference Include="System.Runtime.Caching" Version="10.0.1" /> 
     </ItemGroup>
 
     <ItemGroup>  
@@ -44,7 +55,7 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>Resources.resx</DependentUpon>
-      </Compile>
+      </Compile>  
     </ItemGroup>
 
     <ItemGroup>

@@ -58,7 +58,7 @@ public partial class OnboardingPage : AntdUI.Window
         //
         AutoScaleDimensions = new SizeF(9F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(655, 600);
+        ClientSize = new Size(970, 650);
         Controls.Add(Header);
         Font = new Font("Microsoft YaHei UI", 11F);
         FormBorderStyle = FormBorderStyle.Sizable;
@@ -66,27 +66,27 @@ public partial class OnboardingPage : AntdUI.Window
         Mode = TAMode.Light;
         Name = "OnboardingPage";
         StartPosition = FormStartPosition.CenterScreen;
-        Text = "初次设置";
+        Text = "Fichaje";
 
         var padding = new Padding(3);
         var size = new Size(500, 39);
         _tenantEntry = new Input
         {
-            PlaceholderText = "请输入公司名称, 默认为[我的公司]",
+            PlaceholderText = "Nombre de la empresa, la predeterminada es [Mi empresa]",
             Width = 600,
             Margin = padding,
             Size = size
         };
         _adminUserEntry = new Input
         {
-            PlaceholderText = "管理员账号, 默认为[admin]",
+            PlaceholderText = "Cuenta de administrador, la predeterminada es [admin]",
             Width = 600,
             Margin = padding,
             Size = size
         };
         _adminPassEntry = new Input
         {
-            PlaceholderText = "管理员密码, 默认为[123456]",
+            PlaceholderText = "Contraseña de administrador, la predeterminada es [123456]",
             PasswordChar = '*',
             Width = 600,
             Margin = padding,
@@ -94,14 +94,14 @@ public partial class OnboardingPage : AntdUI.Window
         };
         _firstUserEntry = new Input
         {
-            PlaceholderText = "第一个用户名称, 默认为[demo]",
+            PlaceholderText = "El primer nombre de usuario, el predeterminado es [demo]",
             Width = 600,
             Margin = padding,
             Size = size
         };
         _firstUserPassEntry = new Input
         {
-            PlaceholderText = "第一个用户密码, 默认为[0]",
+            PlaceholderText = "La contraseña del primer usuario, la predeterminada es [0]",
             PasswordChar = '*',
             Width = 600,
             Margin = padding,
@@ -109,7 +109,7 @@ public partial class OnboardingPage : AntdUI.Window
         };
         _submitButton = new Button
         {
-            Text = "完成设置",
+            Text = "Configuración completa",
             Width = 600,
             Margin = new Padding(0, 50, 0, 50),
             Size = size
@@ -118,11 +118,11 @@ public partial class OnboardingPage : AntdUI.Window
 
         _labelHeader = new Label
         {
-            Text = "欢迎使用，请完成初始设置：",
-            Font = new Font("Microsoft YaHei UI", 20F),
+            Text = "Bienvenido, complete la configuración inicial：",
+            Font = new Font("Microsoft YaHei UI", 18F),
             Margin = new Padding(0, 50, 0, 50),
             TextAlign = ContentAlignment.MiddleCenter,
-            Size = size
+            Size = new Size(500, 55)
         };
         VerticalStackLayout = new StackPanel
         {
@@ -147,33 +147,32 @@ public partial class OnboardingPage : AntdUI.Window
         ResumeLayout(false);
 
         _fsql = fsql;
-        Text = "初次设置";
+        Text = "Configuración por primera vez";
 
     }
 
     private async void OnSubmitClicked(object? sender, EventArgs e)
     {
-        var tenantName = _tenantEntry.Text.IsNull("我的公司");
+        var tenantName = _tenantEntry.Text.IsNull("Mi empresa");
         var adminUser = _adminUserEntry.Text.IsNull("admin");
         var adminPass = _adminPassEntry.Text.IsNull("123456");
         var firstUser = _firstUserEntry.Text.IsNull("demo");
         var firstUserPass = _firstUserPassEntry.Text.IsNull("0");
         if (string.IsNullOrEmpty(tenantName) || string.IsNullOrEmpty(adminUser) || string.IsNullOrEmpty(adminPass) || string.IsNullOrEmpty(firstUser))
         {
-            Program.DisplayAlert("提示", "请填写所有信息", "确定");
+            Program.DisplayAlert("Aviso", "Por favor complete toda la información", "Aceptar");
             return;
         }
         // 创建租户
-        var tenant = new Tenant { Name = tenantName };
+        var tenant = new Tenant { Name = tenantName! };
         tenant.Id = (int)_fsql!.Insert(tenant).ExecuteIdentity();
         // 创建管理员
-        var admin = new User { Username = adminUser, Password = adminPass, IsAdmin = true, TenantId = tenant.Id };
+        var admin = new User { Username = adminUser!, Password = adminPass!, IsAdmin = true, TenantId = tenant.Id };
         _fsql?.Insert(admin).ExecuteAffrows();
         // 创建第一个普通用户
-        var user = new User { Username = firstUser, Password = firstUserPass, IsAdmin = false, TenantId = tenant.Id };
+        var user = new User { Username = firstUser!, Password = firstUserPass!, IsAdmin = false, TenantId = tenant.Id };
         _fsql?.Insert(user).ExecuteAffrows();
-        Preferences.Set("OnboardingDone", true);
-        Program.DisplayAlert("完成", "初始化完成！", "进入系统");
+        Program.DisplayAlert("Finalizar", "Inicialización completada！", "Ingrese al sistema");
         Close();
         OnboardingCompleted?.Invoke(this, EventArgs.Empty);
     }

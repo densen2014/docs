@@ -37,6 +37,7 @@ namespace SignInWinApp
             SignInResultLabel = new AntdUI.Label();
             ToolbarItems = new TabHeader();
             MenuTop = new AntdUI.Menu();
+            btnSignOut = new AntdUI.Button();
             ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
             SuspendLayout();
             // 
@@ -53,10 +54,11 @@ namespace SignInWinApp
             // WelcomeLabel
             // 
             WelcomeLabel.Dock = DockStyle.Top;
+            WelcomeLabel.Font = new Font("Microsoft YaHei UI", 18F);
             WelcomeLabel.Location = new Point(0, 193);
             WelcomeLabel.Margin = new Padding(3, 2, 3, 2);
             WelcomeLabel.Name = "WelcomeLabel";
-            WelcomeLabel.Size = new Size(643, 65);
+            WelcomeLabel.Size = new Size(970, 55);
             WelcomeLabel.TabIndex = 4;
             WelcomeLabel.Text = "WelcomeLabel";
             WelcomeLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -64,13 +66,13 @@ namespace SignInWinApp
             // btnSignIn
             // 
             btnSignIn.Dock = DockStyle.Top;
-            btnSignIn.Location = new Point(0, 258);
+            btnSignIn.Location = new Point(0, 248);
             btnSignIn.Margin = new Padding(3, 4, 3, 4);
             btnSignIn.Name = "btnSignIn";
-            btnSignIn.Size = new Size(643, 42);
+            btnSignIn.Padding = new Padding(10);
+            btnSignIn.Size = new Size(970, 70);
             btnSignIn.TabIndex = 2;
-            btnSignIn.Text = "签到";
-            btnSignIn.Click += OnSignInClicked;
+            btnSignIn.Text = "Entrada";
             // 
             // Logo
             // 
@@ -78,7 +80,7 @@ namespace SignInWinApp
             Logo.Location = new Point(0, 73);
             Logo.Margin = new Padding(3, 2, 3, 2);
             Logo.Name = "Logo";
-            Logo.Size = new Size(643, 120);
+            Logo.Size = new Size(970, 120);
             Logo.SizeMode = PictureBoxSizeMode.Zoom;
             Logo.TabIndex = 5;
             Logo.TabStop = false;
@@ -87,10 +89,10 @@ namespace SignInWinApp
             // 
             SignInResultLabel.Dock = DockStyle.Top;
             SignInResultLabel.ForeColor = Color.Green;
-            SignInResultLabel.Location = new Point(0, 300);
+            SignInResultLabel.Location = new Point(0, 388);
             SignInResultLabel.Margin = new Padding(3, 2, 3, 2);
             SignInResultLabel.Name = "SignInResultLabel";
-            SignInResultLabel.Size = new Size(643, 38);
+            SignInResultLabel.Size = new Size(970, 38);
             SignInResultLabel.TabIndex = 7;
             SignInResultLabel.Text = "SignInResultLabel";
             SignInResultLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -106,9 +108,9 @@ namespace SignInWinApp
             ToolbarItems.Name = "ToolbarItems";
             ToolbarItems.ShowBack = true;
             ToolbarItems.ShowButton = true;
-            ToolbarItems.Size = new Size(643, 35);
+            ToolbarItems.Size = new Size(970, 35);
             ToolbarItems.TabIndex = 8;
-            ToolbarItems.Text = "返回";
+            ToolbarItems.Text = "Fichaje";
             ToolbarItems.UseForeColorDrawIcons = true;
             ToolbarItems.UseLeftMargin = false;
             // 
@@ -119,16 +121,28 @@ namespace SignInWinApp
             MenuTop.Mode = TMenuMode.Horizontal;
             MenuTop.Name = "MenuTop";
             MenuTop.ScrollBarBlock = true;
-            MenuTop.Size = new Size(643, 38);
+            MenuTop.Size = new Size(970, 38);
             MenuTop.TabIndex = 9;
             MenuTop.Text = "menu1";
+            // 
+            // btnSignOut
+            // 
+            btnSignOut.Dock = DockStyle.Top;
+            btnSignOut.Location = new Point(0, 318);
+            btnSignOut.Margin = new Padding(3, 4, 3, 4);
+            btnSignOut.Name = "btnSignOut";
+            btnSignOut.Padding = new Padding(10);
+            btnSignOut.Size = new Size(970, 70);
+            btnSignOut.TabIndex = 10;
+            btnSignOut.Text = "Salida";
             // 
             // SignInPage
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(643, 484);
+            ClientSize = new Size(970, 650);
             Controls.Add(SignInResultLabel);
+            Controls.Add(btnSignOut);
             Controls.Add(btnSignIn);
             Controls.Add(WelcomeLabel);
             Controls.Add(lblResult);
@@ -140,7 +154,7 @@ namespace SignInWinApp
             Mode = TAMode.Light;
             Name = "SignInPage";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "签到";
+            Text = "Fichaje";
             ((System.ComponentModel.ISupportInitialize)Logo).EndInit();
             ResumeLayout(false);
         }
@@ -153,5 +167,6 @@ namespace SignInWinApp
         private AntdUI.Label SignInResultLabel;
         private TabHeader ToolbarItems;
         private AntdUI.Menu MenuTop;
+        private AntdUI.Button btnSignOut;
     }
 }

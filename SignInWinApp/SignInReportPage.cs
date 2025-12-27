@@ -1,150 +1,359 @@
 ﻿using AntdUI;
+using MiniExcelLibs;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
 using SignInMauiApp.Models;
+using QuestPDF.Infrastructure;
+using IContainer = QuestPDF.Infrastructure.IContainer;
+using Colors = QuestPDF.Helpers.Colors;
 
 namespace SignInWinApp;
 
-public partial class SignInReportPage: AntdUI.Window
+public partial class SignInReportPage : AntdUI.Window
 {
     private readonly IFreeSql? _fsql;
-    private List<Tenant> _tenants = new();
+    private List<SignInReportItem> _report = new();
+    int year => int.Parse(YearPicker.SelectedText ?? DateTime.Now.Year.ToString());
+    int month => int.Parse(MonthPicker.SelectedText ?? DateTime.Now.Month.ToString());
+    DateTime startDate => new DateTime(year, month, 1);
+    DateTime endDate => startDate.AddMonths(1);
+    private readonly User _user;
+    private readonly Tenant _tenant;
+    private AntList<SignInReportItem> antList = new AntList<SignInReportItem>();
 
-    public SignInReportPage()
+    public SignInReportPage(User user, Tenant tenant)
     {
         InitializeComponent();
-        ErrorLabel.Text = "";
-        Logo.Image = Program.GetLogoImage();
-        btnLogin.Click += OnLoginClicked;
-        btnRegister.Click += OnRegisterClicked;
+        btnQuery.Click += OnQueryClicked;
+        btnExportExcel.Click += OnExportClicked;
+        btnExportPDF.Click += OnExportPdfClicked;
 
         _fsql = Program.Fsql;
-        // 新增：检查是否需要显示引导页
-        CheckAndShowOnboardingAsync();
-        LoadTenants();
+        _user = user;
+        _tenant = tenant;
 
-        OnAppearing();
+        LoadUsernames();
+        InitTableColumns();
+
+        // 初始化年份和月份
+        var years = Enumerable.Range(DateTime.Today.Year - 5, 11).Select(a => new SelectItem(a.ToString(), a)).ToArray();
+        YearPicker.Items.AddRange(years);
+        YearPicker.SelectedValue = DateTime.Today.Year;
+
+        var months = Enumerable.Range(1, 12).Select(m => new SelectItem(m.ToString("D2"), m)).ToArray();
+        MonthPicker.Items.AddRange(months);
+        MonthPicker.SelectedValue = DateTime.Today.Month.ToString("D2");
+
+        // 监听选择变化
+        UsernamePicker.SelectedIndexChanged += (s, e) => LoadReport();
+        YearPicker.SelectedIndexChanged += (s, e) => LoadReport();
+        MonthPicker.SelectedIndexChanged += (s, e) => LoadReport();
+
+        LoadReport();
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
     }
-
-
-    protected void OnAppearing()
+    private void InitTableColumns()
     {
-        LoadTenants(); // 注册后刷新租户列表
-        CheckAndCreateDesktopShortcutAsync();
+        ReportCollectionView.Columns =
+        [
+            new Column("Username", "Trabajador",ColumnAlign.Center) { Width = "80",ColBreak=true },
+            new Column("Day", "Día del mes",ColumnAlign.Center) { Width = "60" ,ColBreak=true},
+            new Column("MorningSignInTime", "Entrada de mañana",ColumnAlign.Center) { Width = "90" ,ColBreak=true},
+            new Column("MorningSignOutTime", "Salida de mañana",ColumnAlign.Center) { Width = "90",ColBreak=true },
+            new Column("AfternoonSignInTime", "Entrada de tarde",ColumnAlign.Center) { Width = "90",ColBreak=true },
+            new Column("AfternoonSignOutTime", "Salida de tarde",ColumnAlign.Center) { Width = "90",ColBreak=true },
+            new Column("TotalWorkHoursDisplay", "Total Horas Jornada",ColumnAlign.Center) { Width = "90",ColBreak=true },
+            new Column("NormalWorkHoursDisplay", "Horas Ordinarias",ColumnAlign.Center) { Width = "90",ColBreak=true },
+            new Column("ExtraWorkHoursDisplay", "Horas Complementarias",ColumnAlign.Center) { Width = "130",ColBreak=true },
+            new Column("TenantName", "Empresa",ColumnAlign.Center) { Width = "120" },
+        ];
+        ////初始化表格列头
+        //ReportCollectionView.StackedHeaderRows =
+        //[
+        //    new StackedHeaderRow(
+        //            new StackedColumn("MorningSignInTime,MorningSignOutTime","Mañana").SetForeColor(System.Drawing.Color.Green),
+        //            new StackedColumn("AfternoonSignInTime,AfternoonSignOutTime","Tarde").SetForeColor(System.Drawing.Color.Blue))
+        //];
     }
 
-    private async void CheckAndShowOnboardingAsync()
+    private void LoadUsernames()
     {
-        // 检查本地存储是否已完成引导
-        var onboardingDone = Preferences.Get("OnboardingDone", false);
-        var tenantsCount = _fsql!.Select<Tenant>().Count();
-        if (tenantsCount == 0 || !onboardingDone)
+        UsernamePicker.Visible = _user.IsAdmin;
+        UsernameLabel.Visible = _user.IsAdmin;
+
+        if (_user.IsAdmin)
         {
-            Hide();
-            var onboardingPage = new OnboardingPage(_fsql);
-            onboardingPage.ShowDialog();
-            onboardingPage.OnboardingCompleted += (s, e) =>
-            {
-                Show();
-            }; 
+            var users = _fsql!.Select<User>().Distinct().ToList(a => new SelectItem(a.Username.ToString(), a)).ToArray();
+            UsernamePicker.Items.AddRange(users);
+            UsernamePicker.SelectedIndex = 0;
         }
     }
 
-    private void LoadTenants()
+    private void LoadReport()
     {
-        _tenants = _fsql!.Select<Tenant>().ToList();
-        var items = _tenants.Select(a => new SelectItem(a.Name,a.Id)).ToArray();
-        TenantPicker.Items.AddRange(items);
 
-
-        int lastTenantId = Preferences.Get("LastTenantId", -1);
-        int idx = 0;
-        if (_tenants.Count > 0)
-        {
-            if (lastTenantId > 0)
+        var selectedUsername = (UsernamePicker.SelectedText as string) ?? _user.Username;
+        var records = _fsql!.Select<SignInRecord, User, Tenant>()
+            .LeftJoin((r, u, t) => r.UserId == u.Id)
+            .LeftJoin((r, u, t) => r.TenantId == t.Id)
+            .WhereIf(!string.IsNullOrEmpty(selectedUsername), (r, u, t) => u.Username == selectedUsername)
+            .Where((r, u, t) => r.SignInTime >= startDate && r.SignInTime < endDate)
+            .ToList((r, u, t) => new
             {
-                idx = _tenants.FindIndex(t => t.Id == lastTenantId);
-                if (idx < 0)
+                r.UserId,
+                Username = string.IsNullOrEmpty(u.Name) ? u.Username : u.Name,
+                u.TaxNumber,
+                u.WorkDuration,
+                TenantName = t.Name,
+                TenantTaxNumber = t.TaxNumber,
+                r.SignInTime,
+                r.SignType
+            });
+        _report = records
+            .GroupBy(x => new { x.UserId, Date = x.SignInTime?.Date })
+            .Select(g =>
+            {
+                var items = g.OrderBy(x => x.SignInTime).ToList();
+                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour < 16)?.SignInTime;
+                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.Hour < 16)?.SignInTime;
+                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour >= 16)?.SignInTime;
+                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.Hour >= 16)?.SignInTime;
+                if (morningSignIn == morningSignOut)
                 {
-                    idx = 0;
+                    morningSignOut = null;
                 }
-            }
-            TenantPicker.SelectedIndex = idx;
-            //TenantPicker.IsEnabled = false;
-        }
-        UsernameEntry.Text = Preferences.Get("LastUsername", "");
+                if (afternoonSignIn == afternoonSignOut)
+                {
+                    afternoonSignOut = null;
+                }
+                // 计算工时
+                TimeSpan? total = null;
+                if (morningSignIn.HasValue && morningSignOut.HasValue && morningSignOut > morningSignIn)
+                {
+                    total = (morningSignOut - morningSignIn);
+                }
+
+                if (afternoonSignIn.HasValue && afternoonSignOut.HasValue && afternoonSignOut > afternoonSignIn)
+                {
+                    total = (total ?? TimeSpan.Zero) + (afternoonSignOut - afternoonSignIn);
+                }
+                // 正常工时8小时，补充工时为超出部分
+                TimeSpan normal = TimeSpan.FromHours(items.First().WorkDuration);
+                TimeSpan? extra = null;
+                if (total.HasValue)
+                {
+                    extra = total > normal ? total - normal : TimeSpan.Zero;
+                }
+
+                return new SignInReportItem
+                {
+                    Username = items.First().Username,
+                    TaxNumber = items.First().TaxNumber,
+                    TenantName = items.First().TenantName,
+                    TenantTaxNumber = items.First().TenantTaxNumber,
+                    MorningSignInTime = morningSignIn,
+                    MorningSignOutTime = morningSignOut,
+                    AfternoonSignInTime = afternoonSignIn,
+                    AfternoonSignOutTime = afternoonSignOut,
+                    TotalWorkDuration = total,
+                    NormalWorkDuration = normal,
+                    ExtraWorkDuration = extra,
+                    SignInTime = items.FirstOrDefault()?.SignInTime,
+                    SignOutTime = items.LastOrDefault()?.SignInTime
+                };
+            })
+            .OrderBy(x => x.MorningSignInTime ?? x.AfternoonSignInTime)
+            .ToList();
+        antList.Clear();
+        antList.AddRange(_report);
+        ReportCollectionView.Binding(antList);
     }
 
-    private async void OnLoginClicked(object? sender, EventArgs e)
+    private void OnQueryClicked(object? sender, EventArgs e)
     {
-        ErrorLabel.Visible = false;
-        var username = UsernameEntry.Text?.Trim();
-        var password = PasswordEntry.Text;
-        var tenantIdx = TenantPicker.SelectedIndex;
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
+        LoadReport();
+    }
+
+    private async void OnExportClicked(object? sender, EventArgs e)
+    {
+        if (_report.Count == 0)
         {
-            ErrorLabel.Text = "请填写完整信息";
-            ErrorLabel.Visible = true;
+            Program.DisplayAlert("Aviso", "No hay datos para exportar", "Aceptar");
             return;
         }
-        var tenantId = _tenants[tenantIdx].Id;
-        var user = _fsql!.Select<User>().Where(u => u.Username == username && u.Password == password && u.TenantId == tenantId).First();
-        if (user == null)
+        var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+        var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+        await MiniExcel.SaveAsAsync(filePath, _report);
+        if (!File.Exists(filePath))
         {
-            ErrorLabel.Text = "用户名或密码错误";
-            ErrorLabel.Visible = true;
+            Program.DisplayAlert("Error", "El archivo no se generó y no se puede compartir.", "Aceptar");
             return;
         }
-        // 记住租户和用户名
-        Preferences.Set("LastTenantId", tenantId);
-        Preferences.Set("LastUsername", username);
-        // 登录成功，跳转到签到页面
-        Hide();
-        var SignIn = new SignInPage(user, _tenants[tenantIdx]);
-        SignIn.ShowDialog();
-        Show();
+        await OpenFileAndFolder(filePath);
+        return;
     }
 
-    private async void OnRegisterClicked(object? sender, EventArgs e)
+    private async void OnExportPdfClicked(object? sender, EventArgs e)
     {
-        //await Navigation.PushAsync(new RegisterPage());
-    }
-
-    private async void CheckAndCreateDesktopShortcutAsync()
-    {
-        string shortcutName = "SignIn.lnk";
-        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        string shortcutPath = Path.Combine(desktopPath, shortcutName);
-        if (!File.Exists(shortcutPath))
+        if (_report.Count == 0)
         {
-            bool create = Program.DisplayAlert("创建桌面快捷方式", "未检测到桌面快捷方式，是否创建？", "是", "否");
-            if (create)
-            {
-                try
-                {
-                    CreateShortcut(shortcutPath);
-                }
-                catch (Exception ex)
-                {
-                    Program.DisplayAlert("错误", $"创建快捷方式失败: {ex.Message}", "确定");
-                }
-            }
+            Program.DisplayAlert("Aviso", "No hay datos para exportar", "OK");
+            return;
         }
+        var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+        var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+        var report = _report;
+        var document = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(30);
+                page.Content().Column(col =>
+                {
+                    // 顶部大标题
+                    col.Item().Element(CellStyle).Text("REGISTRO DIARIO DE JORNADA EN TRABAJADORES A TIEMPO COMPLETO")
+                        .FontSize(12).Bold().AlignCenter();
+
+                    // EMPRESA / TRABAJADOR 行
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem().Element(CellStyle).Text("EMPRESA").Bold().AlignCenter();
+                        row.RelativeItem().Element(CellStyle).Text("TRABAJADOR").Bold().AlignCenter();
+                    });
+
+                    // 公司/员工信息行
+                    col.Item().Row(row =>
+                    {
+                        var first = report.FirstOrDefault();
+                        row.RelativeItem().Element(CellStyleZero).Column(c =>
+                        {
+                            c.Item().Element(CellStyle).Text($"Nombre o Razón Social: {first?.TenantName ?? ""}");
+                            c.Item().Element(CellStyle).Text($"CIF: {first?.TenantTaxNumber ?? ""}");
+                            c.Item().Element(CellStyle).Text("C.C.C.:");
+                        });
+                        row.RelativeItem().Element(CellStyleZero).Column(c =>
+                        {
+                            c.Item().Element(CellStyle).Text($"Nombre: {first?.Username ?? ""}");
+                            c.Item().Element(CellStyle).Text($"NIF: {first?.TaxNumber ?? ""}");
+                            c.Item().Element(CellStyle).Text("NAF:");
+                        });
+                    });
+
+                    // 结算周期行
+                    var _endDate = endDate.AddMinutes(-1);
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem(1.5F).Element(CellStyle).Text("Período de liquidación:").Bold();
+                        row.RelativeItem(3).Element(CellStyle).Text($"{startDate:dd} al {_endDate:dd} de {_endDate:MM} de {_endDate:yyyy}").AlignCenter();
+                        row.RelativeItem(1.5F).Element(CellStyle).Text("Fecha:").Bold();
+                        row.RelativeItem(3).Element(CellStyle).Text($"{DateTime.Now:dd} de {DateTime.Now:MM} de {DateTime.Now:yyyy}").AlignCenter();
+                    });
+
+                    // 表格
+                    col.Item().Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(40); // Día del mes
+                            columns.RelativeColumn(1);  // Mañana Entrada
+                            columns.RelativeColumn(1);  // Tarde Entrada
+                            columns.RelativeColumn(1);  // Mañana Salida
+                            columns.RelativeColumn(1);  // Tarde Salida
+                            columns.RelativeColumn(1.2f); // Total Horas Jornada
+                            columns.RelativeColumn(1.2f); // Horas Ordinarias
+                            columns.RelativeColumn(1.2f); // Horas Complementarias
+                        });
+                        // 多级表头
+                        table.Header(header =>
+                        {
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Día del mes").FontSize(11).AlignCenter().Bold();
+                            header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Entrada").AlignCenter().Bold();
+                            header.Cell().ColumnSpan(2).Element(CellStyle).Text("Hora de Salida").AlignCenter().Bold();
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Total Horas Jornada").AlignCenter().Bold();
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Horas Ordinarias").AlignCenter().Bold();
+                            header.Cell().RowSpan(2).Element(CellStyle).Text("Horas Complementarias").AlignCenter().Bold();
+
+                            // 第二行
+                            header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Mañana").AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Tarde").AlignCenter();
+                        });
+                        // 内容行
+                        for (int i = 1; i <= DateTime.DaysInMonth(startDate.Year, startDate.Month); i++)
+                        {
+                            // 查找当天的数据
+                            var item = report.FirstOrDefault(x =>
+                                (x.MorningSignInTime?.Day == i) ||
+                                (x.AfternoonSignInTime?.Day == i)
+                            );
+
+                            table.Cell().Element(CellStyle).Text(i.ToString()).AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.MorningSignInTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.AfternoonSignInTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.MorningSignOutTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.AfternoonSignOutTime?.ToString("HH:mm") ?? "").AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.TotalWorkHoursDisplay).AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.NormalWorkHoursDisplay).AlignCenter();
+                            table.Cell().Element(CellStyle).Text(item?.ExtraWorkHoursDisplay).AlignCenter();
+                        }
+                    });
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem(3).Element(CellStyle).Text("Total Horas Jornada:").Bold();
+                        row.RelativeItem(3).Element(CellStyle).Text(report.Sum(a => (a.TotalWorkDuration ?? TimeSpan.Zero).TotalHours).ToString("0.00")).AlignCenter();
+                    });
+                });
+                page.Footer().AlignCenter().Text(x =>
+                {
+                    x.Span("Fecha de exportación: ");
+                    x.Span(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+                });
+            });
+        });
+        document.GeneratePdf(filePath);
+        if (!File.Exists(filePath))
+        {
+            Program.DisplayAlert("Error", "El PDF no se generó, no se puede compartir", "OK");
+            return;
+        }
+        await OpenFileAndFolder(filePath);
+
+        static IContainer CellStyle(IContainer container) =>
+            container
+                .Border(1)
+                .BorderColor(Colors.Black)
+                .Padding(2);
+        static IContainer CellStyleZero(IContainer container) =>
+            container
+                .Border(1)
+                .BorderColor(Colors.Black);
     }
 
-
-    private void CreateShortcut(string shortcutPath)
+    private async Task OpenFileAndFolder(string filePath)
     {
-        // 需要引用 Windows Script Host Object Model (wshom.ocx)
-        // 但.NET MAUI桌面项目可用COM
-        var shell = Activator.CreateInstance(Type.GetTypeFromProgID("WScript.Shell")!);
-        var shortcut = shell?.GetType().InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { shortcutPath });
-        // 获取当前可执行文件路径
-        string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule!.FileName;
-        shortcut!.GetType().InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { exePath });
-        shortcut.GetType().InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object?[] { Path.GetDirectoryName(exePath) });
-        shortcut.GetType().InvokeMember("WindowStyle", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { 1 });
-        shortcut.GetType().InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "SignInMauiApp" });
-        shortcut.GetType().InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
+        var folder = Path.GetDirectoryName(filePath);
+        var file = Path.GetFileName(filePath);
+        if (folder != null)
+        {
+            // 打开文件夹并选中文件
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"/select,\"{filePath}\"",
+                UseShellExecute = true
+            };
+            System.Diagnostics.Process.Start(psi);
+        }
+        // 打开文件
+        var psi2 = new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = filePath,
+            UseShellExecute = true
+        };
+        System.Diagnostics.Process.Start(psi2);
     }
+
 }
-

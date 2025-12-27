@@ -38,6 +38,9 @@ namespace SignInWinApp
             PasswordEntry = new Input();
             Header = new PageHeader();
             VerticalStackLayout = new StackPanel();
+            WorkDurationEntry = new Input();
+            TaxNumberEntry = new Input();
+            NameEntry = new Input();
             NewTenantEntry = new Input();
             WelcomeLabel = new AntdUI.Label();
             VerticalStackLayout.SuspendLayout();
@@ -53,19 +56,19 @@ namespace SignInWinApp
             lblResult.Text = "";
             lblResult.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // btnLogin
+            // btnRegister
             // 
-            btnRegister.Location = new Point(20, 228);
+            btnRegister.Location = new Point(20, 362);
             btnRegister.Margin = new Padding(20, 2, 20, 2);
-            btnRegister.Name = "btnLogin";
+            btnRegister.Name = "btnRegister";
             btnRegister.Size = new Size(544, 39);
             btnRegister.TabIndex = 2;
-            btnRegister.Text = "注册";
+            btnRegister.Text = "Registro";
             // 
             // ErrorLabel
             // 
             ErrorLabel.ForeColor = Color.Red;
-            ErrorLabel.Location = new Point(3, 271);
+            ErrorLabel.Location = new Point(3, 405);
             ErrorLabel.Margin = new Padding(3, 2, 3, 2);
             ErrorLabel.Name = "ErrorLabel";
             ErrorLabel.Size = new Size(578, 39);
@@ -75,30 +78,30 @@ namespace SignInWinApp
             // 
             // TenantPicker
             // 
-            TenantPicker.Location = new Point(20, 56);
+            TenantPicker.Location = new Point(20, 61);
             TenantPicker.Margin = new Padding(20, 2, 20, 2);
             TenantPicker.Name = "TenantPicker";
-            TenantPicker.PlaceholderText = "选择公司";
+            TenantPicker.PlaceholderText = "Seleccionar empresa";
             TenantPicker.Size = new Size(544, 39);
             TenantPicker.TabIndex = 8;
-            TenantPicker.Text = "选择公司";
+            TenantPicker.Text = "Seleccionar empresa";
             // 
             // UsernameEntry
             // 
-            UsernameEntry.Location = new Point(20, 142);
+            UsernameEntry.Location = new Point(20, 147);
             UsernameEntry.Margin = new Padding(20, 2, 20, 2);
             UsernameEntry.Name = "UsernameEntry";
-            UsernameEntry.PlaceholderText = "用户名";
+            UsernameEntry.PlaceholderText = "Nombre de usuario";
             UsernameEntry.Size = new Size(544, 39);
             UsernameEntry.TabIndex = 9;
             // 
             // PasswordEntry
             // 
-            PasswordEntry.Location = new Point(20, 185);
+            PasswordEntry.Location = new Point(20, 190);
             PasswordEntry.Margin = new Padding(20, 2, 20, 2);
             PasswordEntry.Name = "PasswordEntry";
             PasswordEntry.PasswordChar = '*';
-            PasswordEntry.PlaceholderText = "密码";
+            PasswordEntry.PlaceholderText = "Contraseña";
             PasswordEntry.Size = new Size(544, 39);
             PasswordEntry.TabIndex = 10;
             // 
@@ -121,6 +124,9 @@ namespace SignInWinApp
             // 
             VerticalStackLayout.Controls.Add(ErrorLabel);
             VerticalStackLayout.Controls.Add(btnRegister);
+            VerticalStackLayout.Controls.Add(WorkDurationEntry);
+            VerticalStackLayout.Controls.Add(TaxNumberEntry);
+            VerticalStackLayout.Controls.Add(NameEntry);
             VerticalStackLayout.Controls.Add(PasswordEntry);
             VerticalStackLayout.Controls.Add(UsernameEntry);
             VerticalStackLayout.Controls.Add(NewTenantEntry);
@@ -129,35 +135,63 @@ namespace SignInWinApp
             VerticalStackLayout.Dock = DockStyle.Fill;
             VerticalStackLayout.Location = new Point(0, 35);
             VerticalStackLayout.Name = "VerticalStackLayout";
-            VerticalStackLayout.Size = new Size(584, 445);
+            VerticalStackLayout.Size = new Size(584, 514);
             VerticalStackLayout.TabIndex = 0;
             VerticalStackLayout.Text = "VerticalStackLayout";
             VerticalStackLayout.Vertical = true;
             // 
+            // WorkDurationEntry
+            // 
+            WorkDurationEntry.Location = new Point(20, 319);
+            WorkDurationEntry.Margin = new Padding(20, 2, 20, 2);
+            WorkDurationEntry.Name = "WorkDurationEntry";
+            WorkDurationEntry.PlaceholderText = "Horas de trabajo";
+            WorkDurationEntry.Size = new Size(544, 39);
+            WorkDurationEntry.TabIndex = 15;
+            // 
+            // TaxNumberEntry
+            // 
+            TaxNumberEntry.Location = new Point(20, 276);
+            TaxNumberEntry.Margin = new Padding(20, 2, 20, 2);
+            TaxNumberEntry.Name = "TaxNumberEntry";
+            TaxNumberEntry.PlaceholderText = "Número de identificación fiscal";
+            TaxNumberEntry.Size = new Size(544, 39);
+            TaxNumberEntry.TabIndex = 14;
+            // 
+            // NameEntry
+            // 
+            NameEntry.Location = new Point(20, 233);
+            NameEntry.Margin = new Padding(20, 2, 20, 2);
+            NameEntry.Name = "NameEntry";
+            NameEntry.PlaceholderText = "Nombre de usuario";
+            NameEntry.Size = new Size(544, 39);
+            NameEntry.TabIndex = 13;
+            // 
             // NewTenantEntry
             // 
-            NewTenantEntry.Location = new Point(20, 99);
+            NewTenantEntry.Location = new Point(20, 104);
             NewTenantEntry.Margin = new Padding(20, 2, 20, 2);
             NewTenantEntry.Name = "NewTenantEntry";
-            NewTenantEntry.PlaceholderText = "新建公司（可选）";
+            NewTenantEntry.PlaceholderText = "Crear una nueva empresa (opcional)";
             NewTenantEntry.Size = new Size(544, 39);
             NewTenantEntry.TabIndex = 12;
             // 
             // WelcomeLabel
             // 
+            WelcomeLabel.Font = new Font("Microsoft YaHei UI", 18F);
             WelcomeLabel.Location = new Point(3, 2);
             WelcomeLabel.Margin = new Padding(3, 2, 3, 2);
             WelcomeLabel.Name = "WelcomeLabel";
-            WelcomeLabel.Size = new Size(578, 50);
+            WelcomeLabel.Size = new Size(578, 55);
             WelcomeLabel.TabIndex = 4;
-            WelcomeLabel.Text = "用户注册";
+            WelcomeLabel.Text = "Registro de usuario";
             WelcomeLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // RegisterPage
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(584, 480);
+            ClientSize = new Size(584, 549);
             Controls.Add(VerticalStackLayout);
             Controls.Add(lblResult);
             Controls.Add(Header);
@@ -166,7 +200,7 @@ namespace SignInWinApp
             Mode = TAMode.Light;
             Name = "RegisterPage";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "签到";
+            Text = "Fichaje";
             VerticalStackLayout.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -182,5 +216,8 @@ namespace SignInWinApp
         private PageHeader Header;
         private StackPanel VerticalStackLayout;
         private AntdUI.Label WelcomeLabel;
+        private Input NameEntry;
+        private Input TaxNumberEntry;
+        private Input WorkDurationEntry;
     }
 }

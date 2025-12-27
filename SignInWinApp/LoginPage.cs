@@ -1,58 +1,82 @@
 ﻿using AntdUI;
+using KestrelWebHost;
+using QRCoder;
 using SignInMauiApp.Models;
 
 namespace SignInWinApp;
 
-public partial class LoginPage: AntdUI.Window
+public partial class LoginPage : AntdUI.Window
 {
     private readonly IFreeSql? _fsql;
     private List<Tenant> _tenants = new();
+    private string qrLink = "";
 
     public LoginPage()
     {
         InitializeComponent();
+        ErrorLabel.Visible = false;
+        SignInResultLabel.Visible = false;
         ErrorLabel.Text = "";
+        SignInResultLabel.Text = "";
         Logo.Image = Program.GetLogoImage();
         btnLogin.Click += OnLoginClicked;
         btnRegister.Click += OnRegisterClicked;
+        ImageQR.Click += OnImageQRTapped;
 
         _fsql = Program.Fsql;
-        // 新增：检查是否需要显示引导页
+        // 检查是否需要显示引导页
         CheckAndShowOnboardingAsync();
         LoadTenants();
-
+        GenerateAndShowQRCode();
         OnAppearing();
-
+        // 订阅 OnPlayControl 回调
+        WebApp.OnControl = async signInWeb =>
+        {
+            var res = await OnsigninWeb(signInWeb);
+            return res;
+        };
     }
 
-
+    private void GenerateAndShowQRCode()
+    {
+        qrLink = $"http://{Program.WebHostParameters.ServerIpEndpoint?.Address}:{Program.WebHostParameters.ServerIpEndpoint?.Port}"; // 可自定义内容
+        using (var qrGenerator = new QRCodeGenerator())
+        using (var qrCodeData = qrGenerator.CreateQrCode(qrLink, QRCodeGenerator.ECCLevel.Q))
+        using (var qrCode = new PngByteQRCode(qrCodeData))
+        {
+            var qrBytes = qrCode.GetGraphic(20);
+            ImageQR.Image = [new ImagePreviewItem() { ID = "0", Img = Image.FromStream(new MemoryStream(qrBytes)) }];
+        }
+    }
     protected void OnAppearing()
     {
         LoadTenants(); // 注册后刷新租户列表
-        CheckAndCreateDesktopShortcutAsync();
+        PasswordEntry.Text = "";
+        // 延时3秒后异步执行
+        Task.Run(async () =>
+        {
+            await Task.Delay(3000);
+            CheckAndCreateDesktopShortcutAsync();
+        });
     }
 
     private async void CheckAndShowOnboardingAsync()
     {
-        // 检查本地存储是否已完成引导
-        var onboardingDone = Preferences.Get("OnboardingDone", false);
         var tenantsCount = _fsql!.Select<Tenant>().Count();
-        if (tenantsCount == 0 || !onboardingDone)
+        if (tenantsCount == 0) 
         {
             Hide();
             var onboardingPage = new OnboardingPage(_fsql);
             onboardingPage.ShowDialog();
-            onboardingPage.OnboardingCompleted += (s, e) =>
-            {
-                Show();
-            }; 
+            OnAppearing();
+            Show();
         }
     }
 
     private void LoadTenants()
     {
         _tenants = _fsql!.Select<Tenant>().ToList();
-        var items = _tenants.Select(a => new SelectItem(a.Name,a.Id)).ToArray();
+        var items = _tenants.Select(a => new SelectItem(a.Name, a.Id)).ToArray();
         TenantPicker.Items.AddRange(items);
 
 
@@ -77,12 +101,14 @@ public partial class LoginPage: AntdUI.Window
     private async void OnLoginClicked(object? sender, EventArgs e)
     {
         ErrorLabel.Visible = false;
+        SignInResultLabel.Visible = false;
         var username = UsernameEntry.Text?.Trim();
         var password = PasswordEntry.Text;
         var tenantIdx = TenantPicker.SelectedIndex;
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
         {
-            ErrorLabel.Text = "请填写完整信息";
+            ErrorLabel.Text = "Por favor complete la información completa";
+            SignInResultLabel.Text = "";
             ErrorLabel.Visible = true;
             return;
         }
@@ -90,7 +116,8 @@ public partial class LoginPage: AntdUI.Window
         var user = _fsql!.Select<User>().Where(u => u.Username == username && u.Password == password && u.TenantId == tenantId).First();
         if (user == null)
         {
-            ErrorLabel.Text = "用户名或密码错误";
+            ErrorLabel.Text = "Nombre de usuario o contraseña incorrectos";
+            SignInResultLabel.Text = "";
             ErrorLabel.Visible = true;
             return;
         }
@@ -101,9 +128,135 @@ public partial class LoginPage: AntdUI.Window
         Hide();
         var SignIn = new SignInPage(user, _tenants[tenantIdx]);
         SignIn.ShowDialog();
+        OnAppearing();
         Show();
     }
 
+    private async Task<SignInResponse> OnsigninWeb(SignInWeb signInWeb)
+    {
+        Invoke(() =>
+        {
+            ErrorLabel.Visible = false;
+            SignInResultLabel.Visible = false;
+        });
+        var username = signInWeb.Username.Trim();
+        var password = signInWeb.Password;
+        var tenantIdx = TenantPicker.SelectedIndex;
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || tenantIdx < 0)
+        {
+            Invoke(() =>
+            {
+                ErrorLabel.Text = "Por favor complete la información completa";
+                SignInResultLabel.Text = "";
+                ErrorLabel.Visible = true;
+            });
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = "Por favor complete la información completa"
+            };
+        }
+        var tenantId = _tenants[tenantIdx].Id;
+        var user = _fsql!.Select<User>().Where(u => u.Username == username && u.Password == password && u.TenantId == tenantId).First();
+        if (user == null)
+        {
+            Invoke(() =>
+            {
+                ErrorLabel.Text = "Nombre de usuario o contraseña incorrectos";
+                SignInResultLabel.Text = "";
+                ErrorLabel.Visible = true;
+            });
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = "Nombre de usuario o contraseña incorrectos"
+            };
+        }
+        var lastSignIn = _fsql!.Select<SignInRecord>()
+                   .Where(r => r.UserId == user.Id && r.TenantId == tenantId)
+                   .OrderByDescending(r => r.SignInTime)
+                   .First();
+        if (signInWeb.Action == "login")
+        {
+            if (lastSignIn?.SignInTime != null)
+            {
+                Invoke(() =>
+                {
+                    SignInResultLabel.Text = $"{user.Username} iniciar sesión exitosamente, Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+                    SignInResultLabel.Visible = true;
+                });
+            }
+            return new SignInResponse()
+            {
+                Success = true,
+                Message = "Iniciar sesión exitosamente",
+                LastSignIn = lastSignIn?.SignInTime
+            };
+        }
+        var record = new SignInRecord
+        {
+            UserId = user.Id,
+            TenantId = tenantId,
+        };
+
+        var message = string.Empty;
+        if (signInWeb.Action == "signin" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignInWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
+        {
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            Invoke(() =>
+            {
+                SignInResultLabel.Text = message;
+                SignInResultLabel.Visible = true;
+            });
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = message,
+                LastSignIn = lastSignIn?.SignInTime
+            };
+        }
+        else if (signInWeb.Action == "signout" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignOutWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
+        {
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            Invoke(() =>
+            {
+                SignInResultLabel.Text = message;
+                SignInResultLabel.Visible = true;
+            });
+            return new SignInResponse()
+            {
+                Success = false,
+                Message = message,
+                LastSignIn = lastSignIn?.SignInTime
+            };
+        }
+        else if (signInWeb.Action == "signin")
+        {
+            {
+                record.SignInTime = DateTime.Now;
+                record.SignType = SignTypeEnum.SignInWork;
+            }
+        }
+        else
+        {
+            record.SignInTime = DateTime.Now;
+            record.SignType = SignTypeEnum.SignOutWork;
+        }
+        await _fsql!.Insert(record).ExecuteAffrowsAsync();
+        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
+        Invoke(() =>
+        {
+            SignInResultLabel.Text = message;
+            ErrorLabel.Text = "";
+            SignInResultLabel.Visible = true;
+        });
+        return new SignInResponse()
+        {
+            Success = true,
+            Message = message,
+            LastSignIn = DateTime.Now
+        };
+    }
     private async void OnRegisterClicked(object? sender, EventArgs e)
     {
         var registerPage = new RegisterPage();
@@ -114,26 +267,28 @@ public partial class LoginPage: AntdUI.Window
 
     private async void CheckAndCreateDesktopShortcutAsync()
     {
-        string shortcutName = "SignIn.lnk";
+        string shortcutName = "FichajeLite.lnk";
         string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         string shortcutPath = Path.Combine(desktopPath, shortcutName);
         if (!File.Exists(shortcutPath))
         {
-            bool create = Program.DisplayAlert("创建桌面快捷方式", "未检测到桌面快捷方式，是否创建？", "是", "否");
-            if (create)
+            Invoke(() =>
             {
-                try
+                bool create = Program.DisplayAlert("Crear acceso directo en el escritorio ", "Acceso directo en el escritorio no detectado, ¿crearlo?", "Sí", "No");
+                if (create)
                 {
-                    CreateShortcut(shortcutPath);
+                    try
+                    {
+                        CreateShortcut(shortcutPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Program.DisplayAlert("error", $"No se pudo crear el acceso directo: {ex.Message}", "Aceptar");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Program.DisplayAlert("错误", $"创建快捷方式失败: {ex.Message}", "确定");
-                }
-            }
+            });
         }
     }
-
 
     private void CreateShortcut(string shortcutPath)
     {
@@ -146,8 +301,17 @@ public partial class LoginPage: AntdUI.Window
         shortcut!.GetType().InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { exePath });
         shortcut.GetType().InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object?[] { Path.GetDirectoryName(exePath) });
         shortcut.GetType().InvokeMember("WindowStyle", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { 1 });
-        shortcut.GetType().InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "SignInMauiApp" });
+        shortcut.GetType().InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "Fichaje - Registro de Jornada Laboral" });
         shortcut.GetType().InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
+    }
+
+    private void OnImageQRTapped(object? sender, EventArgs e)
+    {
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = qrLink,
+            UseShellExecute = true
+        });
     }
 }
 
