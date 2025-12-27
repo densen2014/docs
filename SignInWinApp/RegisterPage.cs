@@ -49,6 +49,9 @@ public partial class RegisterPage : AntdUI.Window
         var password = PasswordEntry.Text;
         var newTenant = NewTenantEntry.Text?.Trim();
         int tenantId = -1;
+        var name = NameEntry.Text?.Trim();
+        var taxNumber = TaxNumberEntry.Text?.Trim();
+        var workDuration = (int)WorkDurationEntry.Value;
         if (!string.IsNullOrEmpty(newTenant))
         {
             var tenant = new Tenant { Name = newTenant! };
@@ -70,7 +73,16 @@ public partial class RegisterPage : AntdUI.Window
             ErrorLabel.Visible = true;
             return;
         }
-        var user = new User { Username = username!, Password = password, TenantId = tenantId };
+
+        var user = new User
+        {
+            Username = username!,
+            Password = password,
+            TenantId = tenantId,
+            Name = name,
+            TaxNumber = taxNumber,
+            WorkDuration = workDuration,
+        };
         await _fsql!.Insert(user).ExecuteAffrowsAsync();
         Program.DisplayAlert("Registro exitoso", "Por favor regrese para iniciar sesión", "Aceptar");
         Close();

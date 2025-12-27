@@ -9,11 +9,13 @@ public partial class UserManagementPage : AntdUI.Window
     private List<User> _Users = new();
     private AntList<User> antList = new AntList<User>();
     private readonly Tenant _tenant;
+    private AntdUI.Window window;
 
     public UserManagementPage(Tenant tenant)
     {
         InitializeComponent();
 
+        window = this;
         _fsql = Program.Fsql;
         _tenant = tenant;
 
@@ -30,6 +32,7 @@ public partial class UserManagementPage : AntdUI.Window
             new Column("Name", "Nombre y apellido",ColumnAlign.Center) {ColBreak=true},
             new Column("TaxNumber", "NIF",ColumnAlign.Center) { ColBreak=true},
             new Column("WorkDuration", "Horas de trabajo",ColumnAlign.Center) { ColBreak=true },
+            new Column("CellLinks", "", ColumnAlign.Center),
         ];
     }
 
@@ -42,10 +45,10 @@ public partial class UserManagementPage : AntdUI.Window
         {
             switch (buttontext)
             {
-                case "编辑":
+                case "Editar":
                     await OnEditUserClicked(user);
                     break;
-                case "删除":
+                case "Borrar":
                     await OnDeleteUserClicked(user);
                     break;
             }
@@ -61,33 +64,49 @@ public partial class UserManagementPage : AntdUI.Window
 
     private async Task OnEditUserClicked(User user)
     {
-        string? result = await DisplayPrompt.Show("Editar nombre de usuario", "Por favor ingresa un nuevo nombre", initialValue: user.Username);
-        if (!string.IsNullOrEmpty(result))
-        {
-            user.Username = result!;
-            result = await DisplayPrompt.Show("Editar contraseña", "Por favor ingrese nuevo contraseña");
-            if (!string.IsNullOrEmpty(result) && result != user.Password)
+        var form = new UserEdit(window, user) { Size = new Size(500, 300) };
+        AntdUI.Drawer.open(new AntdUI.Drawer.Config(window, form)
+        { 
+            OnClose =async () =>
             {
-                user.Password = result!;
+                if (!form.submit)
+                {
+                    return;
+                }
+
+                await _fsql!.Update<User>().SetSource(user).ExecuteAffrowsAsync();
+                LoadUsers();
+
+                AntdUI.Message.info(window, "Finalizar edición", autoClose: 1);
             }
-            result = await DisplayPrompt.Show("Editar nombre y apellido", "Por favor ingrese nombre y apellido", initialValue: user.Name);
-            if (!string.IsNullOrEmpty(result) && result != user.Name)
-            {
-                user.Name = result;
-            }
-            result = await DisplayPrompt.Show("Editar número de identificación fiscal", "Por favor ingrese el nuevo número de identificación fiscal", initialValue: user.TaxNumber);
-            if (!string.IsNullOrEmpty(result) && result != user.TaxNumber)
-            {
-                user.TaxNumber = result;
-            }
-            result = await DisplayPrompt.Show("Editar horas de trabajo", "Por favor introduce un nuevo horario laboral", initialValue: user.WorkDuration.ToString());
-            if (!string.IsNullOrEmpty(result) && result != user.WorkDuration.ToString() && int.TryParse(result, out var workDuration))
-            {
-                user.WorkDuration = workDuration;
-            }
-            await _fsql!.Update<User>().SetSource(user).ExecuteAffrowsAsync();
-            LoadUsers();
-        }
+        });
+        //string? result = await DisplayPrompt.Show("Editar nombre de usuario", "Por favor ingresa un nuevo nombre", initialValue: user.Username);
+        //if (!string.IsNullOrEmpty(result))
+        //{
+        //    user.Username = result!;
+        //    result = await DisplayPrompt.Show("Editar contraseña", "Por favor ingrese nuevo contraseña");
+        //    if (!string.IsNullOrEmpty(result) && result != user.Password)
+        //    {
+        //        user.Password = result!;
+        //    }
+        //    result = await DisplayPrompt.Show("Editar nombre y apellido", "Por favor ingrese nombre y apellido", initialValue: user.Name);
+        //    if (!string.IsNullOrEmpty(result) && result != user.Name)
+        //    {
+        //        user.Name = result;
+        //    }
+        //    result = await DisplayPrompt.Show("Editar número de identificación fiscal", "Por favor ingrese el nuevo número de identificación fiscal", initialValue: user.TaxNumber);
+        //    if (!string.IsNullOrEmpty(result) && result != user.TaxNumber)
+        //    {
+        //        user.TaxNumber = result;
+        //    } 
+        //    result = await DisplayPrompt.Show("Editar horas de trabajo", "Por favor introduce un nuevo horario laboral", initialValue: user.WorkDuration.ToString());
+        //    if (!string.IsNullOrEmpty(result) && result != user.WorkDuration.ToString() && int.TryParse(result, out var workDuration))
+        //    {
+        //        user.WorkDuration = workDuration;
+        //    }
+        //    await _fsql!.Update<User>().SetSource(user).ExecuteAffrowsAsync();
+        //    LoadUsers();
+        //}
     }
 
     private async Task OnDeleteUserClicked(User user)

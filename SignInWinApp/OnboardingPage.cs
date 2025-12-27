@@ -50,7 +50,7 @@ public partial class OnboardingPage : AntdUI.Window
         Header.ShowButton = true;
         Header.Size = new Size(655, 35);
         Header.TabIndex = 16;
-        Header.Text = "APP";
+        Header.Text = "Fichaje";
         Header.UseForeColorDrawIcons = true;
         Header.UseLeftMargin = false;
         // 

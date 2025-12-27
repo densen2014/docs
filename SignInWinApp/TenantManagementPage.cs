@@ -1,4 +1,4 @@
-﻿using AntdUI;
+﻿using AntdUI; 
 using SignInMauiApp.Models;
 
 namespace SignInWinApp;
@@ -8,10 +8,13 @@ public partial class TenantManagementPage : AntdUI.Window
     private readonly IFreeSql? _fsql;
     private List<Tenant> _tenants = new();
     private AntList<Tenant> antList = new AntList<Tenant>();
+    private AntdUI.Window window;
+
     public TenantManagementPage()
     {
         InitializeComponent();
 
+        window = this;
         btnAddTenant.Click += OnAddTenantClicked;
         _fsql = Program.Fsql;
         InitTableColumns();
@@ -24,7 +27,8 @@ public partial class TenantManagementPage : AntdUI.Window
         TenantCollectionView.Columns =
         [
             new Column("Name", "Nombre de empresa",ColumnAlign.Center) {ColBreak=true},
-            new Column("TaxNumber", "NIF",ColumnAlign.Center) { ColBreak=true}, 
+            new Column("TaxNumber", "NIF",ColumnAlign.Center) { ColBreak=true},
+            new Column("CellLinks", "", ColumnAlign.Center),
         ];
     }
 
@@ -37,10 +41,10 @@ public partial class TenantManagementPage : AntdUI.Window
         {
             switch (buttontext)
             {
-                case "编辑":
+                case "Editar":
                     await OnEditTenantClicked(tenant);
                     break;
-                case "删除":
+                case "Borrar":
                     await OnDeleteTenantClicked(tenant);
                     break;
             }
@@ -81,18 +85,34 @@ public partial class TenantManagementPage : AntdUI.Window
 
     private async Task OnEditTenantClicked(Tenant tenant)
     {
-        string? result = await DisplayPrompt.Show("Editar nombre de la empresa", "Por favor ingresa un nuevo nombre", initialValue: tenant.Name);
-        if (!string.IsNullOrEmpty(result))
+        var form = new TenantEdit(window, tenant) { Size = new Size(500, 300) };
+        AntdUI.Drawer.open(new AntdUI.Drawer.Config(window, form)
         {
-            tenant.Name = result!;
-            result = await DisplayPrompt.Show("Editar el número de identificación fiscal de la empresa", "Por favor ingrese el nuevo número de identificación fiscal", initialValue: tenant.TaxNumber);
-            if (!string.IsNullOrEmpty(result) && result != tenant.TaxNumber)
+            OnClose = async () =>
             {
-                tenant.TaxNumber = result;
+                if (!form.submit)
+                {
+                    return;
+                }
+
+                await _fsql!.Update<Tenant>().SetSource(tenant).ExecuteAffrowsAsync();
+                LoadTenants();
+
+                AntdUI.Message.info(window, "Finalizar edición", autoClose: 1);
             }
-            await _fsql!.Update<Tenant>().SetSource(tenant).ExecuteAffrowsAsync();
-            LoadTenants();
-        }
+        });
+        //string? result = await DisplayPrompt.Show("Editar nombre de la empresa", "Por favor ingresa un nuevo nombre", initialValue: tenant.Name);
+        //if (!string.IsNullOrEmpty(result))
+        //{
+        //    tenant.Name = result!;
+        //    result = await DisplayPrompt.Show("Editar el número de identificación fiscal de la empresa", "Por favor ingrese el nuevo número de identificación fiscal", initialValue: tenant.TaxNumber);
+        //    if (!string.IsNullOrEmpty(result) && result != tenant.TaxNumber)
+        //    {
+        //        tenant.TaxNumber = result;
+        //    }
+        //    await _fsql!.Update<Tenant>().SetSource(tenant).ExecuteAffrowsAsync();
+        //    LoadTenants();
+        //}
     }
 
     private async Task OnDeleteTenantClicked(Tenant tenant)

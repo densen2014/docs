@@ -38,7 +38,7 @@ namespace SignInWinApp
             PasswordEntry = new Input();
             Header = new PageHeader();
             VerticalStackLayout = new StackPanel();
-            WorkDurationEntry = new Input();
+            WorkDurationEntry = new InputNumber();
             TaxNumberEntry = new Input();
             NameEntry = new Input();
             NewTenantEntry = new Input();
@@ -148,6 +148,9 @@ namespace SignInWinApp
             WorkDurationEntry.PlaceholderText = "Horas de trabajo";
             WorkDurationEntry.Size = new Size(544, 39);
             WorkDurationEntry.TabIndex = 15;
+            WorkDurationEntry.Maximum = new decimal(new int[] { 24, 0, 0, 0 });
+            WorkDurationEntry.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+
             // 
             // TaxNumberEntry
             // 
@@ -163,7 +166,7 @@ namespace SignInWinApp
             NameEntry.Location = new Point(20, 233);
             NameEntry.Margin = new Padding(20, 2, 20, 2);
             NameEntry.Name = "NameEntry";
-            NameEntry.PlaceholderText = "Nombre de usuario";
+            NameEntry.PlaceholderText = "Nombre y apellido";
             NameEntry.Size = new Size(544, 39);
             NameEntry.TabIndex = 13;
             // 
@@ -218,6 +221,6 @@ namespace SignInWinApp
         private AntdUI.Label WelcomeLabel;
         private Input NameEntry;
         private Input TaxNumberEntry;
-        private Input WorkDurationEntry;
+        private InputNumber WorkDurationEntry;
     }
 }
