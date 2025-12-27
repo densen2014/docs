@@ -39,7 +39,7 @@ public partial class SignInPage : ContentPage
         SignInResultLabel.Text = $"Hora de entrada：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
         SignInResultLabel.IsVisible = true;
         // 跳转到签到历史页面
-        await Navigation.PushAsync(new SignInReportPage(_user, _tenant));
+        await Navigation.PushAsync(new SignInReportPage(_user));
     }
 
 
@@ -56,7 +56,7 @@ public partial class SignInPage : ContentPage
         SignInResultLabel.Text = $"Hora de salida：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
         SignInResultLabel.IsVisible = true;
         // 跳转到签到历史页面
-        await Navigation.PushAsync(new SignInReportPage(_user, _tenant));
+        await Navigation.PushAsync(new SignInReportPage(_user));
     }
 
     protected override void OnAppearing()
@@ -70,7 +70,7 @@ public partial class SignInPage : ContentPage
             {
                 ToolbarItems.Add(new ToolbarItem("Informe", null, async () =>
                 {
-                    await Navigation.PushAsync(new SignInReportPage(_user, _tenant));
+                    await Navigation.PushAsync(new SignInReportPage(_user));
                 }));
             }
             // 添加租户管理按钮
@@ -95,7 +95,7 @@ public partial class SignInPage : ContentPage
         {
             ToolbarItems.Add(new ToolbarItem("Historial", null, async () =>
             {
-                await Navigation.PushAsync(new SignInReportPage(_user, _tenant)); 
+                await Navigation.PushAsync(new SignInReportPage(_user)); 
             }));
         }
         // 添加退出登录按钮

@@ -17,7 +17,6 @@ public partial class LoginPage : ContentPage
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
         // 检查是否需要显示引导页
         CheckAndShowOnboardingAsync();
-        LoadTenants();
         GenerateAndShowQRCode();
         // 订阅 OnPlayControl 回调
         WebApp.OnControl = async signInWeb =>

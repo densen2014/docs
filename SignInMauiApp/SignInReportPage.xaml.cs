@@ -21,17 +21,15 @@ public partial class SignInReportPage : ContentPage
     int month => int.Parse((string)MonthPicker.SelectedItem);
     DateTime startDate => new DateTime(year, month, 1);
     DateTime endDate => startDate.AddMonths(1);
-    private readonly User _user;
-    private readonly Tenant _tenant;
+    private readonly User _user; 
     private const string DisableShareKey = "DisableShare";
 
 
-    public SignInReportPage(User user, Tenant tenant)
+    public SignInReportPage(User user)
     {
         InitializeComponent();
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
-        _user = user;
-        _tenant = tenant;
+        _user = user; 
 
         LoadUsernames();
 
