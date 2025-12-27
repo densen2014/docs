@@ -10,7 +10,7 @@
         <Entry x:Name="PasswordEntry" Placeholder="Contraseña" IsPassword="True" />
         <Entry x:Name="NameEntry" Placeholder="Nombre y apellido" />
         <Entry x:Name="TaxNumberEntry" Placeholder="Número de identificación fiscal" />
-        <Entry x:Name="WorkDurationEntry" Placeholder="Horas de trabajo" />
+        <Entry x:Name="WorkDurationEntry" Placeholder="Horas de trabajo, la predeterminada es [8]" />
         <Button Text="Registro" Clicked="OnRegisterClicked" />
         <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" />
     </VerticalStackLayout>

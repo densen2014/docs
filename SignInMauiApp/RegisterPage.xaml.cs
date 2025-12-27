@@ -52,6 +52,10 @@ public partial class RegisterPage : ContentPage
         var taxNumber= TaxNumberEntry.Text?.Trim();
         var workDuration = 8;
         int.TryParse(WorkDurationEntry.Text, out workDuration);
+        if (workDuration <= 0)
+        {
+            workDuration = 8;
+        }
 
         int tenantId = -1;
         if (!string.IsNullOrEmpty(newTenant))
