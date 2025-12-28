@@ -79,8 +79,11 @@ public partial class WebApp
             ".html" => "text/html",
             _ => "application/octet-stream"
         };
-
+#if NET48
+        var bytes = await ReadAllBytesAsync(fullPath);
+#else 
         var bytes = await File.ReadAllBytesAsync(fullPath);
+#endif
         response.StatusCode = 200;
         response.ContentLength = bytes.Length;
         await response.Body.WriteAsync(bytes, 0, bytes.Length);
@@ -396,5 +399,15 @@ public partial class WebApp
         }
     }
 
-
+#if NET48
+    public static async Task<byte[]> ReadAllBytesAsync(string path)
+    {
+        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true))
+        {
+            var bytes = new byte[stream.Length];
+            await stream.ReadAsync(bytes, 0, (int)stream.Length);
+            return bytes;
+        }
+    }
+#endif 
 }
