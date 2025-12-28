@@ -21,7 +21,7 @@ public class WebHostProgram
             })
             .UseKestrel(options =>
             {
-                options.Listen(new IPEndPoint(IPAddress.Any, 5001));
+                options.Listen(new IPEndPoint(IPAddress.Any, webHostParameters?.ServerIpEndpoint?.Port ?? 5001));
                 //options.Listen(webHostParameters.ServerIpEndpoint);
             })
             .UseContentRoot(AppDomain.CurrentDomain.BaseDirectory)
