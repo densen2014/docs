@@ -14,6 +14,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 

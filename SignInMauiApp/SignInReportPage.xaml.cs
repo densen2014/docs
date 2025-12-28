@@ -21,7 +21,7 @@ public partial class SignInReportPage : ContentPage
     int month => int.Parse((string)MonthPicker.SelectedItem);
     DateTime startDate => new DateTime(year, month, 1);
     DateTime endDate => startDate.AddMonths(1);
-    private readonly User _user; 
+    private readonly User _user;
     private const string DisableShareKey = "DisableShare";
 
 
@@ -29,7 +29,7 @@ public partial class SignInReportPage : ContentPage
     {
         InitializeComponent();
         _fsql = IPlatformApplication.Current?.Services.GetService<IFreeSql>();
-        _user = user; 
+        _user = user;
 
         LoadUsernames();
 
@@ -48,7 +48,6 @@ public partial class SignInReportPage : ContentPage
         MonthPicker.SelectedIndexChanged += (s, e) => LoadReport();
 
         LoadReport();
-        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
     }
 
@@ -68,7 +67,11 @@ public partial class SignInReportPage : ContentPage
     private void LoadReport(bool today = false)
     {
 
-        var selectedUsername = (UsernamePicker.SelectedItem as string) ?? _user.Username;
+        var selectedUsername = _user.IsAdmin ? (UsernamePicker.SelectedItem as string) ?? _user.Username : _user.Username;
+        if (_user.IsAdmin && today)
+        {
+            selectedUsername = null;
+        }
         var records = _fsql!.Select<SignInRecord, User, Tenant>()
             .LeftJoin((r, u, t) => r.UserId == u.Id)
             .LeftJoin((r, u, t) => r.TenantId == t.Id)
@@ -151,7 +154,7 @@ public partial class SignInReportPage : ContentPage
 
     private void OnTodayClicked(object sender, EventArgs e)
     {
-        LoadReport(today:true);
+        LoadReport(today: true);
     }
 
     private async void OnExportClicked(object sender, EventArgs e)
@@ -444,7 +447,7 @@ public partial class SignInReportPage : ContentPage
 #else
         await DisplayAlertAsync("Aviso", $"Archivo exportado: {filePath}", "OK");
 #endif
-    } 
+    }
     private void OnDisableShareToggled(object sender, ToggledEventArgs e)
     {
         Preferences.Default.Set(DisableShareKey, e.Value);

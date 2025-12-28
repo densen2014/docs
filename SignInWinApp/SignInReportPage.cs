@@ -95,7 +95,11 @@ public partial class SignInReportPage : AntdUI.Window
     private void LoadReport(bool today=false)
     {
 
-        var selectedUsername = UsernamePicker.Text ?? _user.Username;
+        var selectedUsername = _user.IsAdmin ? UsernamePicker.Text : _user.Username;
+        if (_user.IsAdmin && today)
+        {
+            selectedUsername = null;
+        }
         var records = _fsql!.Select<SignInRecord, User, Tenant>()
             .LeftJoin((r, u, t) => r.UserId == u.Id)
             .LeftJoin((r, u, t) => r.TenantId == t.Id)

@@ -111,8 +111,7 @@ namespace SignInWinApp
             UsernamePicker.Name = "UsernamePicker";
             UsernamePicker.PlaceholderText = "Usuario";
             UsernamePicker.Size = new Size(143, 39);
-            UsernamePicker.TabIndex = 9;
-            UsernamePicker.Text = "Usuario";
+            UsernamePicker.TabIndex = 9; 
             // 
             // labelYear
             // 
@@ -132,8 +131,7 @@ namespace SignInWinApp
             YearPicker.Name = "YearPicker";
             YearPicker.PlaceholderText = "Años";
             YearPicker.Size = new Size(83, 39);
-            YearPicker.TabIndex = 10;
-            YearPicker.Text = "Años";
+            YearPicker.TabIndex = 10; 
             // 
             // labelMonth
             // 
@@ -153,8 +151,7 @@ namespace SignInWinApp
             MonthPicker.Name = "MonthPicker";
             MonthPicker.PlaceholderText = "Mes";
             MonthPicker.Size = new Size(77, 39);
-            MonthPicker.TabIndex = 11;
-            MonthPicker.Text = "Mes";
+            MonthPicker.TabIndex = 11; 
             // 
             // btnQuery
             // 
