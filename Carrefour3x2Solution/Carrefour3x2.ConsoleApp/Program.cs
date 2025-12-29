@@ -39,7 +39,23 @@ var rules = new List<PromotionRule>
         payQuantity: 2,
         priority: 10,
         isExclusive: true
-    )
+    ),
+
+    new PromotionRule(
+        groupId: "3X2_FRUTA",
+        buyQuantity: 3,
+        payQuantity: 2,
+        priority: 100,
+        isExclusive: true
+    ),
+
+    new PromotionRule(
+        groupId: "3X2_LACTEOS",
+        buyQuantity: 3,
+        payQuantity: 2,
+        priority: 100,
+        isExclusive: true
+    ),
 };
 
 var result = PromotionCalculator.Calculate(cart, rules);
