@@ -9,7 +9,11 @@ using MauiWebApi;
 using Microsoft.AspNetCore.Hosting;
 using SignInMauiApp.Models;
 using System.Diagnostics.CodeAnalysis;
-using System.Net; 
+using System.Net;
+#if WINDOWS
+using System.Security.AccessControl;
+using System.Security.Principal;
+#endif 
 
 namespace SignInMauiApp;
 
@@ -35,6 +39,21 @@ public partial class App : Application
         }
         // 初始化数据库
         var tables = fsql.DbFirst.GetTablesByDatabase();
+        // 解决权限问题
+#if WINDOWS
+var dbPath = Path.Combine(AppContext.BaseDirectory,"signindb.db");
+
+if (File.Exists(dbPath))
+{
+    var fileInfo = new FileInfo(dbPath);
+    var security = fileInfo.GetAccessControl();
+    security.AddAccessRule(new FileSystemAccessRule(
+        WindowsIdentity.GetCurrent().User!,
+        FileSystemRights.FullControl,
+        AccessControlType.Allow));
+    fileInfo.SetAccessControl(security);
+}
+#endif 
         var tableNames = tables.Select(t => t.Name).ToList();
         var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord) }
             .Where(t => !tableNames.Contains(t)).ToList();  

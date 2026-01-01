@@ -2,23 +2,28 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SignInMauiApp.LoginPage" >
-    <Grid ColumnDefinitions="*, *" RowDefinitions="Auto,*,Auto" ColumnSpacing="6">
-        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="Registro de Jornada Laboral" FontSize="24" HorizontalOptions="Center" />
-        <VerticalStackLayout Grid.Column="0" Grid.Row="1" WidthRequest="450" Padding="30,40" Spacing="15" HorizontalOptions="Center" VerticalOptions="Center" >
-            <Image HeightRequest="100" WidthRequest="100" Source="logo.jpg" HorizontalOptions="Center" />
-            <Picker x:Name="TenantPicker" Title="Seleccionar empresa" MaximumWidthRequest="600" />
-            <Entry x:Name="UsernameEntry" Placeholder="Usuario" MaximumWidthRequest="600" />
-            <Entry x:Name="PasswordEntry" Placeholder="Contraseña" IsPassword="True" MaximumWidthRequest="600" />
-            <Button Text="Iniciar sesión" Clicked="OnLoginClicked" MaximumWidthRequest="600" />
-            <Button Text="Registrar nuevo usuario" Clicked="OnRegisterClicked" MaximumWidthRequest="600" />
-            <Label x:Name="SignInResultLabel" TextColor="Green" IsVisible="False" />
-            <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" MaximumWidthRequest="600" />
-        </VerticalStackLayout>
-        <Image Grid.Column="1" Grid.Row="1" x:Name="ImageQR" Margin="50" HeightRequest="300" WidthRequest="300" HorizontalOptions="Fill" VerticalOptions="Fill">
-            <Image.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnImageQRTapped" />
-            </Image.GestureRecognizers>
-        </Image>
-        <Label Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10" TextColor="Gray" Text="Control horario conforme al Real Decreto-ley 8/2019" FontSize="9" HorizontalOptions="Center" />
-    </Grid>
+    <ScrollView>
+        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto,*,Auto" ColumnSpacing="6">
+            <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="Registro de Jornada Laboral" FontSize="24" HorizontalOptions="Center" />
+            <VerticalStackLayout Grid.Column="0" Grid.Row="1" WidthRequest="450" Padding="30,40" Spacing="15" HorizontalOptions="Center" VerticalOptions="Center" >
+                <Image HeightRequest="100" WidthRequest="100" Source="logo.jpg" HorizontalOptions="Center" />
+                <Picker x:Name="TenantPicker" Title="Seleccionar empresa" MaximumWidthRequest="600" />
+                <Entry x:Name="UsernameEntry" Placeholder="Usuario" MaximumWidthRequest="600" />
+                <Entry x:Name="PasswordEntry" Placeholder="Contraseña" IsPassword="True" MaximumWidthRequest="600" />
+                <Button Text="Iniciar sesión" Clicked="OnLoginClicked" MaximumWidthRequest="600" />
+                <Button Text="Registrar nuevo usuario" Clicked="OnRegisterClicked" MaximumWidthRequest="600" />
+                <Label x:Name="SignInResultLabel" TextColor="Green" IsVisible="False" />
+                <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" MaximumWidthRequest="600" />
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="1" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="15" >
+                <Image x:Name="ImageQR" Margin="0" HeightRequest="300" WidthRequest="300" >
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnImageQRTapped" />
+                    </Image.GestureRecognizers>
+                </Image>
+                <Label x:Name="CopyRightLabel" Margin="0" TextColor="Blue" Text="Documentación de ayuda © 2026 Densen Informatica" FontSize="13" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+            <Label Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10" TextColor="DarkGray" Text="Control horario conforme al Real Decreto-ley 8/2019" FontSize="9" HorizontalOptions="Center" />
+        </Grid>
+    </ScrollView>
 </ContentPage>

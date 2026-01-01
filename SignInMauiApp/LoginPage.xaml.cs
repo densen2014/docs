@@ -3,7 +3,7 @@ using KestrelWebHost;
 using QRCoder;
 using SignInMauiApp.Models;
 
-namespace SignInMauiApp;
+namespace SignInMauiApp; 
 
 public partial class LoginPage : ContentPage
 {
@@ -25,6 +25,14 @@ public partial class LoginPage : ContentPage
             return res;
         };
 
+        CopyRightLabel.GestureRecognizers.Add(new TapGestureRecognizer
+        {
+            Command = new Command(async () =>
+            {
+                var url = "https://github.com/densen2014/docs/discussions/60";
+                await Launcher.Default.OpenAsync(url);
+            })
+        }); 
     }
 
     private void GenerateAndShowQRCode()
@@ -222,7 +230,7 @@ public partial class LoginPage : ContentPage
             record.SignType = SignTypeEnum.SignOutWork;
         }
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}"; 
+        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
         MainThread.BeginInvokeOnMainThread(() =>
         {
             SignInResultLabel.Text = message;
@@ -233,7 +241,7 @@ public partial class LoginPage : ContentPage
         {
             Success = true,
             Message = message,
-            LastSignIn = DateTime.Now 
+            LastSignIn = DateTime.Now
         };
     }
 

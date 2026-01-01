@@ -26,7 +26,9 @@ public partial class SignInReportPage : AntdUI.Window
         Icon = Program.GetAppIcon();
         btnQuery.Click += (s, e) => LoadReport();
         btnToday.Click += (s, e) => LoadReport(today:true);
+        //隐藏Excel导出按钮,简化界面
         btnExportExcel.Click += OnExportClicked;
+        btnExportExcel.Visible = false;
         btnExportPDF.Click += OnExportPdfClicked;
         Header.BackClick += (s, e) => Close();
         ReportCollectionView.EmptyText = "No hay datos de informe disponibles";
@@ -315,13 +317,14 @@ public partial class SignInReportPage : AntdUI.Window
                 });
             });
         });
-        document.GeneratePdf(filePath);
-        if (!File.Exists(filePath))
-        {
-            Program.DisplayAlert("Error", "El PDF no se generó, no se puede compartir", "OK");
-            return;
-        }
-        await OpenFileAndFolder(filePath);
+        document.GeneratePdfAndShow();
+        //document.GeneratePdf(filePath);
+        //if (!File.Exists(filePath))
+        //{
+        //    Program.DisplayAlert("Error", "El PDF no se generó, no se puede compartir", "OK");
+        //    return;
+        //}
+        //await OpenFileAndFolder(filePath);
 
         static IContainer CellStyle(IContainer container) =>
             container

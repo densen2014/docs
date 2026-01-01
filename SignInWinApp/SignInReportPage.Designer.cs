@@ -40,11 +40,11 @@ namespace SignInWinApp
             labelMonth = new AntdUI.Label();
             MonthPicker = new Select();
             btnQuery = new AntdUI.Button();
+            btnToday = new AntdUI.Button();
             btnExportExcel = new AntdUI.Button();
             btnExportPDF = new AntdUI.Button();
             ReportCollectionView = new Table();
             labelTitle = new AntdUI.Label();
-            btnToday = new AntdUI.Button();
             HorizontalStackLayout.SuspendLayout();
             SuspendLayout();
             // 
@@ -84,8 +84,8 @@ namespace SignInWinApp
             HorizontalStackLayout.Controls.Add(MonthPicker);
             HorizontalStackLayout.Controls.Add(btnQuery);
             HorizontalStackLayout.Controls.Add(btnToday);
-            HorizontalStackLayout.Controls.Add(btnExportExcel);
             HorizontalStackLayout.Controls.Add(btnExportPDF);
+            HorizontalStackLayout.Controls.Add(btnExportExcel);
             HorizontalStackLayout.Dock = DockStyle.Top;
             HorizontalStackLayout.Location = new Point(0, 90);
             HorizontalStackLayout.Name = "HorizontalStackLayout";
@@ -111,7 +111,7 @@ namespace SignInWinApp
             UsernamePicker.Name = "UsernamePicker";
             UsernamePicker.PlaceholderText = "Usuario";
             UsernamePicker.Size = new Size(143, 39);
-            UsernamePicker.TabIndex = 9; 
+            UsernamePicker.TabIndex = 9;
             // 
             // labelYear
             // 
@@ -131,7 +131,7 @@ namespace SignInWinApp
             YearPicker.Name = "YearPicker";
             YearPicker.PlaceholderText = "Años";
             YearPicker.Size = new Size(83, 39);
-            YearPicker.TabIndex = 10; 
+            YearPicker.TabIndex = 10;
             // 
             // labelMonth
             // 
@@ -151,7 +151,7 @@ namespace SignInWinApp
             MonthPicker.Name = "MonthPicker";
             MonthPicker.PlaceholderText = "Mes";
             MonthPicker.Size = new Size(77, 39);
-            MonthPicker.TabIndex = 11; 
+            MonthPicker.TabIndex = 11;
             // 
             // btnQuery
             // 
@@ -161,9 +161,17 @@ namespace SignInWinApp
             btnQuery.TabIndex = 15;
             btnQuery.Text = "Consulta";
             // 
+            // btnToday
+            // 
+            btnToday.Location = new Point(609, 3);
+            btnToday.Name = "btnToday";
+            btnToday.Size = new Size(86, 39);
+            btnToday.TabIndex = 19;
+            btnToday.Text = "Hoy";
+            // 
             // btnExportExcel
             // 
-            btnExportExcel.Location = new Point(701, 3);
+            btnExportExcel.Location = new Point(793, 3);
             btnExportExcel.Name = "btnExportExcel";
             btnExportExcel.Size = new Size(86, 39);
             btnExportExcel.TabIndex = 16;
@@ -171,7 +179,7 @@ namespace SignInWinApp
             // 
             // btnExportPDF
             // 
-            btnExportPDF.Location = new Point(793, 3);
+            btnExportPDF.Location = new Point(701, 3);
             btnExportPDF.Name = "btnExportPDF";
             btnExportPDF.Size = new Size(86, 39);
             btnExportPDF.TabIndex = 17;
@@ -197,14 +205,6 @@ namespace SignInWinApp
             labelTitle.TabIndex = 19;
             labelTitle.Text = "REGISTRO DIARIO DE JORNADA EN TRABAJADORES";
             labelTitle.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // btnToday
-            // 
-            btnToday.Location = new Point(609, 3);
-            btnToday.Name = "btnToday";
-            btnToday.Size = new Size(86, 39);
-            btnToday.TabIndex = 19;
-            btnToday.Text = "Hoy";
             // 
             // SignInReportPage
             // 

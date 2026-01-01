@@ -43,10 +43,13 @@ namespace SignInWinApp
             Header = new PageHeader();
             VerticalStackLayout = new StackPanel();
             SignInResultLabel = new AntdUI.Label();
-            Grid = new GridPanel();
+            VerticalStackLayoutRight = new System.Windows.Forms.Panel();
+            CopyRightLabel = new LinkLabel();
             ImageQR = new ImagePreview();
+            Grid = new GridPanel();
             ((System.ComponentModel.ISupportInitialize)Logo).BeginInit();
             VerticalStackLayout.SuspendLayout();
+            VerticalStackLayoutRight.SuspendLayout();
             Grid.SuspendLayout();
             SuspendLayout();
             // 
@@ -76,7 +79,7 @@ namespace SignInWinApp
             // 
             BottomLabel.Dock = DockStyle.Bottom;
             BottomLabel.Font = new Font("Microsoft YaHei UI", 8F);
-            BottomLabel.ForeColor = Color.LightGray;
+            BottomLabel.ForeColor = Color.DarkGray;
             BottomLabel.Location = new Point(0, 629);
             BottomLabel.Margin = new Padding(3, 2, 3, 2);
             BottomLabel.Name = "BottomLabel";
@@ -181,7 +184,7 @@ namespace SignInWinApp
             VerticalStackLayout.Dock = DockStyle.Fill;
             VerticalStackLayout.Location = new Point(3, 3);
             VerticalStackLayout.Name = "VerticalStackLayout";
-            VerticalStackLayout.Size = new Size(479, 554);
+            VerticalStackLayout.Size = new Size(479, 533);
             VerticalStackLayout.TabIndex = 0;
             VerticalStackLayout.Text = "VerticalStackLayout";
             VerticalStackLayout.Vertical = true;
@@ -197,36 +200,62 @@ namespace SignInWinApp
             SignInResultLabel.Text = "SignInResultLabel";
             SignInResultLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // VerticalStackLayoutRight
+            // 
+            VerticalStackLayoutRight.Controls.Add(CopyRightLabel);
+            VerticalStackLayoutRight.Controls.Add(ImageQR);
+            VerticalStackLayoutRight.Dock = DockStyle.Fill;
+            VerticalStackLayoutRight.Location = new Point(488, 3);
+            VerticalStackLayoutRight.Name = "VerticalStackLayoutRight";
+            VerticalStackLayoutRight.Size = new Size(479, 533);
+            VerticalStackLayoutRight.TabIndex = 0;
+            VerticalStackLayoutRight.Text = "VerticalStackLayoutRight";
+            // 
+            // CopyRightLabel
+            // 
+            CopyRightLabel.Dock = DockStyle.Top;
+            CopyRightLabel.Font = new Font("Microsoft YaHei UI", 9F);
+            CopyRightLabel.LinkBehavior = LinkBehavior.HoverUnderline;
+            CopyRightLabel.Location = new Point(0, 429);
+            CopyRightLabel.Margin = new Padding(3, 2, 3, 2);
+            CopyRightLabel.Name = "CopyRightLabel";
+            CopyRightLabel.Size = new Size(479, 34);
+            CopyRightLabel.TabIndex = 12;
+            CopyRightLabel.TabStop = true;
+            CopyRightLabel.Tag = "https://github.com/densen2014/docs/discussions/60";
+            CopyRightLabel.Text = "Documentación de ayuda © 2026 Densen Informatica";
+            CopyRightLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // ImageQR
+            // 
+            ImageQR.Dock = DockStyle.Top;
+            ImageQR.Location = new Point(0, 0);
+            ImageQR.Name = "ImageQR";
+            ImageQR.Padding = new Padding(20);
+            ImageQR.ShowDefaultBtn = false;
+            ImageQR.Size = new Size(479, 429);
+            ImageQR.TabIndex = 1;
+            // 
             // Grid
             // 
-            Grid.Controls.Add(ImageQR);
+            Grid.Controls.Add(VerticalStackLayoutRight);
             Grid.Controls.Add(VerticalStackLayout);
             Grid.Dock = DockStyle.Fill;
             Grid.Location = new Point(0, 90);
             Grid.Name = "Grid";
-            Grid.Size = new Size(970, 560);
+            Grid.Size = new Size(970, 539);
             Grid.Span = "50% 50%";
             Grid.TabIndex = 0;
             Grid.Text = "gridPanel1";
-            // 
-            // ImageQR
-            // 
-            ImageQR.Dock = DockStyle.Fill;
-            ImageQR.Location = new Point(488, 3);
-            ImageQR.Name = "ImageQR";
-            ImageQR.Padding = new Padding(20);
-            ImageQR.ShowDefaultBtn = false;
-            ImageQR.Size = new Size(479, 554);
-            ImageQR.TabIndex = 1;
             // 
             // LoginPage
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(970, 650);
-            Controls.Add(BottomLabel);
             Controls.Add(Grid);
             Controls.Add(lblResult);
+            Controls.Add(BottomLabel);
             Controls.Add(WelcomeLabel);
             Controls.Add(Header);
             Font = new Font("Microsoft YaHei UI", 11F);
@@ -237,6 +266,7 @@ namespace SignInWinApp
             Text = "Fichaje";
             ((System.ComponentModel.ISupportInitialize)Logo).EndInit();
             VerticalStackLayout.ResumeLayout(false);
+            VerticalStackLayoutRight.ResumeLayout(false);
             Grid.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -254,8 +284,10 @@ namespace SignInWinApp
         private AntdUI.Button btnRegister;
         private PageHeader Header;
         private StackPanel VerticalStackLayout;
+        private System.Windows.Forms.Panel VerticalStackLayoutRight;
         private GridPanel Grid;
         private ImagePreview ImageQR;
         private AntdUI.Label SignInResultLabel;
+        private LinkLabel CopyRightLabel;
     }
 }

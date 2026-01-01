@@ -15,7 +15,7 @@
         <Authors>AlexChow</Authors>
         <RepositoryType>git</RepositoryType>
         <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-        <ApplicationIcon>Registro_de_Jornada.ico</ApplicationIcon> 
+        <ApplicationIcon>Registro_de_Jornada.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>

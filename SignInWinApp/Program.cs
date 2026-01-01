@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using SignInMauiApp.Models;
 using System.Net;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace SignInWinApp;
 
@@ -68,6 +70,19 @@ internal static class Program
         }
         // 初始化数据库
         var tables = Fsql.DbFirst.GetTablesByDatabase();
+        // 解决权限问题
+        var dbPath = Path.Combine(AppContext.BaseDirectory, "signindb.db");
+
+        if (File.Exists(dbPath))
+        {
+            var fileInfo = new FileInfo(dbPath);
+            var security = fileInfo.GetAccessControl();
+            security.AddAccessRule(new FileSystemAccessRule(
+                WindowsIdentity.GetCurrent().User!,
+                FileSystemRights.FullControl,
+                AccessControlType.Allow));
+            fileInfo.SetAccessControl(security);
+        }
         var tableNames = tables.Select(t => t.Name).ToList();
         var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord) }
             .Where(t => !tableNames.Contains(t)).ToList();

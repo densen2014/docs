@@ -48,7 +48,7 @@ public partial class SignInReportPage : ContentPage
         MonthPicker.SelectedIndexChanged += (s, e) => LoadReport();
 
         LoadReport();
-        DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
+        //DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
     }
 
     private void LoadUsernames()
@@ -157,49 +157,49 @@ public partial class SignInReportPage : ContentPage
         LoadReport(today: true);
     }
 
-    private async void OnExportClicked(object sender, EventArgs e)
-    {
-        if (_report.Count == 0)
-        {
-            await DisplayAlertAsync("Aviso", "No hay datos para exportar", "Aceptar");
-            return;
-        }
-        var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-        var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
-        await MiniExcel.SaveAsAsync(filePath, _report);
-        if (!File.Exists(filePath))
-        {
-            await DisplayAlertAsync("Error", "El archivo no se generó y no se puede compartir.", "Aceptar");
-            return;
-        }
-        if (Preferences.Default.Get(DisableShareKey, true))
-        {
-            await OpenFileAndFolder(filePath);
-            return;
-        }
-        try
-        {
-            await Share.RequestAsync(new ShareFileRequest
-            {
-                Title = "Exportar informe",
-                File = new ShareFile(filePath),
-            });
-            await Task.Delay(2000);
-            var result = await DisplayAlertAsync("¿Confirmación de exportar?", "¿Se ha exportar correctamente?", "Sí", "No");
-            if (!result)
-            {
-                Preferences.Default.Set(DisableShareKey, true);
-                DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
-                await OpenFileAndFolder(filePath);
-            }
-        }
-        catch (Exception ex)
-        {
-            await Clipboard.SetTextAsync(filePath);
-            await DisplayAlertAsync("Error", $"{ex.Message}\nNo se pudo compartir el archivo automáticamente. La ruta del archivo se ha copiado al portapapeles, por favor compártalo manualmente.", "Aceptar");
-            await OpenFileAndFolder(filePath);
-        }
-    }
+    //private async void OnExportClicked(object sender, EventArgs e)
+    //{
+    //    if (_report.Count == 0)
+    //    {
+    //        await DisplayAlertAsync("Aviso", "No hay datos para exportar", "Aceptar");
+    //        return;
+    //    }
+    //    var fileName = $"Informe_de_registro_de_jornada_laboral_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+    //    var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+    //    await MiniExcel.SaveAsAsync(filePath, _report);
+    //    if (!File.Exists(filePath))
+    //    {
+    //        await DisplayAlertAsync("Error", "El archivo no se generó y no se puede compartir.", "Aceptar");
+    //        return;
+    //    }
+    //    if (Preferences.Default.Get(DisableShareKey, true))
+    //    {
+    //        await OpenFileAndFolder(filePath);
+    //        return;
+    //    }
+    //    try
+    //    {
+    //        await Share.RequestAsync(new ShareFileRequest
+    //        {
+    //            Title = "Exportar informe",
+    //            File = new ShareFile(filePath),
+    //        });
+    //        await Task.Delay(2000);
+    //        var result = await DisplayAlertAsync("¿Confirmación de exportar?", "¿Se ha exportar correctamente?", "Sí", "No");
+    //        if (!result)
+    //        {
+    //            Preferences.Default.Set(DisableShareKey, true);
+    //            DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
+    //            await OpenFileAndFolder(filePath);
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        await Clipboard.SetTextAsync(filePath);
+    //        await DisplayAlertAsync("Error", $"{ex.Message}\nNo se pudo compartir el archivo automáticamente. La ruta del archivo se ha copiado al portapapeles, por favor compártalo manualmente.", "Aceptar");
+    //        await OpenFileAndFolder(filePath);
+    //    }
+    //}
 
     private async void OnExportPdfClicked(object sender, EventArgs e)
     {
@@ -321,39 +321,40 @@ public partial class SignInReportPage : ContentPage
                 });
             });
         });
-        document.GeneratePdf(filePath);
-        if (!File.Exists(filePath))
-        {
-            await DisplayAlertAsync("Error", "El PDF no se generó, no se puede compartir", "OK");
-            return;
-        }
-        if (Preferences.Default.Get(DisableShareKey, true))
-        {
-            await OpenFileAndFolder(filePath);
-            return;
-        }
-        try
-        {
-            await Share.RequestAsync(new ShareFileRequest
-            {
-                Title = "Exportar informe en PDF",
-                File = new ShareFile(filePath),
-            });
-            await Task.Delay(2000);
-            var result = await DisplayAlertAsync("¿Confirmación de exportar?", "¿Se ha exportar correctamente?", "Sí", "No");
-            if (!result)
-            {
-                Preferences.Default.Set(DisableShareKey, true);
-                DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
-                await OpenFileAndFolder(filePath);
-            }
-        }
-        catch (Exception ex)
-        {
-            await Clipboard.SetTextAsync(filePath);
-            await DisplayAlertAsync("Error", $"{ex.Message}\nNo se pudo compartir el archivo automáticamente. La ruta del archivo se ha copiado al portapapeles, por favor compártalo manualmente.", "OK");
-            await OpenFileAndFolder(filePath);
-        }
+        document.GeneratePdfAndShow();
+        //document.GeneratePdf(filePath);
+        //if (!File.Exists(filePath))
+        //{
+        //    await DisplayAlertAsync("Error", "El PDF no se generó, no se puede compartir", "OK");
+        //    return;
+        //}
+        //if (Preferences.Default.Get(DisableShareKey, true))
+        //{
+        //    await OpenFileAndFolder(filePath);
+        //    return;
+        //}
+        //try
+        //{
+        //    await Share.RequestAsync(new ShareFileRequest
+        //    {
+        //        Title = "Exportar informe en PDF",
+        //        File = new ShareFile(filePath),
+        //    });
+        //    await Task.Delay(2000);
+        //    var result = await DisplayAlertAsync("¿Confirmación de exportar?", "¿Se ha exportar correctamente?", "Sí", "No");
+        //    if (!result)
+        //    {
+        //        Preferences.Default.Set(DisableShareKey, true);
+        //        DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
+        //        await OpenFileAndFolder(filePath);
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    await Clipboard.SetTextAsync(filePath);
+        //    await DisplayAlertAsync("Error", $"{ex.Message}\nNo se pudo compartir el archivo automáticamente. La ruta del archivo se ha copiado al portapapeles, por favor compártalo manualmente.", "OK");
+        //    await OpenFileAndFolder(filePath);
+        //}
         static IContainer CellStyle(IContainer container) =>
             container
                 .Border(1)

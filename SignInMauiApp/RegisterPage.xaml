@@ -2,16 +2,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SignInMauiApp.RegisterPage">
-    <VerticalStackLayout Padding="30,60" Spacing="20">
-        <Label Text="Registro de usuario" FontSize="24" HorizontalOptions="Center" />
-        <Picker x:Name="TenantPicker" Title="Seleccionar empresa" />
-        <Entry x:Name="NewTenantEntry" Placeholder="Crear una nueva empresa (opcional)" />
-        <Entry x:Name="UsernameEntry" Placeholder="Nombre de usuario" />
-        <Entry x:Name="PasswordEntry" Placeholder="Contraseña" IsPassword="True" />
-        <Entry x:Name="NameEntry" Placeholder="Nombre y apellido" />
-        <Entry x:Name="TaxNumberEntry" Placeholder="Número de identificación fiscal" />
-        <Entry x:Name="WorkDurationEntry" Placeholder="Horas de trabajo, la predeterminada es [8]" />
-        <Button Text="Registro" Clicked="OnRegisterClicked" />
-        <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="30,60" Spacing="20">
+            <Label Text="Registro de usuario" FontSize="24" HorizontalOptions="Center" />
+            <Picker x:Name="TenantPicker" Title="Seleccionar empresa" />
+            <Entry x:Name="NewTenantEntry" Placeholder="Crear una nueva empresa (opcional)" />
+            <Entry x:Name="UsernameEntry" Placeholder="Nombre de usuario" />
+            <Entry x:Name="PasswordEntry" Placeholder="Contraseña" IsPassword="True" />
+            <Entry x:Name="NameEntry" Placeholder="Nombre y apellido" />
+            <Entry x:Name="TaxNumberEntry" Placeholder="Número de identificación fiscal" />
+            <Entry x:Name="WorkDurationEntry" Placeholder="Horas de trabajo, la predeterminada es [8]" />
+            <Button Text="Registro" Clicked="OnRegisterClicked" />
+            <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

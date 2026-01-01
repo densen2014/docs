@@ -35,6 +35,18 @@ public partial class LoginPage : AntdUI.Window
             var res = await OnsigninWeb(signInWeb);
             return res;
         };
+        CopyRightLabel.Click += (s, e) =>
+        {
+            var url = CopyRightLabel.Tag as string;
+            if (!string.IsNullOrEmpty(url))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+        };
     }
 
     private void GenerateAndShowQRCode()
