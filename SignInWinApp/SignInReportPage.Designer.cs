@@ -208,8 +208,6 @@ namespace SignInWinApp
             // 
             // SignInReportPage
             // 
-            AutoScaleDimensions = new SizeF(9F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(970, 650);
             Controls.Add(ReportCollectionView);
             Controls.Add(HorizontalStackLayout);

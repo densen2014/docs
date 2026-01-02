@@ -56,8 +56,6 @@ public partial class OnboardingPage : AntdUI.Window
         // 
         // OnboardingPage
         //
-        AutoScaleDimensions = new SizeF(9F, 20F);
-        AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(970, 650);
         Controls.Add(Header);
         Font = new Font("Microsoft YaHei UI", 11F);

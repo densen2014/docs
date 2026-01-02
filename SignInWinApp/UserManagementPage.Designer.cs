@@ -84,8 +84,6 @@ namespace SignInWinApp
             // 
             // UserManagementPage
             // 
-            AutoScaleDimensions = new SizeF(9F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(970, 650);
             Controls.Add(btnRegister);
             Controls.Add(UserCollectionView);
