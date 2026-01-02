@@ -90,7 +90,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.304" />
+        <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.305" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
         <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.20" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
