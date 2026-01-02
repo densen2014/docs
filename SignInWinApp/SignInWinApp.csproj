@@ -16,6 +16,8 @@
         <RepositoryType>git</RepositoryType>
         <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
         <ApplicationIcon>Registro_de_Jornada.ico</ApplicationIcon>
+        <!-- 便携，不依赖系统 -->
+        <SelfContained>true</SelfContained> 
     </PropertyGroup>
 
     <ItemGroup>
@@ -46,10 +48,10 @@
         <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.304" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
         <PackageReference Include="MiniExcel" Version="1.42.0" />
-        <PackageReference Include="Costura.Fody" Version="6.0.0">
+        <!--<PackageReference Include="Costura.Fody" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        </PackageReference>-->
         <PackageReference Include="System.Text.Json" Version="10.0.1" />
         <PackageReference Include="QRCoder" Version="1.7.0" />
         <PackageReference Include="QuestPDF" Version="2025.12.1" /> 
