@@ -162,21 +162,21 @@ public class SignInReportItem
     public float? ExtraWorkHours => ExtraWorkDuration.HasValue ? (float)Math.Round(ExtraWorkDuration.Value.TotalHours, 2) : null;
 
     public string? TotalWorkHoursDisplay =>
-    !TotalWorkDuration.HasValue || TotalWorkDuration.Value.TotalHours == 0
+    !TotalWorkDuration.HasValue || TotalWorkDuration.Value.TotalHours <= 0.01
         ? ""
         : TotalWorkDuration.Value.TotalHours % 1 == 0
             ? ((int)TotalWorkDuration.Value.TotalHours).ToString()
             : TotalWorkDuration.Value.TotalHours.ToString("0.00");
 
     public string? NormalWorkHoursDisplay =>
-        !NormalWorkDuration.HasValue || NormalWorkDuration.Value.TotalHours == 0
+        !NormalWorkDuration.HasValue || NormalWorkDuration.Value.TotalHours <= 0.01
             ? ""
             : NormalWorkDuration.Value.TotalHours % 1 == 0
                 ? ((int)NormalWorkDuration.Value.TotalHours).ToString()
-                : NormalWorkDuration.Value.TotalHours.ToString("0.00");
+                : NormalWorkDuration.Value.TotalHours.ToString();
 
     public string? ExtraWorkHoursDisplay =>
-        !ExtraWorkDuration.HasValue || ExtraWorkDuration.Value.TotalHours == 0
+        !ExtraWorkDuration.HasValue || ExtraWorkDuration.Value.TotalHours <= 0.01
             ? ""
             : ExtraWorkDuration.Value.TotalHours % 1 == 0
                 ? ((int)ExtraWorkDuration.Value.TotalHours).ToString()

@@ -15,7 +15,7 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        var cultureInfo = new CultureInfo("es-ES");
+        var cultureInfo = new CultureInfo("en-US");
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 

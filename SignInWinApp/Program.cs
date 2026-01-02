@@ -26,7 +26,7 @@ internal static class Program
     [STAThread]
     static void Main()
     {
-        var cultureInfo = new CultureInfo("es-ES");
+        var cultureInfo = new CultureInfo("en-US");
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 

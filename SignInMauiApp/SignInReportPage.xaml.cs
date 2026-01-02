@@ -88,7 +88,7 @@ public partial class SignInReportPage : ContentPage
                 TenantTaxNumber = t.TaxNumber,
                 r.SignInTime,
                 r.SignType
-            });
+            }); 
         _report = records
             .GroupBy(x => new { x.UserId, Date = x.SignInTime?.Date })
             .Select(g =>
@@ -118,7 +118,7 @@ public partial class SignInReportPage : ContentPage
                     total = (total ?? TimeSpan.Zero) + (afternoonSignOut - afternoonSignIn);
                 }
                 // 正常工时8小时，补充工时为超出部分
-                TimeSpan normal = TimeSpan.FromHours(items.First().WorkDuration);
+                TimeSpan normal = TimeSpan.FromMinutes(items.First().WorkDuration*60);
                 TimeSpan? extra = null;
                 if (total.HasValue)
                 {
