@@ -13,6 +13,7 @@ using System.Net;
 #if WINDOWS
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Xml.Linq;
 #endif 
 
 namespace SignInMauiApp;
@@ -41,25 +42,71 @@ public partial class App : Application
         var tables = fsql.DbFirst.GetTablesByDatabase();
         // 解决权限问题
 #if WINDOWS
-var dbPath = Path.Combine(AppContext.BaseDirectory,"signindb.db");
+        var dbPath = Path.Combine(AppContext.BaseDirectory, "signindb.db");
 
-if (File.Exists(dbPath))
-{
-    var fileInfo = new FileInfo(dbPath);
-    var security = fileInfo.GetAccessControl();
-    security.AddAccessRule(new FileSystemAccessRule(
-        WindowsIdentity.GetCurrent().User!,
-        FileSystemRights.FullControl,
-        AccessControlType.Allow));
-    fileInfo.SetAccessControl(security);
-}
+        if (File.Exists(dbPath))
+        {
+            var fileInfo = new FileInfo(dbPath);
+            var security = fileInfo.GetAccessControl();
+            security.AddAccessRule(new FileSystemAccessRule(
+                WindowsIdentity.GetCurrent().User!,
+                FileSystemRights.FullControl,
+                AccessControlType.Allow));
+            fileInfo.SetAccessControl(security);
+        }
 #endif 
         var tableNames = tables.Select(t => t.Name).ToList();
-        var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord) }
-            .Where(t => !tableNames.Contains(t)).ToList();  
+        var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord), nameof(DbVersion) }
+            .Where(t => !tableNames.Contains(t)).ToList();
         if (missingTables.Count > 0)
         {
-            fsql.CodeFirst.SyncStructure(typeof(Tenant), typeof(User), typeof(SignInRecord));
+            fsql.CodeFirst.SyncStructure(typeof(Tenant), typeof(User), typeof(SignInRecord), typeof(DbVersion));
+            if (fsql.Select<DbVersion>().Count() == 0)
+            {
+                fsql.Insert<DbVersion>().AppendData(new DbVersion() { Version = 0 }).ExecuteAffrows();
+            }
+        }
+        CheckAndUpgradeDatabase(fsql);
+    }
+
+    private static void CheckAndUpgradeDatabase(IFreeSql fsql)
+    {
+        // 检查并执行数据库升级
+        DbVersion vers = new();
+        int verFinal = 1;
+        try
+        {
+            vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
+        }
+        catch (Exception)
+        {
+            fsql.CodeFirst.SyncStructure<DbVersion>();
+            if (fsql.Select<DbVersion>().Count() == 0)
+            {
+                fsql.Insert<DbVersion>().AppendData(new DbVersion() { Version = 0 }).ExecuteAffrows();
+            }
+            vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
+        }
+        // 数据库升级, 比对当前数据库版本号
+        while (vers.Version < verFinal)
+        {
+            try
+            {
+                switch (vers.Version)
+                {
+                    case 0:
+                        fsql.CodeFirst.SyncStructure(typeof(User));
+                        fsql.Update<User>().Set(a => a.WorkDuration, 7.5f).Where(a => a.WorkDuration == 8f).ExecuteAffrows();
+                        vers.Version = 1;
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                vers.Version += 1;
+            }
+            fsql.Update<DbVersion>().SetSource(vers).UpdateColumns(a => a.Version).ExecuteAffrows();
+            vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
         }
     }
 

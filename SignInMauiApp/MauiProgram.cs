@@ -6,6 +6,7 @@
 
 using FreeSql;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Text;
 
 namespace SignInMauiApp;
@@ -14,6 +15,10 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        var cultureInfo = new CultureInfo("es-ES");
+        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

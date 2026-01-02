@@ -50,7 +50,7 @@ public class User : NotifyProperty
     public string? TaxNumber { get; set; }
     public string? Phone { get; set; }
     public int TenantId { get; set; }
-    public int WorkDuration { get; set; } = 8;
+    public float WorkDuration { get; set; } = 7.5f;
     public bool IsAdmin { get; internal set; }
 
     private CellLink[] cellLinks = [
@@ -198,3 +198,9 @@ public class SignInResponse
     public DateTime? LastSignIn { get; set; }
 
 } 
+public class DbVersion
+{
+    [Column(IsPrimary = true, IsIdentity = true)]
+    public int Id { get; set; }
+    public int Version { get; set; }
+}

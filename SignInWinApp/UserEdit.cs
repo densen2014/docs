@@ -44,7 +44,13 @@ public partial class UserEdit : UserControl
         user.Name = NameEntry.Text;
         user.Password = PasswordEntry.Text;
         user.TaxNumber = TaxNumberEntry.Text;
-        user.WorkDuration = (int)WorkDurationEntry.Value;
+        float workDuration = 7.5f;
+        float.TryParse(WorkDurationEntry.Text, out workDuration);
+        if (workDuration <= 0)
+        {
+            workDuration = 7.5f;
+        }
+        user.WorkDuration = workDuration;
         submit = true;
         this.Dispose();
     }
@@ -55,6 +61,6 @@ public partial class UserEdit : UserControl
         NameEntry.Text = user.Name!;
         PasswordEntry.Text = user.Password!;
         TaxNumberEntry.Text = user.TaxNumber!;
-        WorkDurationEntry.Value = user.WorkDuration;
+        WorkDurationEntry.Text = user.WorkDuration.ToString();
     }
 }

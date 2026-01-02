@@ -29,7 +29,7 @@ partial class UserEdit
     private void InitializeComponent()
     {
         panel1 = new AntdUI.Panel();
-        WorkDurationEntry = new AntdUI.InputNumber();
+        WorkDurationEntry = new AntdUI.Input();
         label5 = new AntdUI.Label();
         TaxNumberEntry = new AntdUI.Input();
         label4 = new AntdUI.Label();
@@ -76,12 +76,10 @@ partial class UserEdit
         WorkDurationEntry.Font = new Font("Microsoft YaHei UI", 11F);
         WorkDurationEntry.Location = new Point(18, 346);
         WorkDurationEntry.Name = "WorkDurationEntry";
-        WorkDurationEntry.PlaceholderText = "Horas de trabajo";
+        WorkDurationEntry.PlaceholderText = "Horas de trabajo, la predeterminada es [7,5]";
         WorkDurationEntry.Radius = 3;
         WorkDurationEntry.Size = new Size(464, 38);
         WorkDurationEntry.TabIndex = 24;
-        WorkDurationEntry.Maximum = new decimal(new int[] { 24, 0, 0, 0 });
-        WorkDurationEntry.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         // 
         // label5
         // 
@@ -244,7 +242,7 @@ partial class UserEdit
     private AntdUI.Label label1;
     private AntdUI.Input UsernameEntry;
     private AntdUI.Label label3;
-    private AntdUI.InputNumber WorkDurationEntry;
+    private AntdUI.Input WorkDurationEntry;
     private AntdUI.Label label5;
     private AntdUI.Input TaxNumberEntry;
     private AntdUI.Label label4;

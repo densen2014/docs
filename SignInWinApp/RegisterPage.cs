@@ -58,11 +58,11 @@ public partial class RegisterPage : AntdUI.Window
         int tenantId = -1;
         var name = NameEntry.Text?.Trim();
         var taxNumber = TaxNumberEntry.Text?.Trim();
-        var workDuration = 8;
-        int.TryParse(WorkDurationEntry.Text, out workDuration);
+        float workDuration = 7.5f;
+        float.TryParse(WorkDurationEntry.Text, out workDuration);
         if (workDuration <= 0)
         {
-            workDuration = 8;
+            workDuration = 7.5f;
         }
         if (!string.IsNullOrEmpty(newTenant))
         {

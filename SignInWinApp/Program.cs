@@ -4,6 +4,7 @@ using MauiWebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using SignInMauiApp.Models;
+using System.Globalization;
 using System.Net;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -25,6 +26,10 @@ internal static class Program
     [STAThread]
     static void Main()
     {
+        var cultureInfo = new CultureInfo("es-ES");
+        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
         Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
         AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
@@ -39,7 +44,7 @@ internal static class Program
         // 初始化 FreeSql ORM，使用 SQLite 数据库
         Fsql = new FreeSqlBuilder()
 #if DEBUG
-             //.UseAutoSyncStructure(true)
+            //.UseAutoSyncStructure(true)
 #endif
             .UseConnectionString(DataType.Sqlite, "Data Source=signindb.db")
             .Build();
@@ -84,11 +89,57 @@ internal static class Program
             fileInfo.SetAccessControl(security);
         }
         var tableNames = tables.Select(t => t.Name).ToList();
-        var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord) }
+        var missingTables = new List<string> { nameof(Tenant), nameof(User), nameof(SignInRecord), nameof(DbVersion) }
             .Where(t => !tableNames.Contains(t)).ToList();
         if (missingTables.Count > 0)
         {
-            Fsql.CodeFirst.SyncStructure(typeof(Tenant), typeof(User), typeof(SignInRecord));
+            Fsql.CodeFirst.SyncStructure(typeof(Tenant), typeof(User), typeof(SignInRecord), typeof(DbVersion));
+            if (Fsql.Select<DbVersion>().Count() == 0)
+            {
+                Fsql.Insert<DbVersion>().AppendData(new DbVersion() { Version = 0 }).ExecuteAffrows();
+            }
+        }
+        CheckAndUpgradeDatabase(Fsql);
+    }
+
+    private static void CheckAndUpgradeDatabase(IFreeSql fsql)
+    {
+        // 检查并执行数据库升级
+        DbVersion vers = new();
+        int verFinal = 1;
+        try
+        {
+            vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
+        }
+        catch (Exception)
+        {
+            fsql.CodeFirst.SyncStructure<DbVersion>();
+            if (fsql.Select<DbVersion>().Count() == 0)
+            {
+                fsql.Insert<DbVersion>().AppendData(new DbVersion() { Version = 0 }).ExecuteAffrows();
+            }
+            vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
+        }
+        // 数据库升级, 比对当前数据库版本号
+        while (vers.Version < verFinal)
+        {
+            try
+            {
+                switch (vers.Version)
+                {
+                    case 0:
+                        fsql.CodeFirst.SyncStructure(typeof(User));
+                        fsql.Update<User>().Set(a => a.WorkDuration, 7.5f).Where(a => a.WorkDuration == 8f).ExecuteAffrows();
+                        vers.Version = 1;
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                vers.Version += 1;
+            }
+            fsql.Update<DbVersion>().SetSource(vers).UpdateColumns(a => a.Version).ExecuteAffrows();
+            vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
         }
     }
 

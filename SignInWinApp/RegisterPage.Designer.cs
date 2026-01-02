@@ -146,9 +146,9 @@ namespace SignInWinApp
             WorkDurationEntry.Location = new Point(20, 319);
             WorkDurationEntry.Margin = new Padding(20, 2, 20, 2);
             WorkDurationEntry.Name = "WorkDurationEntry";
-            WorkDurationEntry.PlaceholderText = "Horas de trabajo, la predeterminada es [8]";
+            WorkDurationEntry.PlaceholderText = "Horas de trabajo, la predeterminada es [7,5]";
             WorkDurationEntry.Size = new Size(930, 39);
-            WorkDurationEntry.TabIndex = 15; 
+            WorkDurationEntry.TabIndex = 15;
             // 
             // TaxNumberEntry
             // 

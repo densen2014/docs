@@ -57,9 +57,13 @@ public partial class UserManagementPage : ContentPage
                 {
                     user.TaxNumber = result;
                 }
-                result = await DisplayPromptAsync("Editar horas de trabajo", "Por favor introduce un nuevo horario laboral", initialValue: user.WorkDuration.ToString());
-                if (!string.IsNullOrEmpty(result) && result != user.WorkDuration.ToString() && int.TryParse(result, out var workDuration))
+                result = await DisplayPromptAsync("Editar horas de trabajo", "Por favor introduce un nuevo horario laboral,la predeterminada es [7,5]", initialValue: user.WorkDuration.ToString());
+                if (!string.IsNullOrEmpty(result) && result != user.WorkDuration.ToString() && float.TryParse(result, out var workDuration))
                 {
+                    if (workDuration <= 0)
+                    {
+                        workDuration = 7.5f;
+                    }
                     user.WorkDuration = workDuration;
                 }
                 await _fsql!.Update<User>().SetSource(user).ExecuteAffrowsAsync();
