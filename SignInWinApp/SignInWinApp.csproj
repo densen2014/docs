@@ -24,6 +24,7 @@
     <ItemGroup>
       <None Remove="logo2.png" />
       <None Remove="logo.jpg" />
+      <None Remove="Registro_de_Jornada.ico" />
       <None Remove="wwwroot\bootstrap.bundle.min.js" />
       <None Remove="wwwroot\bootstrap.min.css" />
     </ItemGroup>

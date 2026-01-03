@@ -8,7 +8,10 @@
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Fichaje", "Cache");
             if (!Directory.Exists(cacheDir))
+            {
                 Directory.CreateDirectory(cacheDir);
+            }
+
             return cacheDir;
         }
     }
