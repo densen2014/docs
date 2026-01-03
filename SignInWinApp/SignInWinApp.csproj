@@ -3,7 +3,7 @@
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net10.0-windows</TargetFramework>
+        <TargetFrameworks>net10.0-windows;net48</TargetFrameworks>
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -17,7 +17,8 @@
         <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
         <ApplicationIcon>Registro_de_Jornada.ico</ApplicationIcon>
         <!-- 便携，不依赖系统 -->
-        <SelfContained>true</SelfContained> 
+        <SelfContained>true</SelfContained>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,7 +35,9 @@
       <Content Include="logo2.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <Content Include="Registro_de_Jornada.ico" />
+      <Content Include="Registro_de_Jornada.ico">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
       <Content Include="wwwroot\bootstrap.bundle.min.js">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
@@ -44,14 +47,14 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="AntdUI" Version="2.2.5" />
-        <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.304" />
+        <PackageReference Include="AntdUI" Version="2.2.7" />
+        <PackageReference Include="Costura.Fody" Version="6.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference> 
+        <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.305" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
-        <PackageReference Include="MiniExcel" Version="1.42.0" />
-        <!--<PackageReference Include="Costura.Fody" Version="6.0.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>-->
+        <PackageReference Include="MiniExcel" Version="1.42.0" /> 
         <PackageReference Include="System.Text.Json" Version="10.0.1" />
         <PackageReference Include="QRCoder" Version="1.7.0" />
         <PackageReference Include="QuestPDF" Version="2025.12.1" /> 
@@ -65,9 +68,6 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>Resources.resx</DependentUpon>
-      </Compile>  
-      <Compile Update="TenantEdit.cs">
-        <SubType>UserControl</SubType>
       </Compile>  
     </ItemGroup>
 

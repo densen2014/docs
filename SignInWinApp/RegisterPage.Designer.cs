@@ -62,7 +62,7 @@ namespace SignInWinApp
             btnRegister.Margin = new Padding(20, 2, 20, 2);
             btnRegister.Name = "btnRegister";
             btnRegister.Size = new Size(930, 39);
-            btnRegister.TabIndex = 2;
+            btnRegister.TabIndex = 6;
             btnRegister.Text = "Registro";
             // 
             // ErrorLabel
@@ -83,7 +83,7 @@ namespace SignInWinApp
             TenantPicker.Name = "TenantPicker";
             TenantPicker.PlaceholderText = "Seleccionar empresa";
             TenantPicker.Size = new Size(930, 39);
-            TenantPicker.TabIndex = 8;
+            TenantPicker.TabIndex = 7;
             TenantPicker.Text = "Seleccionar empresa";
             // 
             // UsernameEntry
@@ -93,7 +93,7 @@ namespace SignInWinApp
             UsernameEntry.Name = "UsernameEntry";
             UsernameEntry.PlaceholderText = "Nombre de usuario";
             UsernameEntry.Size = new Size(930, 39);
-            UsernameEntry.TabIndex = 9;
+            UsernameEntry.TabIndex = 1;
             // 
             // PasswordEntry
             // 
@@ -103,7 +103,7 @@ namespace SignInWinApp
             PasswordEntry.PasswordChar = '*';
             PasswordEntry.PlaceholderText = "Contraseña";
             PasswordEntry.Size = new Size(930, 39);
-            PasswordEntry.TabIndex = 10;
+            PasswordEntry.TabIndex = 2;
             // 
             // Header
             // 
@@ -148,7 +148,7 @@ namespace SignInWinApp
             WorkDurationEntry.Name = "WorkDurationEntry";
             WorkDurationEntry.PlaceholderText = "Horas de trabajo, la predeterminada es [7,5]";
             WorkDurationEntry.Size = new Size(930, 39);
-            WorkDurationEntry.TabIndex = 15;
+            WorkDurationEntry.TabIndex = 5;
             // 
             // TaxNumberEntry
             // 
@@ -157,7 +157,7 @@ namespace SignInWinApp
             TaxNumberEntry.Name = "TaxNumberEntry";
             TaxNumberEntry.PlaceholderText = "Número de identificación fiscal";
             TaxNumberEntry.Size = new Size(930, 39);
-            TaxNumberEntry.TabIndex = 14;
+            TaxNumberEntry.TabIndex = 4;
             // 
             // NameEntry
             // 
@@ -166,7 +166,7 @@ namespace SignInWinApp
             NameEntry.Name = "NameEntry";
             NameEntry.PlaceholderText = "Nombre y apellido";
             NameEntry.Size = new Size(930, 39);
-            NameEntry.TabIndex = 13;
+            NameEntry.TabIndex = 3;
             // 
             // NewTenantEntry
             // 
@@ -175,7 +175,7 @@ namespace SignInWinApp
             NewTenantEntry.Name = "NewTenantEntry";
             NewTenantEntry.PlaceholderText = "Crear una nueva empresa (opcional)";
             NewTenantEntry.Size = new Size(930, 39);
-            NewTenantEntry.TabIndex = 12;
+            NewTenantEntry.TabIndex = 0;
             // 
             // WelcomeLabel
             // 

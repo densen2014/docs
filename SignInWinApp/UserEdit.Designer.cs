@@ -79,7 +79,7 @@ partial class UserEdit
         WorkDurationEntry.PlaceholderText = "Horas de trabajo, la predeterminada es [7,5]";
         WorkDurationEntry.Radius = 3;
         WorkDurationEntry.Size = new Size(464, 38);
-        WorkDurationEntry.TabIndex = 24;
+        WorkDurationEntry.TabIndex = 4;
         // 
         // label5
         // 
@@ -100,7 +100,7 @@ partial class UserEdit
         TaxNumberEntry.PlaceholderText = "Número de identificación fiscal";
         TaxNumberEntry.Radius = 3;
         TaxNumberEntry.Size = new Size(464, 38);
-        TaxNumberEntry.TabIndex = 22;
+        TaxNumberEntry.TabIndex = 3;
         // 
         // label4
         // 
@@ -121,7 +121,7 @@ partial class UserEdit
         NameEntry.PlaceholderText = "Nombre de usuario";
         NameEntry.Radius = 3;
         NameEntry.Size = new Size(464, 38);
-        NameEntry.TabIndex = 20;
+        NameEntry.TabIndex = 2;
         // 
         // label2
         // 
@@ -142,7 +142,8 @@ partial class UserEdit
         PasswordEntry.PlaceholderText = "Contraseña";
         PasswordEntry.Radius = 3;
         PasswordEntry.Size = new Size(464, 38);
-        PasswordEntry.TabIndex = 18;
+        PasswordEntry.TabIndex = 1;
+        PasswordEntry.UseSystemPasswordChar = true;
         // 
         // label1
         // 
@@ -163,7 +164,7 @@ partial class UserEdit
         UsernameEntry.PlaceholderText = "Nombre de usuario";
         UsernameEntry.Radius = 3;
         UsernameEntry.Size = new Size(464, 38);
-        UsernameEntry.TabIndex = 16;
+        UsernameEntry.TabIndex = 0;
         // 
         // label3
         // 

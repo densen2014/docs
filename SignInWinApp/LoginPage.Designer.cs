@@ -80,10 +80,10 @@ namespace SignInWinApp
             BottomLabel.Dock = DockStyle.Bottom;
             BottomLabel.Font = new Font("Microsoft YaHei UI", 8F);
             BottomLabel.ForeColor = Color.DarkGray;
-            BottomLabel.Location = new Point(0, 629);
+            BottomLabel.Location = new Point(0, 634);
             BottomLabel.Margin = new Padding(3, 2, 3, 2);
             BottomLabel.Name = "BottomLabel";
-            BottomLabel.Size = new Size(970, 21);
+            BottomLabel.Size = new Size(970, 16);
             BottomLabel.TabIndex = 10;
             BottomLabel.Text = "Control horario conforme al Real Decreto-ley 8/2019";
             BottomLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -125,7 +125,7 @@ namespace SignInWinApp
             TenantPicker.Name = "TenantPicker";
             TenantPicker.PlaceholderText = "Seleccionar empresa";
             TenantPicker.Size = new Size(439, 39);
-            TenantPicker.TabIndex = 8;
+            TenantPicker.TabIndex = 4;
             TenantPicker.Text = "Seleccionar empresa";
             // 
             // UsernameEntry
@@ -135,7 +135,7 @@ namespace SignInWinApp
             UsernameEntry.Name = "UsernameEntry";
             UsernameEntry.PlaceholderText = "Usuario";
             UsernameEntry.Size = new Size(439, 39);
-            UsernameEntry.TabIndex = 9;
+            UsernameEntry.TabIndex = 0;
             // 
             // PasswordEntry
             // 
@@ -145,7 +145,7 @@ namespace SignInWinApp
             PasswordEntry.PasswordChar = '*';
             PasswordEntry.PlaceholderText = "Contraseña";
             PasswordEntry.Size = new Size(439, 39);
-            PasswordEntry.TabIndex = 10;
+            PasswordEntry.TabIndex = 1;
             // 
             // btnRegister
             // 
@@ -153,7 +153,7 @@ namespace SignInWinApp
             btnRegister.Margin = new Padding(20, 2, 20, 2);
             btnRegister.Name = "btnRegister";
             btnRegister.Size = new Size(439, 39);
-            btnRegister.TabIndex = 11;
+            btnRegister.TabIndex = 3;
             btnRegister.Text = "Registrar nuevo usuario";
             // 
             // Header
@@ -184,7 +184,7 @@ namespace SignInWinApp
             VerticalStackLayout.Dock = DockStyle.Fill;
             VerticalStackLayout.Location = new Point(3, 3);
             VerticalStackLayout.Name = "VerticalStackLayout";
-            VerticalStackLayout.Size = new Size(479, 533);
+            VerticalStackLayout.Size = new Size(479, 538);
             VerticalStackLayout.TabIndex = 0;
             VerticalStackLayout.Text = "VerticalStackLayout";
             VerticalStackLayout.Vertical = true;
@@ -207,7 +207,7 @@ namespace SignInWinApp
             VerticalStackLayoutRight.Dock = DockStyle.Fill;
             VerticalStackLayoutRight.Location = new Point(488, 3);
             VerticalStackLayoutRight.Name = "VerticalStackLayoutRight";
-            VerticalStackLayoutRight.Size = new Size(479, 533);
+            VerticalStackLayoutRight.Size = new Size(479, 538);
             VerticalStackLayoutRight.TabIndex = 0;
             VerticalStackLayoutRight.Text = "VerticalStackLayoutRight";
             // 
@@ -243,7 +243,7 @@ namespace SignInWinApp
             Grid.Dock = DockStyle.Fill;
             Grid.Location = new Point(0, 90);
             Grid.Name = "Grid";
-            Grid.Size = new Size(970, 539);
+            Grid.Size = new Size(970, 544);
             Grid.Span = "50% 50%";
             Grid.TabIndex = 0;
             Grid.Text = "gridPanel1";

@@ -26,12 +26,12 @@ internal static class Program
     [STAThread]
     static void Main()
     {
+        Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+        AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
         var cultureInfo = new CultureInfo("en-US");
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-        Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
-        AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
         // 初始化 LoggerFactory，使用 Debug 输出
         LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
@@ -55,12 +55,18 @@ internal static class Program
 
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
-        AntdUI.Localization.DefaultLanguage = "zh-CN";
-        //若文字不清晰，切换其他渲染方式
+        AntdUI.Config.Theme()
+            .Light("#fff", "#000")  
+            .Dark("#000", "#fff")  
+            .Header("#f3f3f3", "#111111"); 
+
         AntdUI.Config.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
         AntdUI.Config.TextRenderingHighQuality = true;
-
-        //ApplicationConfiguration.Initialize();
+        AntdUI.Config.ShowInWindow = true;
+#if NET48
+        float dpi = AntdUI.Config.Dpi;
+        AntdUI.Config.SetDpi(dpi);
+#endif 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         loginPage = new LoginPage();

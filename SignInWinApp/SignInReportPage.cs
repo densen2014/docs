@@ -212,6 +212,11 @@ public partial class SignInReportPage : AntdUI.Window
         {
             container.Page(page =>
             {
+#if NET48
+                page.DefaultTextStyle(x => x 
+                    .FontSize(11f)
+                );
+#endif
                 page.Size(PageSizes.A4);
                 page.Margin(30);
                 page.Content().Column(col =>
@@ -260,7 +265,7 @@ public partial class SignInReportPage : AntdUI.Window
                     {
                         table.ColumnsDefinition(columns =>
                         {
-                            columns.ConstantColumn(40); // Día del mes
+                            columns.ConstantColumn(42); // Día del mes
                             columns.RelativeColumn(1);  // Mañana Entrada
                             columns.RelativeColumn(1);  // Tarde Entrada
                             columns.RelativeColumn(1);  // Mañana Salida
