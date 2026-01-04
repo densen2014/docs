@@ -22,7 +22,7 @@ public partial class LoginPage : AntdUI.Window
         SignInResultLabel.Text = "";
         btnLogin.Click += OnLoginClicked;
         btnRegister.Click += OnRegisterClicked;
-        ImageQR.Click += OnImageQRTapped;
+        ImageQR.MouseClick += OnImageQRTapped;
 
         _fsql = Program.Fsql;
         // 检查是否需要显示引导页
@@ -317,13 +317,30 @@ public partial class LoginPage : AntdUI.Window
         shortcut.GetType().InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
     }
 
-    private void OnImageQRTapped(object? sender, EventArgs e)
+    private void OnImageQRTapped(object? sender, MouseEventArgs e)
     {
-        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        if (e.Button == System.Windows.Forms.MouseButtons.Left)
         {
-            FileName = qrLink,
-            UseShellExecute = true
-        });
+
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = qrLink,
+                UseShellExecute = true
+            });
+        }
+        else
+        {
+            if (ImageQR.Image is ImagePreviewItemCollection images && images.Count > 0 && images[0].Img != null)
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), "qr_temp.png");
+                images[0].Img!.Save(tempPath, System.Drawing.Imaging.ImageFormat.Png);
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = tempPath,
+                    UseShellExecute = true
+                });
+            }
+        }
     }
 }
 

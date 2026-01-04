@@ -18,7 +18,7 @@
             <VerticalStackLayout Grid.Column="1" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="15" >
                 <Image x:Name="ImageQR" Margin="0" HeightRequest="300" WidthRequest="300" >
                     <Image.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnImageQRTapped" />
+                        <TapGestureRecognizer Tapped="OnImageQRTapped"  /> 
                     </Image.GestureRecognizers>
                 </Image>
                 <Label x:Name="CopyRightLabel" Margin="0" TextColor="Blue" Text="Documentación de ayuda © 2026 Densen Informatica" FontSize="13" HorizontalOptions="Center" />

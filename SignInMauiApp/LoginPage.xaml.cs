@@ -1,9 +1,12 @@
 ﻿using FreeSql;
 using KestrelWebHost;
+#if WINDOWS
+using Microsoft.UI.Xaml.Input;
+#endif
 using QRCoder;
 using SignInMauiApp.Models;
 
-namespace SignInMauiApp; 
+namespace SignInMauiApp;
 
 public partial class LoginPage : ContentPage
 {
@@ -32,7 +35,18 @@ public partial class LoginPage : ContentPage
                 var url = "https://github.com/densen2014/docs/discussions/60";
                 await Launcher.Default.OpenAsync(url);
             })
-        }); 
+        });
+
+#if WINDOWS
+    ImageQR.HandlerChanged += (s, e) =>
+    {
+        var nativeImage = ImageQR.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Image;
+        if (nativeImage != null)
+        {
+            nativeImage.PointerReleased += NativeImage_PointerReleased;
+        }
+    };
+#endif
     }
 
     private void GenerateAndShowQRCode()
@@ -296,4 +310,25 @@ public partial class LoginPage : ContentPage
     {
         await Launcher.Default.OpenAsync(qrLink);
     }
+#if WINDOWS
+    private async void NativeImage_PointerReleased(object sender, PointerRoutedEventArgs e)
+    {
+        var isRightButtonPressed = e.GetCurrentPoint(null).Properties.PointerUpdateKind == Microsoft.UI.Input.PointerUpdateKind.RightButtonReleased;
+        if (isRightButtonPressed)
+        {
+            if (ImageQR.Source is StreamImageSource streamImageSource)
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), "qr_temp.png");
+                var stream = await streamImageSource.Stream.Invoke(new System.Threading.CancellationToken());
+                using var fileStream = File.Create(tempPath);
+                await stream.CopyToAsync(fileStream);
+                await Launcher.Default.OpenAsync(new OpenFileRequest
+                {
+                    File = new ReadOnlyFile(tempPath)
+                });
+            }
+        }
+    }
+#endif
+     
 }
