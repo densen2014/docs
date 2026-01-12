@@ -8,3 +8,9 @@
 [Win7](https://densen.obs.eu-west-101.myhuaweicloud.eu/file/APP/FichajeLite.exe)
 
 [工程源码](https://github.com/densen2014/docs/tree/main/SignInMauiApp)
+
+### 2. 开放平台API
+
+[文档](https://github.com/densen2014/docs/wiki/%E5%BC%80%E6%94%BE%E5%B9%B3%E5%8F%B0API)
+
+[Demo](https://github.com/densen2014/docs/tree/main/MPDemoConsole)
