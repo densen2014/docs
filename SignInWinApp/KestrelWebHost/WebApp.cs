@@ -101,7 +101,7 @@ public partial class WebApp
     <link href='bootstrap.min.css' rel='stylesheet'>
 </head>
 <body>
-    <div class='container mt-5 text-center w-75'>
+    <div class='container-fluid mt-5 text-center w-75'>
         <h4>Inicia sesión</h4><br/><br/> 
         <form id='loginForm' class='mt-4'>
             <div class='mb-3'>
@@ -207,7 +207,7 @@ public partial class WebApp
     </style>
 </head>
 <body>
-    <div class='container mt-5 text-center'>
+    <div class='container-fluid mt-5 text-center'>
         <h4>Registro de jornada laboral</h4><hr/><br/><br/>
         <h6 id='result' class='mt-3 mb-3 text-success'>Bienvenido</h6>
         <h6 id='resultError' class='mt-3 mb-3 text-danger'></h6><br/><br/> 
@@ -218,7 +218,7 @@ public partial class WebApp
             <button type='button' class='btn btn-success w-75' onclick='submitForm("signout")'>Salida</button>
         </div>
     </div>
-    <div class='container logout-fixed text-center'>
+    <div class='container-fluid logout-fixed text-center'>
         <div class='m-4'>
             <button type='button' class='btn btn-secondary w-75' onclick='logout()'>Cerrar sesión</button>
         </div>
