@@ -183,7 +183,7 @@ public partial class LoginPage : ContentPage
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    SignInResultLabel.Text = $"{user.Username} iniciar sesión exitosamente, Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+                    SignInResultLabel.Text = $"{user.Username} iniciar sesión exitosamente, Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm}";
                     SignInResultLabel.IsVisible = true;
                 });
             }
@@ -203,7 +203,7 @@ public partial class LoginPage : ContentPage
         var message = string.Empty;
         if (signInWeb.Action == "signin" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignInWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
         {
-            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm}";
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 SignInResultLabel.Text = message;
@@ -218,7 +218,7 @@ public partial class LoginPage : ContentPage
         }
         else if (signInWeb.Action == "signout" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignOutWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
         {
-            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm}";
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 SignInResultLabel.Text = message;
@@ -233,18 +233,18 @@ public partial class LoginPage : ContentPage
         }
         else if (signInWeb.Action == "signin")
         {
-            {
-                record.SignInTime = DateTime.Now;
-                record.SignType = SignTypeEnum.SignInWork;
-            }
+            var now = DateTime.Now;
+            record.SignInTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
+            record.SignType = SignTypeEnum.SignInWork;
         }
         else
         {
-            record.SignInTime = DateTime.Now;
+            var now = DateTime.Now;
+            record.SignInTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
             record.SignType = SignTypeEnum.SignOutWork;
         }
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
+        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm}";
         MainThread.BeginInvokeOnMainThread(() =>
         {
             SignInResultLabel.Text = message;
@@ -330,5 +330,5 @@ public partial class LoginPage : ContentPage
         }
     }
 #endif
-     
+
 }

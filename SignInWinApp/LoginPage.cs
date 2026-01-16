@@ -75,7 +75,7 @@ public partial class LoginPage : AntdUI.Window
     private async void CheckAndShowOnboardingAsync()
     {
         var tenantsCount = _fsql!.Select<Tenant>().Count();
-        if (tenantsCount == 0) 
+        if (tenantsCount == 0)
         {
             Hide();
             var onboardingPage = new OnboardingPage(_fsql);
@@ -194,7 +194,7 @@ public partial class LoginPage : AntdUI.Window
             {
                 Invoke(() =>
                 {
-                    SignInResultLabel.Text = $"{user.Username} iniciar sesión exitosamente, Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+                    SignInResultLabel.Text = $"{user.Username} iniciar sesión exitosamente, Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm}";
                     SignInResultLabel.Visible = true;
                 });
             }
@@ -212,9 +212,10 @@ public partial class LoginPage : AntdUI.Window
         };
 
         var message = string.Empty;
+        var now = DateTime.Now;
         if (signInWeb.Action == "signin" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignInWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
         {
-            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm}";
             Invoke(() =>
             {
                 SignInResultLabel.Text = message;
@@ -229,7 +230,7 @@ public partial class LoginPage : AntdUI.Window
         }
         else if (signInWeb.Action == "signout" && lastSignIn?.SignInTime != null && lastSignIn.SignType == SignTypeEnum.SignOutWork && lastSignIn.SignInTime.Value.Date == DateTime.Today)
         {
-            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            message = $"{user.Username},la operación no se puede repetir. Último marcar de {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm}";
             Invoke(() =>
             {
                 SignInResultLabel.Text = message;
@@ -244,18 +245,16 @@ public partial class LoginPage : AntdUI.Window
         }
         else if (signInWeb.Action == "signin")
         {
-            {
-                record.SignInTime = DateTime.Now;
-                record.SignType = SignTypeEnum.SignInWork;
-            }
+            record.SignInTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
+            record.SignType = SignTypeEnum.SignInWork;
         }
         else
         {
-            record.SignInTime = DateTime.Now;
+            record.SignInTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
             record.SignType = SignTypeEnum.SignOutWork;
         }
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
+        message = $"{user.Username}, {(signInWeb.Action == "signin" ? "Hora de entrada" : "Hora de salida")}：{record.SignInTime:dd/MM/yyyy HH:mm}";
         Invoke(() =>
         {
             SignInResultLabel.Text = message;

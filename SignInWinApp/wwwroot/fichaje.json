@@ -1,0 +1,32 @@
+﻿{
+  "name": "Fichaje",
+  "short_name": "Fichaje",
+  "description": "Fichaje 签到 App, 技术支持: densen.es",
+  "id": "/?homescreen=1",
+  "start_url": "/",
+  "display_override": [
+    "fullscreen",
+    "minimal-ui",
+    "window-controls-overlay"
+  ],
+  "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "./fichaje.jpg",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "features": [
+    "Cross Platform"
+  ],
+  "categories": [
+    "productivity"
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

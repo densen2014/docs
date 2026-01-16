@@ -21,22 +21,23 @@ public partial class SignInPage : ContentPage
             .First();
         if (lastSignIn?.SignInTime != null)
         {
-            SignInResultLabel.Text = $"Hora del último marcar la {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm:ss}";
+            SignInResultLabel.Text = $"Hora del último marcar la {(lastSignIn.SignType == SignTypeEnum.SignInWork ? "entrada" : "salida")}：{lastSignIn.SignInTime:dd/MM/yyyy HH:mm}";
             SignInResultLabel.IsVisible = true;
         }
     }
 
     private async void OnSignInClicked(object sender, EventArgs e)
     {
+        var now = DateTime.Now;
         var record = new SignInRecord
         {
             UserId = _user.Id,
             TenantId = _tenant.Id,
-            SignInTime = DateTime.Now,
+            SignInTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0),
             SignType = SignTypeEnum.SignInWork
         };
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        SignInResultLabel.Text = $"Hora de entrada：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
+        SignInResultLabel.Text = $"Hora de entrada：{record.SignInTime:dd/MM/yyyy HH:mm}";
         SignInResultLabel.IsVisible = true;
         // 跳转到签到历史页面
         await Navigation.PushAsync(new SignInReportPage(_user));
@@ -45,15 +46,16 @@ public partial class SignInPage : ContentPage
 
     private async void OnSignOutClicked(object sender, EventArgs e)
     {
+        var now = DateTime.Now;
         var record = new SignInRecord
         {
             UserId = _user.Id,
             TenantId = _tenant.Id,
-            SignInTime = DateTime.Now,
+            SignInTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0),
             SignType = SignTypeEnum.SignOutWork
         };
         await _fsql!.Insert(record).ExecuteAffrowsAsync();
-        SignInResultLabel.Text = $"Hora de salida：{record.SignInTime:dd/MM/yyyy HH:mm:ss}";
+        SignInResultLabel.Text = $"Hora de salida：{record.SignInTime:dd/MM/yyyy HH:mm}";
         SignInResultLabel.IsVisible = true;
         // 跳转到签到历史页面
         await Navigation.PushAsync(new SignInReportPage(_user));

@@ -41,6 +41,9 @@ public partial class WebApp
             },
             { "/bootstrap.bundle.min.js", StaticFiles},
             { "/bootstrap.min.css", StaticFiles},
+            { "/fichaje.ico", StaticFiles},
+            { "/fichaje.jpg", StaticFiles},
+            { "/fichaje.json", StaticFiles},
         };
     private static bool IsAuthenticated(HttpContext ctx)
     {
@@ -77,6 +80,9 @@ public partial class WebApp
             ".ico" => "image/x-icon",
             ".svg" => "image/svg+xml",
             ".html" => "text/html",
+            ".json" => "application/json",
+            ".pdf" => "application/pdf",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             _ => "application/octet-stream"
         };
 
@@ -96,6 +102,9 @@ public partial class WebApp
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Registro de jornada laboral</title>
     <link href='bootstrap.min.css' rel='stylesheet'>
+    <link rel="manifest" href="fichaje.json">
+    <link rel="shortcut icon" href="fichaje.jpg" type="image/x-icon">
+    <link rel="icon" href="fichaje.jpg" type="image/x-icon">
 </head>
 <body>
     <div class='container-fluid mt-5 text-center w-75'>
@@ -194,6 +203,9 @@ public partial class WebApp
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Registro de jornada laboral</title>
     <link href='bootstrap.min.css' rel='stylesheet'>
+    <link rel="manifest" href="fichaje.json">
+    <link rel="shortcut icon" href="fichaje.jpg" type="image/x-icon">
+    <link rel="icon" href="fichaje.jpg" type="image/x-icon">
     <style>
         .logout-fixed {
             position: fixed; 
