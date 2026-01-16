@@ -36,6 +36,7 @@ public partial class SignInPage: AntdUI.Window
 
     private async void OnSignInClicked(object? sender, EventArgs e)
     {
+        var now = DateTime.Now;
         var record = new SignInRecord
         {
             UserId = _user.Id,
@@ -55,6 +56,7 @@ public partial class SignInPage: AntdUI.Window
 
     private async void OnSignOutClicked(object? sender, EventArgs e)
     {
+        var now = DateTime.Now;
         var record = new SignInRecord
         {
             UserId = _user.Id,
