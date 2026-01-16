@@ -73,7 +73,7 @@ public partial class App : Application
     {
         // 检查并执行数据库升级
         DbVersion vers = new();
-        int verFinal = 1;
+        int verFinal = 2;
         try
         {
             vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
@@ -99,6 +99,18 @@ public partial class App : Application
                         fsql.Update<User>().Set(a => a.WorkDuration, 7.5f).Where(a => a.WorkDuration == 8f).ExecuteAffrows();
                         vers.Version = 1;
                         break;
+                    case 1:
+                        var list = fsql.Select<SignInRecord>().ToList();
+                        list.ForEach(a =>
+                        {
+                            if (a.SignInTime != null)
+                            {
+                                a.SignInTime = new DateTime(a.SignInTime.Value.Year, a.SignInTime.Value.Month, a.SignInTime.Value.Day, a.SignInTime.Value.Hour, a.SignInTime.Value.Minute, 0);
+                            }
+                        });
+                        fsql.Update<SignInRecord>().SetSource(list).ExecuteAffrows();
+                        vers.Version = 2;
+                        break;
                 }
             }
             catch (Exception)
@@ -121,7 +133,7 @@ public partial class App : Application
     {
         try
         {
-            var ip = NetworkHelper.GetIpAddress() ?? IPAddress.Loopback; 
+            var ip = NetworkHelper.GetIpAddress() ?? IPAddress.Loopback;
             WebHostParameters.ServerIpEndpoint = new IPEndPoint(ip, 5001);
 
             Log($"监听地址: {WebHostParameters.ServerIpEndpoint}");
