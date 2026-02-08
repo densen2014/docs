@@ -66,6 +66,7 @@ public partial class SignInReportPage : ContentPage
 
     private void LoadReport(bool today = false)
     {
+        var splitTime = new TimeSpan(16, 45, 0); // 16:45
 
         var selectedUsername = _user.IsAdmin ? (UsernamePicker.SelectedItem as string) ?? _user.Username : _user.Username;
         if (_user.IsAdmin && today)
@@ -94,10 +95,10 @@ public partial class SignInReportPage : ContentPage
             .Select(g =>
             {
                 var items = g.OrderBy(x => x.SignInTime).ToList();
-                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour < 16)?.SignInTime;
-                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.Hour < 16)?.SignInTime;
-                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.Hour >= 16)?.SignInTime;
-                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.Hour >= 16)?.SignInTime;
+                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay < splitTime)?.SignInTime;
+                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay < splitTime)?.SignInTime;
+                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay >= splitTime)?.SignInTime;
+                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay >= splitTime)?.SignInTime;
                 if (morningSignIn == morningSignOut)
                 {
                     morningSignOut = null;
