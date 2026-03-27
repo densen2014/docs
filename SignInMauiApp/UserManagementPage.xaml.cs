@@ -66,6 +66,15 @@ public partial class UserManagementPage : ContentPage
                     }
                     user.WorkDuration = workDuration;
                 }
+                result = await DisplayPromptAsync("Editar Hora de entrada la tarde", "Por favor introduce un nuevo Hora de entrada la tarde,la predeterminada es [16,45]", initialValue: user.SplitTime.ToString());
+                if (!string.IsNullOrEmpty(result) && result != user.SplitTime.ToString() && float.TryParse(result, out var splitTime))
+                {
+                    if (splitTime <= 0)
+                    {
+                        splitTime = 16.45f;
+                    }
+                    user.SplitTime = splitTime;
+                }
                 await _fsql!.Update<User>().SetSource(user).ExecuteAffrowsAsync();
                 LoadUsers();
             }

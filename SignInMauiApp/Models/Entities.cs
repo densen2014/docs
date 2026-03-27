@@ -28,7 +28,8 @@ public class User
     public string? TaxNumber { get; set; }
     public string? Phone { get; set; }
     public int TenantId { get; set; }
-    public float WorkDuration { get; set; } = 7.5f;
+    public float WorkDuration { get; set; } = 7.5f; 
+    public float SplitTime { get; set; } = 16.45f;
     public bool IsAdmin { get; internal set; }
 }
 

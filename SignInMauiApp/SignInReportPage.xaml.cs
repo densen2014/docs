@@ -1,5 +1,4 @@
-﻿using MiniExcelLibs;
-using SignInMauiApp.Models;
+﻿using SignInMauiApp.Models;
 using IContainer = QuestPDF.Infrastructure.IContainer;
 using Colors = QuestPDF.Helpers.Colors;
 
@@ -85,6 +84,7 @@ public partial class SignInReportPage : ContentPage
                 Username = string.IsNullOrEmpty(u.Name) ? u.Username : u.Name,
                 u.TaxNumber,
                 u.WorkDuration,
+                u.SplitTime,
                 TenantName = t.Name,
                 TenantTaxNumber = t.TaxNumber,
                 r.SignInTime,
@@ -95,10 +95,11 @@ public partial class SignInReportPage : ContentPage
             .Select(g =>
             {
                 var items = g.OrderBy(x => x.SignInTime).ToList();
-                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay < splitTime)?.SignInTime;
-                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay < splitTime)?.SignInTime;
-                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay >= splitTime)?.SignInTime;
-                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay >= splitTime)?.SignInTime;
+                var _splitTime = TimeSpan.FromHours(items.First().SplitTime);
+                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay < _splitTime)?.SignInTime;
+                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay < _splitTime)?.SignInTime;
+                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay >= _splitTime)?.SignInTime;
+                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay >= _splitTime)?.SignInTime;
                 if (morningSignIn == morningSignOut)
                 {
                     morningSignOut = null;

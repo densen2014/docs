@@ -15,11 +15,13 @@
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="100"/> 
+                    <ColumnDefinition Width="100"/> 
                 </Grid.ColumnDefinitions>
                 <Label Text="Usuario" FontAttributes="Bold" Grid.Column="0" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
                 <Label Text="Nombre y apellido" FontAttributes="Bold" Grid.Column="1" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
                 <Label Text="NIF" FontAttributes="Bold" Grid.Column="2" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
                 <Label Text="Horas de trabajo" FontAttributes="Bold" Grid.Column="3" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                <Label Text="Hora de entrada la tarde" FontAttributes="Bold" Grid.Column="4" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
             </Grid>
             <CollectionView x:Name="UserCollectionView" SelectionMode="Single">
                 <CollectionView.ItemTemplate>
@@ -30,6 +32,7 @@
                                 <Label Text="{Binding Name}" VerticalOptions="Center"  Padding="10" WidthRequest="300" />
                                 <Label Text="{Binding TaxNumber}" VerticalOptions="Center"  Padding="10" WidthRequest="150"/>
                                 <Label Text="{Binding WorkDuration}" VerticalOptions="Center"  Padding="10" WidthRequest="100" />
+                                <Label Text="{Binding SplitTime}" VerticalOptions="Center"  Padding="10" WidthRequest="100" />
                                 <Button Text="Editar" Clicked="OnEditUserClicked" CommandParameter="{Binding .}"  Margin="5" />
                                 <Button Text="Borrar" Clicked="OnDeleteUserClicked" CommandParameter="{Binding .}" Margin="5" />
                             </HorizontalStackLayout>
