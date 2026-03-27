@@ -1,4 +1,5 @@
 ﻿using AntdUI;
+
 using SignInMauiApp.Models;
 
 namespace SignInWinApp;
@@ -35,6 +36,7 @@ public partial class UserManagementPage : AntdUI.Window
             new Column("Name", "Nombre y apellido",ColumnAlign.Center) {ColBreak=true},
             new Column("TaxNumber", "NIF",ColumnAlign.Center) { ColBreak=true},
             new Column("WorkDuration", "Horas de trabajo",ColumnAlign.Center) { ColBreak=true },
+            new Column("SplitTime", "Hora de entrada la tarde",ColumnAlign.Center) { ColBreak=true },
             new Column("CellLinks", "", ColumnAlign.Center),
         ];
     }

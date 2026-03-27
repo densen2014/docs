@@ -3,9 +3,8 @@ using MiniExcelLibs;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using SignInMauiApp.Models;
-using QuestPDF.Infrastructure;
-using IContainer = QuestPDF.Infrastructure.IContainer;
 using Colors = QuestPDF.Helpers.Colors;
+using IContainer = QuestPDF.Infrastructure.IContainer;
 
 namespace SignInWinApp;
 
@@ -114,6 +113,7 @@ public partial class SignInReportPage : AntdUI.Window
                 Username = string.IsNullOrEmpty(u.Name) ? u.Username : u.Name,
                 u.TaxNumber,
                 u.WorkDuration,
+                u.SplitTime,
                 TenantName = t.Name,
                 TenantTaxNumber = t.TaxNumber,
                 r.SignInTime,
@@ -124,10 +124,15 @@ public partial class SignInReportPage : AntdUI.Window
             .Select(g =>
             {
                 var items = g.OrderBy(x => x.SignInTime).ToList();
-                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay < splitTime)?.SignInTime;
-                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay < splitTime)?.SignInTime;
-                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay >= splitTime)?.SignInTime;
-                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay >= splitTime)?.SignInTime;
+                var _splitTime = TimeSpan.FromHours(items.First().SplitTime);
+                if (_splitTime == new TimeSpan(0, 0, 0))
+                {
+                    _splitTime = splitTime;
+                }
+                var morningSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay < _splitTime)?.SignInTime;
+                var morningSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay < _splitTime)?.SignInTime;
+                var afternoonSignIn = items.FirstOrDefault(x => x.SignInTime?.TimeOfDay >= _splitTime)?.SignInTime;
+                var afternoonSignOut = items.LastOrDefault(x => x.SignInTime?.TimeOfDay >= _splitTime)?.SignInTime;
                 if (morningSignIn == morningSignOut)
                 {
                     morningSignOut = null;

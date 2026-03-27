@@ -51,6 +51,13 @@ public partial class UserEdit : UserControl
             workDuration = 7.5f;
         }
         user.WorkDuration = workDuration;
+        float splitTime = 16.45f;
+        float.TryParse(SplitTimeEntry.Text, out splitTime);
+        if (splitTime <= 0)
+        {
+            splitTime = 16.45f;
+        }
+        user.SplitTime = splitTime;
         submit = true;
         this.Dispose();
     }
@@ -62,5 +69,6 @@ public partial class UserEdit : UserControl
         PasswordEntry.Text = user.Password!;
         TaxNumberEntry.Text = user.TaxNumber!;
         WorkDurationEntry.Text = user.WorkDuration.ToString();
+        SplitTimeEntry.Text = user.SplitTime.ToString();
     }
 }

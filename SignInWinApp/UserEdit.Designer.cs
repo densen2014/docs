@@ -29,16 +29,17 @@ partial class UserEdit
     private void InitializeComponent()
     {
         panel1 = new AntdUI.Panel();
+        labelSplitTime = new AntdUI.Label();
+        SplitTimeEntry = new AntdUI.Input();
         WorkDurationEntry = new AntdUI.Input();
-        label5 = new AntdUI.Label();
         TaxNumberEntry = new AntdUI.Input();
-        label4 = new AntdUI.Label();
+        labelTaxNumber = new AntdUI.Label();
         NameEntry = new AntdUI.Input();
-        label2 = new AntdUI.Label();
+        labelName = new AntdUI.Label();
         PasswordEntry = new AntdUI.Input();
-        label1 = new AntdUI.Label();
+        labelPassword = new AntdUI.Label();
         UsernameEntry = new AntdUI.Input();
-        label3 = new AntdUI.Label();
+        labelUsername = new AntdUI.Label();
         divider1 = new AntdUI.Divider();
         stackPanel1 = new AntdUI.StackPanel();
         button_cancel = new AntdUI.Button();
@@ -49,16 +50,18 @@ partial class UserEdit
         // 
         // panel1
         // 
+        panel1.Controls.Add(SplitTimeEntry);
+        panel1.Controls.Add(labelSplitTime);
         panel1.Controls.Add(WorkDurationEntry);
-        panel1.Controls.Add(label5);
+        panel1.Controls.Add(labelWorkDuration);
         panel1.Controls.Add(TaxNumberEntry);
-        panel1.Controls.Add(label4);
+        panel1.Controls.Add(labelTaxNumber);
         panel1.Controls.Add(NameEntry);
-        panel1.Controls.Add(label2);
+        panel1.Controls.Add(labelName);
         panel1.Controls.Add(PasswordEntry);
-        panel1.Controls.Add(label1);
+        panel1.Controls.Add(labelPassword);
         panel1.Controls.Add(UsernameEntry);
-        panel1.Controls.Add(label3);
+        panel1.Controls.Add(labelUsername);
         panel1.Controls.Add(divider1);
         panel1.Controls.Add(stackPanel1);
         panel1.Dock = DockStyle.Fill;
@@ -70,6 +73,27 @@ partial class UserEdit
         panel1.TabIndex = 0;
         panel1.Text = "panel1";
         // 
+        // SplitTimeEntry
+        // 
+        SplitTimeEntry.Dock = DockStyle.Top;
+        SplitTimeEntry.Font = new Font("Microsoft YaHei UI", 11F);
+        SplitTimeEntry.Location = new Point(18, 346);
+        SplitTimeEntry.Name = "SplitTimeEntry";
+        SplitTimeEntry.PlaceholderText = "Hora de entrada la tarde, la predeterminada es [16,45]";
+        SplitTimeEntry.Radius = 3;
+        SplitTimeEntry.Size = new Size(464, 38);
+        SplitTimeEntry.TabIndex = 4;
+        // 
+        // labelSplitTime
+        // 
+        labelSplitTime.Dock = DockStyle.Top;
+        labelSplitTime.Font = new Font("Microsoft YaHei UI", 11F);
+        labelSplitTime.Location = new Point(18, 322);
+        labelSplitTime.Name = "labelSplitTime";
+        labelSplitTime.Size = new Size(464, 24);
+        labelSplitTime.TabIndex = 23;
+        labelSplitTime.Text = "Hora de entrada la tarde";
+        // 
         // WorkDurationEntry
         // 
         WorkDurationEntry.Dock = DockStyle.Top;
@@ -80,16 +104,6 @@ partial class UserEdit
         WorkDurationEntry.Radius = 3;
         WorkDurationEntry.Size = new Size(464, 38);
         WorkDurationEntry.TabIndex = 4;
-        // 
-        // label5
-        // 
-        label5.Dock = DockStyle.Top;
-        label5.Font = new Font("Microsoft YaHei UI", 11F);
-        label5.Location = new Point(18, 322);
-        label5.Name = "label5";
-        label5.Size = new Size(464, 24);
-        label5.TabIndex = 23;
-        label5.Text = "Horas de trabajo";
         // 
         // TaxNumberEntry
         // 
@@ -104,13 +118,13 @@ partial class UserEdit
         // 
         // label4
         // 
-        label4.Dock = DockStyle.Top;
-        label4.Font = new Font("Microsoft YaHei UI", 11F);
-        label4.Location = new Point(18, 260);
-        label4.Name = "label4";
-        label4.Size = new Size(464, 24);
-        label4.TabIndex = 21;
-        label4.Text = "NIF(Número de identificación fiscal)";
+        labelTaxNumber.Dock = DockStyle.Top;
+        labelTaxNumber.Font = new Font("Microsoft YaHei UI", 11F);
+        labelTaxNumber.Location = new Point(18, 260);
+        labelTaxNumber.Name = "label4";
+        labelTaxNumber.Size = new Size(464, 24);
+        labelTaxNumber.TabIndex = 21;
+        labelTaxNumber.Text = "NIF(Número de identificación fiscal)";
         // 
         // NameEntry
         // 
@@ -125,13 +139,13 @@ partial class UserEdit
         // 
         // label2
         // 
-        label2.Dock = DockStyle.Top;
-        label2.Font = new Font("Microsoft YaHei UI", 11F);
-        label2.Location = new Point(18, 198);
-        label2.Name = "label2";
-        label2.Size = new Size(464, 24);
-        label2.TabIndex = 19;
-        label2.Text = "Nombre y apellido";
+        labelName.Dock = DockStyle.Top;
+        labelName.Font = new Font("Microsoft YaHei UI", 11F);
+        labelName.Location = new Point(18, 198);
+        labelName.Name = "label2";
+        labelName.Size = new Size(464, 24);
+        labelName.TabIndex = 19;
+        labelName.Text = "Nombre y apellido";
         // 
         // PasswordEntry
         // 
@@ -147,13 +161,13 @@ partial class UserEdit
         // 
         // label1
         // 
-        label1.Dock = DockStyle.Top;
-        label1.Font = new Font("Microsoft YaHei UI", 11F);
-        label1.Location = new Point(18, 136);
-        label1.Name = "label1";
-        label1.Size = new Size(464, 24);
-        label1.TabIndex = 17;
-        label1.Text = "Contraseña";
+        labelPassword.Dock = DockStyle.Top;
+        labelPassword.Font = new Font("Microsoft YaHei UI", 11F);
+        labelPassword.Location = new Point(18, 136);
+        labelPassword.Name = "label1";
+        labelPassword.Size = new Size(464, 24);
+        labelPassword.TabIndex = 17;
+        labelPassword.Text = "Contraseña";
         // 
         // UsernameEntry
         // 
@@ -168,13 +182,13 @@ partial class UserEdit
         // 
         // label3
         // 
-        label3.Dock = DockStyle.Top;
-        label3.Font = new Font("Microsoft YaHei UI", 11F);
-        label3.Location = new Point(18, 74);
-        label3.Name = "label3";
-        label3.Size = new Size(464, 24);
-        label3.TabIndex = 15;
-        label3.Text = "Usuario";
+        labelUsername.Dock = DockStyle.Top;
+        labelUsername.Font = new Font("Microsoft YaHei UI", 11F);
+        labelUsername.Location = new Point(18, 74);
+        labelUsername.Name = "label3";
+        labelUsername.Size = new Size(464, 24);
+        labelUsername.TabIndex = 15;
+        labelUsername.Text = "Usuario";
         // 
         // divider1
         // 
@@ -238,13 +252,15 @@ partial class UserEdit
     private AntdUI.Button button_ok;
     private AntdUI.Divider divider1;
     private AntdUI.Input NameEntry;
-    private AntdUI.Label label2;
+    private AntdUI.Label labelName;
     private AntdUI.Input PasswordEntry;
-    private AntdUI.Label label1;
+    private AntdUI.Label labelPassword;
     private AntdUI.Input UsernameEntry;
-    private AntdUI.Label label3;
+    private AntdUI.Label labelUsername;
     private AntdUI.Input WorkDurationEntry;
-    private AntdUI.Label label5;
+    private AntdUI.Label labelWorkDuration;
+    private AntdUI.Input SplitTimeEntry;
+    private AntdUI.Label labelSplitTime;
     private AntdUI.Input TaxNumberEntry;
-    private AntdUI.Label label4;
+    private AntdUI.Label labelTaxNumber;
 }

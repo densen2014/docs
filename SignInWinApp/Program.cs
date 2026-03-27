@@ -112,7 +112,7 @@ internal static class Program
     {
         // 检查并执行数据库升级
         DbVersion vers = new();
-        int verFinal = 2;
+        int verFinal = 3;
         try
         {
             vers = fsql.Select<DbVersion>().OrderBy(a => a.Id).First();
@@ -133,10 +133,10 @@ internal static class Program
             {
                 switch (vers.Version)
                 {
-                    case 0:
+                    case 2:
                         fsql.CodeFirst.SyncStructure(typeof(User));
-                        fsql.Update<User>().Set(a => a.WorkDuration, 7.5f).Where(a => a.WorkDuration == 8f).ExecuteAffrows();
-                        vers.Version = 1;
+                        fsql.Update<User>().Set(a => a.SplitTime, 16.45f).ExecuteAffrows();
+                        vers.Version = 3;
                         break;
                     case 1:
                         var list = fsql.Select<SignInRecord>().ToList();
@@ -149,6 +149,11 @@ internal static class Program
                         });
                         fsql.Update<SignInRecord>().SetSource(list).ExecuteAffrows();
                         vers.Version = 2;
+                        break;
+                    case 0:
+                        fsql.CodeFirst.SyncStructure(typeof(User));
+                        fsql.Update<User>().Set(a => a.WorkDuration, 7.5f).Where(a => a.WorkDuration == 8f).ExecuteAffrows();
+                        vers.Version = 1;
                         break;
                 }
             }
