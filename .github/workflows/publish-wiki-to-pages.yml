@@ -1,16 +1,21 @@
 name: Publish Wiki to Pages
 
 on:
-  gollum:  # Wiki 事件触发器
+  gollum:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Checkout wiki
         uses: actions/checkout@v4
@@ -25,36 +30,29 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y pandoc
-          
-          # 创建索引
-          echo '<html><head><meta charset="utf-8"><title>Wiki 文档</title>' > _site/index.html
-          echo '<style>body{font-family:Arial,sans-serif;margin:20px;max-width:1000px;margin:0 auto;padding:20px}h1{color:#333}a{color:#0366d6;text-decoration:none}a:hover{text-decoration:underline}ul{list-style-type:disc}</style></head><body>' >> _site/index.html
+
+          echo '<html><head><meta charset="utf-8"><title>Wiki 文档</title></head><body>' > _site/index.html
           echo '<h1>📚 Wiki 文档</h1><ul>' >> _site/index.html
-          
-          # 转换所有 Markdown 文件
+
           for file in wiki/*.md; do
             if [ -f "$file" ]; then
               filename=$(basename "$file")
               htmlname="${filename%.md}.html"
-              
-              # 生成 HTML
               pandoc "$file" -o "_site/$htmlname" -f markdown -t html -s
-              
-              # 添加到索引
               echo "<li><a href=\"$htmlname\">$(basename "$filename" .md)</a></li>" >> _site/index.html
             fi
           done
-          
+
           echo '</ul></body></html>' >> _site/index.html
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: '_site'
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
