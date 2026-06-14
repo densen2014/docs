@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SignInMauiApp.Models;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
@@ -63,6 +64,11 @@ public partial class WebApp
 
         if (!File.Exists(fullPath))
         {
+            EnsureStaticFileExtracted(fullPath, filePath);
+        }
+
+        if (!File.Exists(fullPath))
+        {
             response.StatusCode = 404;
             await response.WriteAsync("File not found");
             return;
@@ -90,6 +96,46 @@ public partial class WebApp
         response.StatusCode = 200;
         response.ContentLength = bytes.Length;
         await response.Body.WriteAsync(bytes, 0, bytes.Length);
+    }
+
+    private static void EnsureStaticFileExtracted(string fullPath, string requestFilePath)
+    {
+        try
+        {
+            var assembly = typeof(WebApp).Assembly;
+            var normalized = requestFilePath
+                .Replace('\\', '.')
+                .Replace('/', '.');
+
+            var resourceSuffix = $"wwwroot.{normalized}";
+            var resourceName = assembly
+                .GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith(resourceSuffix, StringComparison.OrdinalIgnoreCase));
+
+            if (resourceName is null)
+            {
+                return;
+            }
+
+            var directory = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            using var resourceStream = assembly.GetManifestResourceStream(resourceName);
+            if (resourceStream is null)
+            {
+                return;
+            }
+
+            using var fileStream = File.Create(fullPath);
+            resourceStream.CopyTo(fileStream);
+        }
+        catch
+        {
+            // Preserve original behavior: caller will return 404 when extraction fails.
+        }
     }
 
     private static async Task RenderLoginForm(HttpResponse response)
