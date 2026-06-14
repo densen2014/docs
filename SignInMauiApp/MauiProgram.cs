@@ -19,7 +19,6 @@ public static class MauiProgram
         CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
         AppContext.SetSwitch("System.Reflection.NullabilityInfoContext.IsSupported", true);
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -32,14 +31,23 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // 注册 FreeSql ORM，使用 SQLite 数据库
-        var fsql = new FreeSqlBuilder()
-#if DEBUG
-            //.UseAutoSyncStructure(true)
-#endif
-            .UseConnectionString(DataType.Sqlite, "Data Source=signindb.db")
+
+
+#if ANDROID || IOS || MACCATALYST
+        string dbpath = Path.Combine(FileSystem.AppDataDirectory, "signindb.db"); 
+        Microsoft.Data.Sqlite.SqliteConnection _database = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbpath}");
+        var fsql = new FreeSql.FreeSqlBuilder()
+            .UseConnectionFactory(FreeSql.DataType.Sqlite, () => _database, typeof(FreeSql.Sqlite.SqliteProvider<>))
+            .UseNoneCommandParameter(true)
             .Build();
         builder.Services.AddSingleton(fsql);
+#else
+        var fsql = new FreeSqlBuilder()
+            .UseConnectionString(DataType.Sqlite, "Data Source=signindb.db")
+            .UseNoneCommandParameter(true)
+            .Build();
+        builder.Services.AddSingleton(fsql);
+#endif
 
 #if DEBUG
         builder.Logging.AddDebug();

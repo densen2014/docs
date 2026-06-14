@@ -48,6 +48,7 @@ public partial class SignInReportPage : ContentPage
 
         LoadReport();
         //DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
     }
 
     private void LoadUsernames()
