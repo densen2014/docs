@@ -23,6 +23,7 @@ public partial class App : Application
     [NotNull]
     public static IWebHost? Host { get; set; }
     public static WebHostParameters WebHostParameters { get; set; } = new WebHostParameters();
+    public static List<IPAddress> IPAddresses { get; set; } = [IPAddress.Loopback];
 
     public App()
     {
@@ -138,8 +139,12 @@ public partial class App : Application
     {
         try
         {
-            var ip = NetworkHelper.GetIpAddress() ?? IPAddress.Loopback;
-            WebHostParameters.ServerIpEndpoint = new IPEndPoint(ip, 5001);
+            var _IPAddresses = await Task.Run(NetworkHelper.GetIpAddress);
+            if (_IPAddresses != null && _IPAddresses.Count > 0)
+            {
+                IPAddresses = _IPAddresses;
+            }
+            WebHostParameters.ServerIpEndpoint = new IPEndPoint(IPAddresses[0], 5001);
 
             Log($"监听地址: {WebHostParameters.ServerIpEndpoint}");
             await KestrelWebHost.WebHostProgram.WebHostMain(WebHostParameters);

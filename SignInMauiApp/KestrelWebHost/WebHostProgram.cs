@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using SignInMauiApp;
 using System.Net;
 
 namespace KestrelWebHost;
@@ -21,13 +22,30 @@ public class WebHostProgram
             })
             .UseKestrel(options =>
             {
-                options.Listen(new IPEndPoint(IPAddress.Any, webHostParameters?.ServerIpEndpoint?.Port ?? 5001));
-                //options.Listen(webHostParameters.ServerIpEndpoint);
+#if DEBUG && IOS
+                if (DeviceInfo.Current.DeviceType== DeviceType.Virtual)
+                {
+                    options.Listen(webHostParameters.ServerIpEndpoint);
+                }
+                else
+                {
+                    options.Listen(new IPEndPoint(IPAddress.Any, 5001));
+                }
+#elif MACCATALYST
+                options.Listen(webHostParameters.ServerIpEndpoint);
+#else
+                options.Listen(new IPEndPoint(IPAddress.Any, 5001));
+#endif
             })
             .UseContentRoot(AppDomain.CurrentDomain.BaseDirectory)
             .UseStartup<Startup>()
             .Build();
 
+        #if ANDROID  
+        App.Host = webHost;
+        return webHost.RunPatchedAsync();
+#else
         return webHost.RunAsync();
+#endif
     }
 }
