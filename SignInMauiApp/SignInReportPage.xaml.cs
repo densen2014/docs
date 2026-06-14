@@ -48,7 +48,11 @@ public partial class SignInReportPage : ContentPage
 
         LoadReport();
         //DisableShareSwitch.IsToggled = Preferences.Default.Get(DisableShareKey, true);
+#if ANDROID || IOS
+
+#else 
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+#endif 
     }
 
     private void LoadUsernames()
@@ -206,7 +210,7 @@ public partial class SignInReportPage : ContentPage
 
     private async void OnExportPdfClicked(object sender, EventArgs e)
     {
-#if ANDROID || WINDOWS || MACCATALYST
+#if WINDOWS || MACCATALYST
         if (_report.Count == 0)
         {
             await DisplayAlertAsync("Aviso", "No hay datos para exportar", "OK");
