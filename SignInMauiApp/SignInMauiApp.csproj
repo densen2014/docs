@@ -60,7 +60,7 @@
 
     <ItemGroup>
         <!-- App Icon -->
-        <MauiIcon Include="Resources\AppIcon\appicon2.png" />
+        <MauiIcon Include="Resources\AppIcon\appicon.png" />
 
         <!-- Splash Screen -->
         <MauiSplashScreen Include="Resources\Images\logo2.png" BaseSize="128,128" />
@@ -73,8 +73,19 @@
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-    </ItemGroup> 
+    </ItemGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
+        <AndroidPackageFormat>apk</AndroidPackageFormat>
+        <RuntimeIdentifiers>android-arm;android-arm64</RuntimeIdentifiers>
+    </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
+        <AndroidPackageFormat>apk</AndroidPackageFormat>
+        <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+        <RuntimeIdentifiers>android-arm;android-arm64</RuntimeIdentifiers>
+    </PropertyGroup>
+    
     <ItemGroup>
         <None Remove="wwwroot\*" />
     </ItemGroup> 
