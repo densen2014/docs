@@ -18,6 +18,11 @@
       "src": "./fichaje.jpg",
       "sizes": "256x256",
       "type": "image/png"
+    },
+    {
+      "src": "./fichaje.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "features": [
